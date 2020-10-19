@@ -1,11 +1,11 @@
 initialBoard([
+[red,empty,empty,empty,empty,empty,red],
 [empty,empty,empty,empty,empty,empty,empty],
 [empty,empty,empty,empty,empty,empty,empty],
 [empty,empty,empty,empty,empty,empty,empty],
 [empty,empty,empty,empty,empty,empty,empty],
 [empty,empty,empty,empty,empty,empty,empty],
-[empty,empty,empty,empty,empty,empty,empty],
-[empty,empty,empty,empty,empty,empty,empty]
+[yellow,empty,empty,empty,empty,empty,yellow]
 ]).
 
 print_board(X) :-
