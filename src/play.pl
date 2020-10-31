@@ -6,7 +6,9 @@ play :-
 
 % function to create the board
 initial(GameState):-
-	intermediateBoard(GameState).
+	initialBoard(GameState).
+	% intermediateBoard(GameState).
+	% finalBoard(GameState).
 	
 % function to display the board
 display_game(GameState, Player):-

@@ -14,7 +14,6 @@ initialBoard([
 [0,0,0,0,0,0,0,0,0,0,emptyS,emptyS]
 ]).
 
-
 intermediateBoard([
 [1,2,3,0,0,0,0,0,0,0,emptyS,emptyS],
 [rs,emptyS,4],
@@ -64,7 +63,9 @@ print_line([C|L]):-
 	print_line(L).
 	
 print_cell(C):-
-	code(C,P), write(P), write(' |').
+	code(C,P),
+	write(P),
+	write(' |').
 	
 code(empty, '  ').
 code(emptyS, '--').

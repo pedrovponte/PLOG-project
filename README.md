@@ -1,6 +1,6 @@
 # PLOG 2020/2021 - TP1
 
-## Group: T3G?
+## Group: Jin_Li_2
 
 | Name             | Number    | E-Mail                |
 | ---------------- | --------- | --------------------- |
@@ -83,7 +83,7 @@ initialBoard([
 
 ```
 
-- ### Intermediate Situation:
+### Intermediate Situation:
 
 ```
 intermediateBoard([
@@ -137,7 +137,7 @@ intermediateBoard([
 
 
 
-- ### Final Situation:
+### Final Situation:
 
 ```
 finalBoard([
@@ -188,11 +188,11 @@ finalBoard([
 |---|---|---|---|---|---|---|---|---|---|---|---|
 ```
 
-- ### Atoms
+### Atoms
 
 	
 | Code | Meaning |
-| --------------:|---------------:|
+| :--------------:|:---------------:|
 | code(empty, '  ') | *Empty square of the board* |
 | code(emptyS, '--') | *Board* |
 | code(red, 'RF') | *Red Fish* |
@@ -219,4 +219,35 @@ finalBoard([
 
 
 --- 
-## Implementation of the GameState visulization
+## GameState Visualization
+
+In order to have a user friendly game visualization, we decided to represent the game pieces with some symbols: **RF** for red fishes, **YF** for yellow fishes, **O** for stones and **' '** for empty spaces. To do it, we use a predicate called ```code(Value, Symbol)```.
+To print the board, we use the predicates: 
+
+* ```print_board(X)``` - prints the superior limit of the table and calls the function ```print_tab```;
+* ```print_tab(List)``` - calls the function ```print_line```, draws a separator between lines and calls itself;
+* ```print_line(List)``` - calls ```print_cell``` and next calls itself;
+* ```print_cell(List)``` - calls ```code``` function to get the symbol of the cell and prints that on the screen.
+
+The first and the last board lines represent a scorer for each player. As the players score points, the points appear registed in places where initially are only 0's.
+In the last collumn, there is a counter of the remaining stones that each player has.
+
+**Initial game visualization example:**
+![](images/initialState.png)
+
+**Intermediate game visualization example:**
+![](images/intermediateState.png)
+
+**Final game visualization example:**
+![](images/finalState.png)
+
+---
+## Notes:
+
+To run the game:
+* Open SICStus;
+* File -> Working Directory -> src;
+* Consult -> jin_li.pl;
+* Type jin_li. in console.
+
+To check the different GameStates examples, you only have to uncomment the line of the board you want to see in [initial(GameState)](src/play.pl).
