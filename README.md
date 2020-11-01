@@ -1,6 +1,7 @@
 # PLOG 2020/2021 - TP1
 
 ## Group: Jin_Li_2
+Turma 3
 
 | Name             | Number    | E-Mail                |
 | ---------------- | --------- | --------------------- |
@@ -29,7 +30,7 @@ Some alternative rules:
 [Rules](https://nestorgames.com/rulebooks/JINLI_EN.pdf)
 
 --- 
-## Internal representation and visulization of the GameState
+## Internal representation of the GameState
 
 ### Initial Situation:
 
@@ -50,9 +51,7 @@ initialBoard([
 [0,0,0,0,0,0,0,0,0,0,emptyS,emptyS]
 ]).
 
-```
 
-```
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |-- |-- |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -101,9 +100,8 @@ intermediateBoard([
 [ys,emptyS,4],
 [1,2,0,0,0,0,0,0,0,0,emptyS,emptyS]
 ]).
-```
 
-```
+
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | 2 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |-- |-- |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -155,9 +153,7 @@ finalBoard([
 [ys,emptyS,0],
 [1,2,3,4,5,6,7,8,9,0,emptyS,emptyS]
 ]).
-```
 
-```
 
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |10 |-- |-- |
