@@ -19,4 +19,5 @@ start_game(GameState) :-
 	turn(GameState, 'Yellow Player').
 
 turn(GameState, Player) :-
-	format('\n ~a turn.\n\n', Player).
+	format('\n ~a turn.\n\n', Player),
+	move(GameState,Player).

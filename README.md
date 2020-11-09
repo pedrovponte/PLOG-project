@@ -12,7 +12,9 @@ Turma 3
 
 ## Jin Li
 
-Jin Li is a strategy game for 2 players. The players each control two fish in a pond (7x7 board), either two red fish (RF) or two yellow fish (YF). Besides the fishes each player also has 10 stones stored on the right side of the board. Players take turns during the game moving their fish. 
+Jin Li is a strategy game for 2 players. The players each control two fish in a pond (7x7 board), either two red fish (RF) or two yellow fish (YF). Besides the fishes each player also has 10 stones stored on the right side of the board. Players take turns during the game moving their fish.
+
+- The Koi should start one square diagonally inset from the corners;
 - On his turn, a player must either swim one of his fish and drop a stone or jump over a stone.
 - A fish swims to an empty square adjacent (ortogonaly or diagonaly) to its current location. The stones are placed in any 
 empty square. If a player has run out of stones then he does not drop after swimming.
@@ -22,15 +24,24 @@ After his turn the player scores one point for each other fish adjacent to his f
 The first player to score 10 poits wins.
 
 Some alternative rules:
-- Start the Koi one square diagonally inset from the corners.
+
 - Give each player 6 stones instead of 10
 - After a player drops his last stone, the other player removes one stone from the board and gives it to that player to use next turn. 
 
 [Source](https://boardgamegeek.com/boardgame/68743/jin-li), 
 [Rules](https://nestorgames.com/rulebooks/JINLI_EN.pdf)
 
---- 
+---
+
 ## Internal representation of the GameState
+
+### Board
+
+To represent the cells of the board, we decided to use lists within a list. Each list inside the main list represents a line and each element of this list is the cell content.
+
+### Players Kois
+
+To be completed while writing final report
 
 ### Initial Situation:
 
@@ -247,3 +258,22 @@ To run the game:
 * Type jin_li. in console.
 
 To check the different GameStates examples, you only have to uncomment the line of the board you want to see in [initial(GameState)](src/play.pl).
+
+---
+TO-DO list:
+
+- [X] localização inicial das carpas? (têm só nas regras alternativas) (TO THINK: should the kois always start in the corners?);
+
+- [X] representação devia ter primeiro explicação de como o fazem;
+  
+- [X] não é aceitável que o tabuleiro tenha todos aqueles símbolos ligados à visualização: o tabuleiro deve ter apenas a parte do tabuleiro (carpas e pedras), complementado por informação de jogador atual, pedras e score atual de cada um;
+
+- [ ] Será que alguma representação numérica poderia ajudar? 0 vazio, 1 pedra, 10 e 11 kois (10 + player) -> sum(surrounding cells)/10;
+
+- [X] visualização fica muito confusa: muita densidade de coisas que não são parte do jogo só confundem... aconselhado ter tabuleiro 'isolado', complementado depois por pontuação (basta um número para isso) e pedras;
+
+- [ ] Junto da informação do turno do jogador, acrescentar o resultado atual e o número de pedras de cada um;
+
+- [X] Faltam coordenadas!
+  
+- [ ] código podia estar mais flexível para dimensões de tabuleiro diferentes.
