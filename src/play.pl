@@ -16,8 +16,8 @@ display_game(GameState, Player):-
 
 % by now, yellow player is the first to play, but in the future we can put it random
 start_game(GameState) :-
-	turn(GameState, 'Yellow Player').
+	turn(GameState, yellow).
 
 turn(GameState, Player) :-
 	format('\n ~a turn.\n\n', Player),
-	move(GameState,Player).
+	selectPiece(GameState, Player, FinalGameState).
