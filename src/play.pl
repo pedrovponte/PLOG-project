@@ -1,8 +1,15 @@
+
 % main function, that initializes the game and calls the game loop
 play :-
-	initial(GameState),
+	/*initial(GameState),
 	display_game(GameState, Player),
-	start_game(GameState).
+	start_game(GameState).*/
+	play(GameState, Player, ScoreR,ScoreY, StonesR,StonesY, Turn).
+
+
+
+
+
 
 % function to create the board
 initial(GameState):-
@@ -21,3 +28,4 @@ start_game(GameState) :-
 turn(GameState, Player) :-
 	format('\n ~a turn.\n\n', Player),
 	selectPiece(GameState, Player, FinalGameState).
+
