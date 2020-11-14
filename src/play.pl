@@ -16,8 +16,15 @@ display_game(GameState, Player):-
 
 % by now, yellow player is the first to play, but in the future we can put it random
 start_game(GameState) :-
-	turn(GameState, yellow).
+	turn(GameState, yellow, 10, 10).
 
-turn(GameState, Player) :-
+turn(GameState, Player, YellowStones, RedStones) :-
 	format('\n ~a turn.\n\n', Player),
-	selectPiece(GameState, Player, FinalGameState).
+	format('Yellow player has ~d stones to play.\n', YellowStones),
+	format('Red player has ~d stones to play.\n\n', RedStones),
+	selectPiece(GameState, Player, MidGameState),
+	display_game(MidGameState, Player),
+	format('\n ~a turn.\n\n', Player),
+	format('Yellow player has ~d stones to play.\n', YellowStones),
+	format('Red player has ~d stones to play.\n\n', RedStones).
+	/*selectSpotStone(MidGameState, Player, FinalGameState).*/
