@@ -4,5 +4,6 @@
 :-consult('utils.pl').
 :-consult('game_logic.pl').
 
+
 jin_li :- 
 	play.

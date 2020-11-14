@@ -14,7 +14,7 @@ Turma 3
 
 Jin Li is a strategy game for 2 players. The players each control two fish in a pond (7x7 board), either two red fish (RF) or two yellow fish (YF). Besides the fishes each player also has 10 stones stored on the right side of the board. Players take turns during the game moving their fish.
 
-- The Koi should start one square diagonally inset from the corners;
+- Each player’s Koi start in the corner squares closer to the player;
 - On his turn, a player must either swim one of his fish and drop a stone or jump over a stone.
 - A fish swims to an empty square adjacent (ortogonaly or diagonaly) to its current location. The stones are placed in any 
 empty square. If a player has run out of stones then he does not drop after swimming.

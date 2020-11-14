@@ -1,17 +1,33 @@
-selectPiece(GameState, Player, FinalGameState):-
+
+
+selectPiece(GameState, Player, MidGameState,NewRow,NewColumn):-
+    write('Choose a piece:\n'),
     readColumn(Column),
     checkColumn(Column, InitColumn),
     readRow(Row),
     checkRow(Row, InitRow),
-    validateContent(Player, GameState, InitRow, InitColumn),
-    replaceValueMatrix(GameState, InitRow, InitColumn, empty, MidGameState),
-    selectSpot(MidGameState, Player, FinalGameState, InitRow, InitColumn).
+    validateContent(Player, GameState, InitRow, InitColumn, FinalRow, FinalCol),
+    replaceValueMatrix(GameState, FinalRow, FinalCol, empty, FirstGameState),
+    selectSpot(FirstGameState, Player, MidGameState, FinalRow, FinalCol,NewRow,NewColumn).
 
-selectSpot(GameState, Player, FinalGameState, InitRow, InitColumn) :-
+
+selectSpot(GameState, Player, MidGameState, InitRow, InitColumn,NewRow,NewColumn) :-
+    write('Move to:\n'),
     readColumn(Column),
     checkColumn(Column, NewColumn),
     readRow(Row),
-    checkRow(Row, NewRow).
+    checkRow(Row, NewRow),
+    validateMoveRow(GameState, NewRow, NewColumn, InitRow, InitColumn, FinalRow, FinalCol, Player),
+    replaceValueMatrix(GameState, FinalRow, FinalCol, Player, MidGameState).
+
+selectSpotStone(GameState, Player, FinalGameState) :-
+    write('Choose the spot to put one stone:\n'),
+    readColumn(Column),
+    checkColumn(Column, StoneColumn),
+    readRow(Row),
+    checkRow(Row, StoneRow),
+    validateStoneSpot(GameState, StoneRow, StoneColumn, FinalStoneRow, FinalStoneColumn),
+    replaceValueMatrix(GameState, FinalStoneRow, FinalStoneColumn, stone, FinalGameState).
 
 % read column from user
 readColumn(Column):-
@@ -53,10 +69,62 @@ checkRow(_Row, InitRow) :-
     readRow(NewRow),
     checkRow(NewRow, InitRow).
 
-validateContent(Player, GameState, InitRow, InitColumn) :-
+% verify if the select space has a player piece
+validateContent(Player, GameState, InitRow, InitColumn, FinalRow, FinalCol) :-
     checkValueMatrix(GameState, InitRow, InitColumn, Content),
-    (Player == Content);
+    Player == Content, FinalRow is InitRow, FinalCol is InitColumn;
     (
         write('Invalid Piece! Choose one of yours\n'),
-        selectPiece(GameState, Player, FinalGameState)
+        write('Choose a piece:\n'),
+        readColumn(Column),
+        checkColumn(Column, NewColumn),
+        readRow(Row),
+        checkRow(Row, NewRow),
+        validateContent(Player, GameState, NewRow, NewColumn, FinalRow, FinalCol)
+    ).
+
+validateMoveRow(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player) :-
+    checkValueMatrix(GameState, SelRow, SelCol, Content),
+    SelRow =:= InitRow, (SelCol =:= InitCol + 1; SelCol =:= InitCol - 1), Content == empty, FinalRow is SelRow, FinalCol is SelCol; /*same row move*/
+    (
+        validateMoveColumn(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player)
+    ).  
+
+validateMoveColumn(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player) :-
+    checkValueMatrix(GameState, SelRow, SelCol, Content),
+    SelCol =:= InitCol, (SelRow =:= InitRow + 1; SelRow =:= InitRow - 1), Content == empty, FinalRow is SelRow, FinalCol is SelCol; /*same column move*/
+    (
+        validateMoveDiagonalLeft(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player)
+    ).
+
+validateMoveDiagonalLeft(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player) :-
+    checkValueMatrix(GameState, SelRow, SelCol, Content),
+    SelCol =:= InitCol - 1, (SelRow =:= InitRow + 1; SelRow =:= InitRow - 1), Content == empty, FinalRow is SelRow, FinalCol is SelCol; /*diagonal to last column*/
+    (
+        validateMoveDiagonalRight(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player)
+    ).
+
+validateMoveDiagonalRight(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player) :-
+    checkValueMatrix(GameState, SelRow, SelCol, Content),
+    SelCol =:= InitCol + 1, (SelRow =:= InitRow + 1; SelRow =:= InitRow - 1), Content == empty, FinalRow is SelRow, FinalCol is SelCol; /*diagonal to next column*/
+    (
+        write('Invalid move! Choose another.\n'),
+        readColumn(Column),
+        checkColumn(Column, NewColumn),
+        readRow(Row),
+        checkRow(Row, NewRow),
+        validateMoveRow(GameState, NewRow, NewColumn, InitRow, InitCol, FinalRow, FinalCol, Player)
+    ).
+
+validateStoneSpot(GameState, SelRow, SelCol, FinalRow, FinalCol) :-
+    checkValueMatrix(GameState, SelRow, SelCol, Content),
+    print(Content),
+    Content == empty, FinalRow is SelRow, FinalCol is SelCol;
+    (
+        write('Invalid spot! Choose another.\n'),
+        readColumn(Column),
+        checkColumn(Column, NewColumn),
+        readRow(Row),
+        checkRow(Row, NewRow),
+        validateStoneSpot(GameState, NewRow, NewColumn, FinalRow, FinalCol)
     ).

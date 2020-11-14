@@ -1,22 +1,22 @@
-play(GameState, Player, ScoreR,ScoreY, StonesR,StonesY, Turn):-
-    initial(GameState),
-%   update_board(GameState, Piece, Position, CapturedPiece, CapturedPiecePos, NewBoard),
-    display_game(GameState, Player),
-    start_game(GameState),
-    calculate_score(GameState, Player, Score, FinalScore1),
-%   check_game_over(Board, NewPlayer1, NewPlayer2),
+calculateScore(GameState,Row,Col,Score):-
+    checkValueMatrix(GameState, Row, Col-1, Content1),
+    checkValueMatrix(GameState, Row-1, Col-1, Content2),
+    checkValueMatrix(GameState, Row+1, Col-1, Content3),
+    checkValueMatrix(GameState, Row, Col+1, Content4),
+    checkValueMatrix(GameState, Row-1, Col+1, Content5),
+    checkValueMatrix(GameState, Row+1, Col+1, Content6),
+    checkValueMatrix(GameState, Row-1, Col, Content7),
+    checkValueMatrix(GameState, Row+1, Col, Content8),
+    Content1==empty,!,Score=1,
+    Content2==empty,!,Score=2,
+    Content3==empty,!,Score=3,
+    Content4==empty,!,Score=4,
+    Content5==empty,!,Score=5,
+    Content6==empty,!,Score=6,
+    Content7==empty,!,Score=7,
+    Content8==empty,!,Score=8.
 
-calculate_score([],_,Score, FinalScore):-
-    FinalScore = Score,
-    !, write(Score).
 
-calculate_score([p(Piece, Pos)|T], Player,Score, FinalScore):-
-    member(Piece,Player),
-    piece_color(Piece,C1),
-    color(Pos,C2),
-    (C1==C2 -> NewScore is Score + 3;
-    NewScore is Score +1),
-    calculate_score(T,Player,NewScore, FinalScore).
-  
-  calculate_score([p(_, _)|T], Player,Score, FinalScore):-
-    calculate_score(T,Player,Score, FinalScore).
+
+
+    
