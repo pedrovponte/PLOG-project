@@ -1,6 +1,6 @@
 
 
-selectPiece(GameState, Player, MidGameState,NewRow,NewColumn):-
+selectPiece(GameState, Player, MidGameState, NewRow, NewColumn):-
     write('Choose a piece:\n'),
     readColumn(Column),
     checkColumn(Column, InitColumn),
@@ -8,10 +8,10 @@ selectPiece(GameState, Player, MidGameState,NewRow,NewColumn):-
     checkRow(Row, InitRow),
     validateContent(Player, GameState, InitRow, InitColumn, FinalRow, FinalCol),
     replaceValueMatrix(GameState, FinalRow, FinalCol, empty, FirstGameState),
-    selectSpot(FirstGameState, Player, MidGameState, FinalRow, FinalCol,NewRow,NewColumn).
+    selectSpot(FirstGameState, Player, MidGameState, FinalRow, FinalCol, NewRow, NewColumn).
 
 
-selectSpot(GameState, Player, MidGameState, InitRow, InitColumn,NewRow,NewColumn) :-
+selectSpot(GameState, Player, MidGameState, InitRow, InitColumn, NewRow, NewColumn) :-
     write('Move to:\n'),
     readColumn(Column),
     checkColumn(Column, NewColumn),
@@ -21,7 +21,7 @@ selectSpot(GameState, Player, MidGameState, InitRow, InitColumn,NewRow,NewColumn
     replaceValueMatrix(GameState, FinalRow, FinalCol, Player, MidGameState).
 
 selectSpotStone(GameState, Player, FinalGameState) :-
-    write('Choose the spot to put one stone:\n'),
+    write('Choose a spot to put one stone:\n'),
     readColumn(Column),
     checkColumn(Column, StoneColumn),
     readRow(Row),
@@ -118,8 +118,13 @@ validateMoveDiagonalRight(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow,
 
 validateStoneSpot(GameState, SelRow, SelCol, FinalRow, FinalCol) :-
     checkValueMatrix(GameState, SelRow, SelCol, Content),
-    print(Content),
-    Content == empty, FinalRow is SelRow, FinalCol is SelCol;
+    write(Content),
+    write('\n'),
+    write(SelRow),
+    write('\n'),
+    write(SelCol),
+    write('\n'),
+    Content == empty, write(Content == empty), write('\n'), FinalRow is SelRow, write(FinalRow), write('\n'), FinalCol is SelCol, write(FinalCol), write('\n');
     (
         write('Invalid spot! Choose another.\n'),
         readColumn(Column),
