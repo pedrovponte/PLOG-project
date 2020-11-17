@@ -1,4 +1,6 @@
 calculateScore(GameState,Row,Col,Score):-
+    
+    write('Started...\n'),
     checkValueMatrix(GameState, Row, Col-1, Content1),
     checkValueMatrix(GameState, Row-1, Col-1, Content2),
     checkValueMatrix(GameState, Row+1, Col-1, Content3),

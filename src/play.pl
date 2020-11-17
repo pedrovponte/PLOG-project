@@ -22,6 +22,7 @@ start_game(GameState) :-
 	turn(GameState, yellow, 10, 10,0,0).
 
 turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
+	
 	display_game(GameState, Player),
 	format('\n ~a turn.\n\n', Player),
 	format('Yellow player has ~d stones to play.\n', YellowStones),
@@ -38,12 +39,10 @@ turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
 	format('Red Score: ~d.\n', RedScore),
 
 	selectSpotStone(MidGameState, Player, FinalGameState),
-
-	/*print(NewRow),*/
-
-	/*calculateScore(MidGameState,NewRow,NewColumn,Score),*/
+	
+	/*calculateScore(FinalGameState,NewRow,NewColumn,Score),*/
 	Score=1, %auxiliar
-	print(Score),
+	/*print(Score),*/
 
-	Player==yellow, !, turn(FinalGameState,red,YellowStones,RedStones,YellowScore+Score,RedScore).
-	turn(FinalGameState,yellow,YellowStones,RedStones,YellowScore,RedScore+Score).
+	Player==yellow, !, turn(FinalGameState,red,YellowStones-1,RedStones,YellowScore+Score,RedScore).
+	turn(FinalGameState,yellow,YellowStones,RedStones-1,YellowScore,RedScore+Score).

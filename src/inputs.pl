@@ -26,8 +26,8 @@ selectSpotStone(GameState, Player, FinalGameState) :-
     checkColumn(Column, StoneColumn),
     readRow(Row),
     checkRow(Row, StoneRow),
-    validateStoneSpot(GameState, StoneRow, StoneColumn, FinalStoneRow, FinalStoneColumn),
-    replaceValueMatrix(GameState, FinalStoneRow, FinalStoneColumn, stone, FinalGameState).
+  /*  validateStoneSpot(GameState, StoneRow, StoneColumn, FinalStoneRow, FinalStoneColumn),*/
+    replaceValueMatrix(GameState, StoneRow, StoneColumn, stone, FinalGameState).
 
 % read column from user
 readColumn(Column):-
@@ -119,12 +119,10 @@ validateMoveDiagonalRight(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow,
 validateStoneSpot(GameState, SelRow, SelCol, FinalRow, FinalCol) :-
     checkValueMatrix(GameState, SelRow, SelCol, Content),
     print(Content),
-    Content == empty, FinalRow is SelRow, FinalCol is SelCol;
-    (
-        write('Invalid spot! Choose another.\n'),
-        readColumn(Column),
-        checkColumn(Column, NewColumn),
-        readRow(Row),
-        checkRow(Row, NewRow),
-        validateStoneSpot(GameState, NewRow, NewColumn, FinalRow, FinalCol)
-    ).
+    Content == empty, !, FinalRow is SelRow, FinalCol is SelCol.
+    write('Invalid spot! Choose another.\n'),
+    readColumn(Column),
+    checkColumn(Column, NewColumn),
+    readRow(Row),
+    checkRow(Row, NewRow),
+    validateStoneSpot(GameState, NewRow, NewColumn, FinalRow, FinalCol).
