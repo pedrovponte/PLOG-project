@@ -1,11 +1,8 @@
-
 % main function, that initializes the game and calls the game loop
 play :-
 	initial(GameState),
 	start_game(GameState).
 	/*play(GameState, Player, ScoreR,ScoreY, StonesR,StonesY, Turn).*/
-
-
 
 % function to create the board
 initial(GameState):-
@@ -77,15 +74,15 @@ turnRed(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
 	checkGameOver(yellow,NextPlayer,FinalScore),
 
 	turnYellow(FinalGameState, NextPlayer, YellowStones, NumStonesFinal, YellowScore, FinalScore).
-    
-canPutStone(NumStones,MidGameState,Player,FinalGameState,NumStonesFinal, Jump):-
-	(NumStones =:= 0; Jump =:= 1),
-	NumStonesFinal is NumStones,
-	copyMatrix(MidGameState, FinalGameState).
 
 turnRed(_GameState, Player, _YellowStones, _RedStones, YellowScore, RedScore) :-
 	Player==end,
 	endGame(YellowScore,RedScore).
+
+canPutStone(NumStones,MidGameState,Player,FinalGameState,NumStonesFinal, Jump):-
+	(NumStones =:= 0; Jump =:= 1),
+	NumStonesFinal is NumStones,
+	copyMatrix(MidGameState, FinalGameState).
 
 canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump):-
 	selectSpotStone(MidGameState, Player, FinalGameState),
