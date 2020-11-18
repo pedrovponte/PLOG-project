@@ -1,3 +1,4 @@
+/*Score*/
 calculateScore(_GameState,[],Score1,Score1).
 
 calculateScore(GameState,[H|[H2|T]],Score, ScorePlus):-
@@ -107,7 +108,28 @@ getAdjacentes(GameState,Row,Col,Adj):-
     append([Row2,Col2],Adj6, Adj7),
     append([Row,Col2],Adj7, Adj).
 
+/*Check if still has stones*/
+canPutStone(NumStones,_MidGameState,_Player,_FinalGameState,NumStonesFinal):-
+	NumStones==0,
+	NumStonesFinal is NumStones.
 
+canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal):-
+	selectSpotStone(MidGameState, Player, FinalGameState),
+	NumStonesFinal is NumStones - 1.
+
+
+/*End Game*/
+checkGameOver(_Player,NextPlayer,Score):-
+	Score==10,
+	NextPlayer = end.
+
+checkGameOver(Player,NextPlayer,_Score):-
+	NextPlayer = Player.
+
+endGame(YellowScore,RedScore):-
+	format('Yellow Score: ~d.\n', YellowScore),
+	format('Red Score: ~d.\n\n', RedScore),
+	write('GAME ENDED').
 
 
     

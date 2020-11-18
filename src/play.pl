@@ -22,6 +22,8 @@ start_game(GameState) :-
 	turnYellow(GameState, yellow, 10, 10, 0, 0).
 
 turnYellow(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
+	Player\=end,
+
 	display_game(GameState, Player),
 	format('\n ~a turn.\n\n', Player),
 	format('Yellow player has ~d stones to play.\n', YellowStones),
@@ -42,9 +44,17 @@ turnYellow(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
 	getAdjacentes(GameState,NewRow,NewColumn,Adj),
 	calculateScore(FinalGameState,Adj,YellowScore,FinalScore),
 
-	turnRed(FinalGameState, red, NumStonesFinal, RedStones,FinalScore, RedScore).
+	checkGameOver(red,NextPlayer,FinalScore),
+
+	turnRed(FinalGameState, NextPlayer, NumStonesFinal, RedStones,FinalScore, RedScore).
+
+turnYellow(_GameState, Player, _YellowStones, _RedStones, YellowScore, RedScore) :-
+	Player==end,
+	endGame(YellowScore,RedScore).
 
 turnRed(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
+	Player\=end,
+
 	display_game(GameState, Player),
 	format('\n ~a turn.\n\n', Player),
 	format('Yellow player has ~d stones to play.\n', YellowStones),
@@ -65,13 +75,11 @@ turnRed(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
 	getAdjacentes(GameState,NewRow,NewColumn,Adjj),
 	calculateScore(FinalGameState,Adjj,RedScore,FinalScore),
 
-	turnYellow(FinalGameState, yellow, YellowStones, NumStonesFinal, YellowScore, FinalScore).
+	checkGameOver(yellow,NextPlayer,FinalScore),
 
+	turnYellow(FinalGameState, NextPlayer, YellowStones, NumStonesFinal, YellowScore, FinalScore).
 
-canPutStone(NumStones,_MidGameState,_Player,_FinalGameState,NumStonesFinal):-
-	NumStones==0,
-	NumStonesFinal is NumStones.
+turnRed(_GameState, Player, _YellowStones, _RedStones, YellowScore, RedScore) :-
+	Player==end,
+	endGame(YellowScore,RedScore).
 
-canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal):-
-	selectSpotStone(MidGameState, Player, FinalGameState),
-	NumStonesFinal is NumStones - 1.
