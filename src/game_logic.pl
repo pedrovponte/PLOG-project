@@ -2,16 +2,11 @@
 calculateScore(_GameState,[],Score1,Score1).
 
 calculateScore(GameState,[H|[H2|T]],Score, ScorePlus):-
-    write('Started...\n'),
     check(GameState,H,H2,Score,Score1),
     calculateScore(GameState,T,Score1,ScorePlus).
 
 increment(Content,Score,ScorePlus):-
-    Content==empty,
-    ScorePlus is Score.
-
-increment(Content,Score,ScorePlus):-
-    Content==stone,
+    (Content == empty; Content == stone),
     ScorePlus is Score.
 
 increment(Content,Score,ScorePlus):-

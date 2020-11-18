@@ -29,3 +29,6 @@ replaceValueList([H|T], Column, Value, [H|TSub]) :-
     Column1 is Column - 1,
     replaceValueList(T,Column1,Value, TSub).
 
+copyMatrix(Init, Final) :- accCp(Init,Final).
+accCp([],[]).
+accCp([H|T1],[H|T2]) :- accCp(T1,T2).
