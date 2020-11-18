@@ -40,9 +40,10 @@ turnYellow(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
 	selectSpotStone(MidGameState, Player, FinalGameState),
 	YellowStones1 is YellowStones - 1,
 
-	print(NewRow),
-	print(NewColumn),
-	calculateScore(FinalGameState,NewRow,NewColumn,YellowScore,ScorePlus),
+	
+	getAdjacentes(GameState,NewRow,NewColumn,Adj),
+
+	calculateScore(FinalGameState,Adj,YellowScore,FinalScore),
 	/*Score=1, %auxiliar
 	print(Score),*/
 
@@ -50,7 +51,7 @@ turnYellow(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
 	(RedStones1 is RedStones - 1, turn(FinalGameState, yellow, YellowStones, RedStones1, YellowScore, RedScore + Score)).*/
 	print(YellowScore),
 
-	turnRed(FinalGameState, red, YellowStones1, RedStones,ScorePlus, RedScore).
+	turnRed(FinalGameState, red, YellowStones1, RedStones,FinalScore, RedScore).
 
 turnRed(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
 	display_game(GameState, Player),

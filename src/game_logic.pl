@@ -1,54 +1,91 @@
-calculateScore(GameState,Adj,Score, ScorePlus):-
+calculateScore(_GameState,[],Score1,Score1).
+
+calculateScore(GameState,[H|[H2|T]],Score, ScorePlus):-
     write('Started...\n'),
-    
-    Column1 is Col-1,
-    Column2 is Col+1,
-    Row1 is Row-1,
-    Row2 is Row+1,
 
-
-
-    checkValueMatrix(GameState, Row, Column1, Content1),
-    checkValueMatrix(GameState, Row1, Column1, Content2),
-    checkValueMatrix(GameState, Row2, Column1, Content3),
-    checkValueMatrix(GameState, Row, Column2, Content4),
-    checkValueMatrix(GameState, Row1, Column2, Content5),
-    checkValueMatrix(GameState, Row2, Column2, Content6),
-    checkValueMatrix(GameState, Row1, Col, Content7),
-    checkValueMatrix(GameState, Row2, Col, Content8),
-
-    increment(Content1,Score,Score1),
-    increment(Content2,Score1,Score2),
-    increment(Content3,Score2,Score3),
-    increment(Content4,Score3,Score4),
-    increment(Content5,Score4,Score5),
-    increment(Content6,Score5,Score6),
-    increment(Content7,Score6,Score7),
-    increment(Content8,Score7,ScorePlus).
+    check(GameState,H,H2,Score,Score1),
+    calculateScore(GameState,T,Score1,ScorePlus).
 
 increment(Content,Score,ScorePlus):-
     Content==empty,
     ScorePlus is Score.
 
 increment(Content,Score,ScorePlus):-
-    ScorePlus is Score +1.
+    ScorePlus is Score + 1.
 
-/*getAdjacentes(GameState,Row,Col,Adj):-
+/*9 casos diferentes de posições no board*/
+getAdjacentes(GameState,Row,Col,Adj):-
     Row==0, Column==0, 
-    append([1,0],[], Adj),
-    append([0,1],Adj, Adj),
-    append([1,1],Adj, Adj).
+    append([1,0],[], Adj1),
+    append([0,1],Adj1, Adj2),
+    append([1,1],Adj2, Adj).
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==6, Column==0, 
-    append([5,0],[], Adj),
-    append([,1],Adj, Adj),
-    append([1,1],Adj, Adj).
+    append([5,0],[], Adj1),
+    append([5,1],Adj1, Adj2),
+    append([6,1],Adj2, Adj).
 
-check([H|T],Content):-
-    checkValueMatrix(GameState, nth0(H,), Column1, Content1),*/
+getAdjacentes(GameState,Row,Col,Adj):-
+    Row==0, Column==6, 
+    append([0,5],[], Adj1),
+    append([1,6],Adj1, Adj2),
+    append([1,5],Adj2, Adj).
+
+getAdjacentes(GameState,Row,Col,Adj):-
+    Row==6, Column==6, 
+    append([5,5],[], Adj1),
+    append([6,5],Adj1, Adj2),
+    append([5,6],Adj2, Adj).
+
+getAdjacentes(GameState,Row,Col,Adj):-
+    Row==0,
+    append([Row+1,Col],[], Adj1),
+    append([Row,Col-1],Adj1, Adj2),
+    append([Row,Col+1],Adj2, Adj3),
+    append([Row+1,Col+1],Adj3, Adj3),
+    append([Row+1,Col-1],Adj3, Adj).
+
+getAdjacentes(GameState,Row,Col,Adj):-
+    Row==6,
+    append([Row-1,Col],[], Adj1),
+    append([Row,Col-1],Adj1, Adj2),
+    append([Row,Col+1],Adj2, Adj3),
+    append([Row-1,Col+1],Adj3, Adj4),
+    append([Row-1,Col-1],Adj4, Adj).
+
+getAdjacentes(GameState,Row,Col,Adj):-
+    Col==0,
+    append([Row+1,Col],[], Adj1),
+    append([Row-1,Col],Adj1, Adj2),
+    append([Row+1,Col+1],Adj2, Adj3),
+    append([Row,Col+1],Adj3, Adj4),
+    append([Row-1,Col+1],Adj4, Adj).
+
+getAdjacentes(GameState,Row,Col,Adj):-
+    Col==6,
+    append([Row+1,Col],[], Adj1),
+    append([Row-1,Col],Adj1, Adj2),
+    append([Row+1,Col-1],Adj2, Adj3),
+    append([Row,Col-1],Adj3, Adj4),
+    append([Row-1,Col-1],Adj4, Adj).
+
+getAdjacentes(GameState,Row,Col,Adj):-
+    append([Row+1,Col],[], Adj1),
+    append([Row-1,Col],Adj1, Adj2),
+    append([Row+1,Col+1],Adj2, Adj3),
+    append([Row-1,Col+1],Adj3, Adj4),
+    append([Row,Col+1],Adj4, Adj5),
+    append([Row+1,Col-1],Adj5, Adj6),
+    append([Row-1,Col-1],Adj6, Adj7),
+    append([Row,Col-1],Adj7, Adj).
 
 
+check(GameState, Row, Col, Score, Plus):-
+    checkValueMatrix(GameState, Row, Col, Content),
+    increment(Content,Score,Plus).
+
+    
 
 
 
