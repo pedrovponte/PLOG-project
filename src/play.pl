@@ -62,8 +62,8 @@ turnRed(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
 
 	canPutStone(RedStones,MidGameState,Player,FinalGameState,NumStonesFinal),
 
-	getAdjacentes(GameState,NewRow,NewColumn,Adj),
-	calculateScore(FinalGameState,Adj,RedScore,FinalScore),
+	getAdjacentes(GameState,NewRow,NewColumn,Adjj),
+	calculateScore(FinalGameState,Adjj,RedScore,FinalScore),
 
 	turnYellow(FinalGameState, yellow, YellowStones, NumStonesFinal, YellowScore, FinalScore).
 

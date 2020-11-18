@@ -2,12 +2,15 @@ calculateScore(_GameState,[],Score1,Score1).
 
 calculateScore(GameState,[H|[H2|T]],Score, ScorePlus):-
     write('Started...\n'),
-
     check(GameState,H,H2,Score,Score1),
     calculateScore(GameState,T,Score1,ScorePlus).
 
 increment(Content,Score,ScorePlus):-
     Content==empty,
+    ScorePlus is Score.
+
+increment(Content,Score,ScorePlus):-
+    Content==stone,
     ScorePlus is Score.
 
 increment(Content,Score,ScorePlus):-
@@ -44,45 +47,65 @@ getAdjacentes(GameState,Row,Col,Adj):-
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==0,
-    append([Row+1,Col],[], Adj1),
-    append([Row,Col-1],Adj1, Adj2),
-    append([Row,Col+1],Adj2, Adj3),
-    append([Row+1,Col+1],Adj3, Adj3),
-    append([Row+1,Col-1],Adj3, Adj).
+    Row1 is Row+1,
+    Row2 is Row-1,
+    Col1 is Col+1,
+    Col2 is Col-1,
+    append([Row1,Col],[], Adj1),
+    append([Row,Col2],Adj1, Adj2),
+    append([Row,Col1],Adj2, Adj3),
+    append([Row1,Col1],Adj3, Adj3),
+    append([Row1,Col2],Adj3, Adj).
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==6,
-    append([Row-1,Col],[], Adj1),
-    append([Row,Col-1],Adj1, Adj2),
-    append([Row,Col+1],Adj2, Adj3),
-    append([Row-1,Col+1],Adj3, Adj4),
-    append([Row-1,Col-1],Adj4, Adj).
+    Row1 is Row+1,
+    Row2 is Row-1,
+    Col1 is Col+1,
+    Col2 is Col-1,
+    append([Row2,Col],[], Adj1),
+    append([Row,Col2],Adj1, Adj2),
+    append([Row,Col1],Adj2, Adj3),
+    append([Row2,Col1],Adj3, Adj4),
+    append([Row2,Col2],Adj4, Adj).
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Col==0,
-    append([Row+1,Col],[], Adj1),
-    append([Row-1,Col],Adj1, Adj2),
-    append([Row+1,Col+1],Adj2, Adj3),
-    append([Row,Col+1],Adj3, Adj4),
-    append([Row-1,Col+1],Adj4, Adj).
+    Row1 is Row+1,
+    Row2 is Row-1,
+    Col1 is Col+1,
+    Col2 is Col-1,
+    append([Row1,Col],[], Adj1),
+    append([Row2,Col],Adj1, Adj2),
+    append([Row1,Col1],Adj2, Adj3),
+    append([Row,Col1],Adj3, Adj4),
+    append([Row2,Col1],Adj4, Adj).
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Col==6,
-    append([Row+1,Col],[], Adj1),
-    append([Row-1,Col],Adj1, Adj2),
-    append([Row+1,Col-1],Adj2, Adj3),
-    append([Row,Col-1],Adj3, Adj4),
-    append([Row-1,Col-1],Adj4, Adj).
+    Row1 is Row+1,
+    Row2 is Row-1,
+    Col1 is Col+1,
+    Col2 is Col-1,
+    append([Row1,Col],[], Adj1),
+    append([Row2,Col],Adj1, Adj2),
+    append([Row1,Col2],Adj2, Adj3),
+    append([Row,Col2],Adj3, Adj4),
+    append([Row2,Col2],Adj4, Adj).
 
 getAdjacentes(GameState,Row,Col,Adj):-
-    append([Row+1,Col],[], Adj1),
-    append([Row-1,Col],Adj1, Adj2),
-    append([Row+1,Col+1],Adj2, Adj3),
-    append([Row-1,Col+1],Adj3, Adj4),
-    append([Row,Col+1],Adj4, Adj5),
-    append([Row+1,Col-1],Adj5, Adj6),
-    append([Row-1,Col-1],Adj6, Adj7),
-    append([Row,Col-1],Adj7, Adj).
+    Row1 is Row+1,
+    Row2 is Row-1,
+    Col1 is Col+1,
+    Col2 is Col-1,
+    append([Row1,Col],[], Adj1),
+    append([Row2,Col],Adj1, Adj2),
+    append([Row1,Col1],Adj2, Adj3),
+    append([Row2,Col1],Adj3, Adj4),
+    append([Row,Col1],Adj4, Adj5),
+    append([Row1,Col2],Adj5, Adj6),
+    append([Row2,Col2],Adj6, Adj7),
+    append([Row,Col2],Adj7, Adj).
 
 
 

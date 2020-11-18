@@ -4,9 +4,7 @@ checkValueMatrix([H|_T], 0, Column, Content) :-
 checkValueMatrix([_H|T], Row, Column, Content) :-
     Row > 0,
     Row1 is Row - 1,
-    Row2 is Row1,
-    Column1 is Column,
-    checkValueMatrix(T, Row2, Column1, Content).
+    checkValueMatrix(T, Row1, Column, Content).
 
 checkValueList([H|_T], 0, Content) :-
     Content = H.
@@ -14,8 +12,7 @@ checkValueList([H|_T], 0, Content) :-
 checkValueList([_H|T], Column, Content) :-
     Column > 0,
     Column1 is Column - 1,
-    Column2 is Column1,
-    checkValueList(T, Column2, Content).
+    checkValueList(T, Column1, Content).
 
 replaceValueMatrix([H|T], 0, Column, Value, [HSub|T]) :-
     replaceValueList(H, Column, Value, HSub).
