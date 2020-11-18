@@ -13,6 +13,10 @@ increment(Content,Score,ScorePlus):-
 increment(Content,Score,ScorePlus):-
     ScorePlus is Score + 1.
 
+check(GameState, Row, Col, Score, Plus):-
+    checkValueMatrix(GameState, Row, Col, Content),
+    increment(Content,Score,Plus).
+
 /*9 casos diferentes de posições no board*/
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==0, Column==0, 
@@ -81,9 +85,7 @@ getAdjacentes(GameState,Row,Col,Adj):-
     append([Row,Col-1],Adj7, Adj).
 
 
-check(GameState, Row, Col, Score, Plus):-
-    checkValueMatrix(GameState, Row, Col, Content),
-    increment(Content,Score,Plus).
+
 
     
 

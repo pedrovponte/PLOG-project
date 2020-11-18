@@ -37,21 +37,12 @@ turnYellow(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
 	format('Yellow Score: ~d.\n', YellowScore),
 	format('Red Score: ~d.\n\n', RedScore),
 
-	selectSpotStone(MidGameState, Player, FinalGameState),
-	YellowStones1 is YellowStones - 1,
+	canPutStone(YellowStones,MidGameState,Player,FinalGameState,NumStonesFinal),
 
-	
 	getAdjacentes(GameState,NewRow,NewColumn,Adj),
-
 	calculateScore(FinalGameState,Adj,YellowScore,FinalScore),
-	/*Score=1, %auxiliar
-	print(Score),*/
 
-	/*Player == yellow, YellowStones1 is YellowStones - 1, turn(FinalGameState, red, YellowStones1, RedStones, YellowScore + Score, RedScore);
-	(RedStones1 is RedStones - 1, turn(FinalGameState, yellow, YellowStones, RedStones1, YellowScore, RedScore + Score)).*/
-	print(YellowScore),
-
-	turnRed(FinalGameState, red, YellowStones1, RedStones,FinalScore, RedScore).
+	turnRed(FinalGameState, red, NumStonesFinal, RedStones,FinalScore, RedScore).
 
 turnRed(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
 	display_game(GameState, Player),
@@ -69,6 +60,18 @@ turnRed(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
 	format('Yellow Score: ~d.\n', YellowScore),
 	format('Red Score: ~d.\n\n', RedScore),
 
+	canPutStone(RedStones,MidGameState,Player,FinalGameState,NumStonesFinal),
+
+	getAdjacentes(GameState,NewRow,NewColumn,Adj),
+	calculateScore(FinalGameState,Adj,RedScore,FinalScore),
+
+	turnYellow(FinalGameState, yellow, YellowStones, NumStonesFinal, YellowScore, FinalScore).
+
+
+canPutStone(NumStones,_MidGameState,_Player,_FinalGameState,NumStonesFinal):-
+	NumStones==0,
+	NumStonesFinal is NumStones.
+
+canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal):-
 	selectSpotStone(MidGameState, Player, FinalGameState),
-	RedStones1 is RedStones - 1,
-	turnYellow(FinalGameState, yellow, YellowStones, RedStones1, YellowScore, RedScore).
+	NumStonesFinal is NumStones - 1.
