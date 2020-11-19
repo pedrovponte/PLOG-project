@@ -117,12 +117,11 @@ endGame(YellowScore,RedScore):-
 	format('Yellow Score: ~d.\n', YellowScore),
 	format('Red Score: ~d.\n\n', RedScore),
 	write('GAME ENDED\n').
-    
-/*YellowScore > RedScore,
+    YellowScore > RedScore,
     write('Yellow player wins the game!\n');
     (
         write('Red player wins the game!\n')
-    ).*/
+    ).
 
 
     
