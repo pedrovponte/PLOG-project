@@ -44,14 +44,13 @@ getAdjacentes(GameState,Row,Col,Adj):-
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==0,
     Row1 is Row+1,
-    Row2 is Row-1,
     Col1 is Col+1,
     Col2 is Col-1,
     append([Row1,Col],[], Adj1),
     append([Row,Col2],Adj1, Adj2),
     append([Row,Col1],Adj2, Adj3),
-    append([Row1,Col1],Adj3, Adj3),
-    append([Row1,Col2],Adj3, Adj).
+    append([Row1,Col1],Adj3, Adj4),
+    append([Row1,Col2],Adj4, Adj).
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==6,
@@ -103,14 +102,7 @@ getAdjacentes(GameState,Row,Col,Adj):-
     append([Row2,Col2],Adj6, Adj7),
     append([Row,Col2],Adj7, Adj).
 
-/*Check if still has stones*/
-canPutStone(NumStones,_MidGameState,_Player,_FinalGameState,NumStonesFinal):-
-	NumStones==0,
-	NumStonesFinal is NumStones.
 
-canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal):-
-	selectSpotStone(MidGameState, Player, FinalGameState),
-	NumStonesFinal is NumStones - 1.
 
 
 /*End Game*/
