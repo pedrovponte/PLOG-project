@@ -28,6 +28,16 @@ finalBoard([
 [empty,empty,empty,stone,empty,empty,empty]
 ]).
 
+testBoard([
+[empty,yellow,empty,stone,empty,empty,empty],
+[empty,stone,yellow,stone,stone,red,red],
+[empty,empty,stone,stone,stone,stone,stone],
+[empty,stone,stone,empty,empty,stone,stone],
+[stone,empty,stone,stone,stone,empty,empty],
+[empty,empty,stone,empty,stone,empty,empty],
+[empty,empty,empty,stone,empty,empty,empty]
+]).
+
 print_board(X) :-
 	nl,
 	write('    0   1   2   3   4   5   6 \n'),

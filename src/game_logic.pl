@@ -2,15 +2,18 @@
 calculateScore(_GameState,[],Score1,Score1).
 
 calculateScore(GameState,[H|[H2|T]],Score, ScorePlus):-
+    write('Hello\n'),
     check(GameState,H,H2,Score,Score1),
     calculateScore(GameState,T,Score1,ScorePlus).
 
 increment(Content,Score,ScorePlus):-
+    
     (Content == empty; Content == stone),
     ScorePlus is Score.
 
 increment(Content,Score,ScorePlus):-
     ScorePlus is Score + 1.
+
 
 check(GameState, Row, Col, Score, Plus):-
     checkValueMatrix(GameState, Row, Col, Content),
@@ -102,9 +105,6 @@ getAdjacentes(GameState,Row,Col,Adj):-
     append([Row2,Col2],Adj6, Adj7),
     append([Row,Col2],Adj7, Adj).
 
-
-
-
 /*End Game*/
 checkGameOver(_Player,NextPlayer,Score):-
 	Score==10,
@@ -116,7 +116,13 @@ checkGameOver(Player,NextPlayer,_Score):-
 endGame(YellowScore,RedScore):-
 	format('Yellow Score: ~d.\n', YellowScore),
 	format('Red Score: ~d.\n\n', RedScore),
-	write('GAME ENDED').
+	write('GAME ENDED\n').
+    
+/*YellowScore > RedScore,
+    write('Yellow player wins the game!\n');
+    (
+        write('Red player wins the game!\n')
+    ).*/
 
 
     
