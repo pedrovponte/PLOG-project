@@ -64,7 +64,7 @@ print_cell(C):-
 	code(C,P),
 	write(P),
 	write(' |').
-	
+
 code(empty, '  ').
 code(red, 'RF').
 code(yellow, 'YF').
