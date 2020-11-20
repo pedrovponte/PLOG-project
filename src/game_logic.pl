@@ -115,7 +115,7 @@ checkGameOver(Player,NextPlayer,_Score):-
 endGame(YellowScore,RedScore):-
 	format('Yellow Score: ~d.\n', YellowScore),
 	format('Red Score: ~d.\n\n', RedScore),
-	write('GAME ENDED\n').
+	write('GAME ENDED\n'),
     YellowScore > RedScore,
     write('Yellow player wins the game!\n');
     (
