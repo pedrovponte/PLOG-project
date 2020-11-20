@@ -58,24 +58,16 @@ turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, FinalGam
 	(
 		Player == red,
 		canPutStone(RedStones, MidGameState, Player, FinalGameState, FinalStones, Jump),
-		write('Hello6\n'),
 		getAdjacentes(GameState, NewRow, NewColumn, Adj),
-		write('Hello7\n'),
 		calculateScore(FinalGameState, Adj, RedScore, FinalScore),
-		write('Hello8\n'),
 		checkGameOver(yellow, NextPlayer, FinalScore)
 	)).
 
 canPutStone(NumStones,MidGameState,Player,FinalGameState,NumStonesFinal, Jump):-
-	write('Hello1\n'),
 	(NumStones =:= 0; Jump =:= 1),
-	write('Hello2\n'),
 	NumStonesFinal is NumStones,
-	write('Hello3\n'),
 	copyMatrix(MidGameState, FinalGameState).
 
 canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump):-
-	write('Hello4\n'),
 	selectSpotStone(MidGameState, Player, FinalGameState),
-	write('Hello5\n'),
 	NumStonesFinal is NumStones - 1.
