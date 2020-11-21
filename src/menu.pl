@@ -47,3 +47,7 @@ selectAction(0) :-
 selectAction(1) :-
     write('\nStarting game...\n\n'),
     play.
+
+selectAction(4) :-
+    write('\nStarting game...\n\n'),
+    playVsComputer.
