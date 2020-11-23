@@ -54,6 +54,10 @@ turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, FinalGam
 
 	display_game(GameState, Player),
 	display_info(Player, YellowScore, RedScore, YellowStones, RedStones),
+	valid_moves(GameState, Player, ListOfMoves),
+	write(ListOfMoves),
+	write('\n'),
+	
 
 	selectPiece(GameState, Player, MidGameState, NewRow, NewColumn, Jump),
 	display_game(MidGameState, Player),
@@ -64,7 +68,7 @@ turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, FinalGam
 		canPutStone(YellowStones, MidGameState, Player, FinalGameState, FinalStones, Jump),
 		getAdjacentes(GameState, NewRow, NewColumn, Adj),
 		calculateScore(FinalGameState, Adj, YellowScore, FinalScore),
-		checkGameOver(red, NextPlayer, FinalScore)
+		checkGameOver(red, NextPlayer, FinalScore),
 	);
 	(
 		Player == red,

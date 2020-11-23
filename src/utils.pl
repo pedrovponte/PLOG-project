@@ -33,29 +33,44 @@ copyMatrix(Init, Final) :- accCp(Init,Final).
 accCp([],[]).
 accCp([H|T1],[H|T2]) :- accCp(T1,T2).
 
+appendList(L1, [], L1).
 
+appendList(L1, L2, L) :-
+    append(L1, [L2], L).
 
-getRedsPosColumn(Board, Value, Row, Column, RedRow, RedCol) :-
-    (checkValueMatrix(Board, Row, Column, Value),
-    RedRow = Row, RedCol = Column);
-    (Column < 6,
-    Column1 is Column + 1,
-    getRedsPosColumn(Board, Value, Row, Column1, RedRow, RedCol)).
+appendMoves(_, [], []).
+appendMoves(Pos, Moves, Ret):-
+  append(Pos, Moves, Ret).
 
-getRedsPosRow(Board, Value, Row, Column, RedRow, RedCol) :-
-    getRedsPosColumn(Board, Value, Row, Column, RedRow, RedCol);
-    (Row < 6,
-    Row1 is Row + 1,
-    getRedsPosRow(Board, Value, Row1, Column, RedRow, RedCol)).
+getPlayerPosRow(GameState, List, Row, Column, Player, ListOfPositions) :-
+    getPlayerPosRow(GameState, List, Row, Column, Player, [], ListOfPositions).
 
-/*Percorre o tabuleiro e com a ajuda do predicado checkValueMatrix, devolve 
-em RedRow1, RedColumn1, RedRow2 e RedColumn2 as posições dos Reds 
-na matriz. */
-getRedsPos(Board, RedRow1, RedColumn1, RedRow2, RedColumn2) :-
-    Value = red,
-    getRedsPosRow(Board,Value, 0,0, RedRow1, RedColumn1),
-    replaceValueMatrix(Board, RedRow1, RedColumn1, empty, NewBoard), %substituir red1 por empty para nao ser considerado quando  procurar worker2.
-    getRedsPosRow(NewBoard,Value, 0,0, RedRow2, RedColumn2).
+getPlayerPosRow(_, [], _, 7,_, ListOfPositions, ListOfPositions).
+
+getPlayerPosRow(GameState, [_|T], Row, Column, Player, Moves, ListOfPositions) :-
+    (
+        checkValueMatrix(GameState, Row, Column, Content),
+        Content == Player,
+        appendList(Moves, [Row, Column], Res),
+        Next is Column + 1,
+        getPlayerPosRow(GameState, T, Row, Next, Player, Res, ListOfPositions)
+    );
+    (
+        Next is Column + 1,
+        getPlayerPosRow(GameState, T, Row, Next, Player, Moves, ListOfPositions)
+    ).
+
+getPlayerPos(GameState, Player, ListOfPositions) :-
+    getPlayerPos(GameState, GameState, Player, 0, [], ListOfPositions).
+
+getPlayerPos(_, [], _, 7, ListOfPositions, ListOfPositions).
+
+getPlayerPos(GameState, [H|T], Player, Row, ListInt, ListOfPositions) :-
+    getPlayerPosRow(GameState, H, Row, 0, Player, List),
+    append(ListInt, List, Res),
+    Next is Row + 1,
+    getPlayerPos(GameState, T, Player, Next, Res, ListOfPositions).
+
 
 /*
 findValueInMatrix([H|T], Row, Column) :-

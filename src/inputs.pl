@@ -60,6 +60,13 @@ checkRow('D', 3).
 checkRow('E', 4).
 checkRow('F', 5).
 checkRow('G', 6).
+checkRow('a', 0).
+checkRow('b', 1).
+checkRow('c', 2).
+checkRow('d', 3).
+checkRow('e', 4).
+checkRow('f', 5).
+checkRow('g', 6).
 
 % case not, asks for a new row
 checkRow(_Row, InitRow) :-

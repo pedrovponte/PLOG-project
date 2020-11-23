@@ -1,4 +1,4 @@
-decideMove(Adj, GameState, MidGameState,FinalRow,FinalCol):-
+decideMove(Adj, GameState, MidGameState, FinalRow, FinalCol):-
     Player = red,
     random_member((FinalRow,FinalCol),Adj),
     /*setof(X, member(X,Adj), Moves),

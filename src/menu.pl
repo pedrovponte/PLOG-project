@@ -10,8 +10,6 @@ printMenu :-
     write('|         |______|_____|_| |_|  |______|_____|                 |\n'),
     write('|                                                              |\n'),
     write('|          1. Player vs Player (6x6)                           |\n'),
-    write('|          2. Player vs Player (6x9)                           |\n'),
-    write('|          3. Player vs Player (9x9)                           |\n'),
     write('|          4. Player vs Computer (6x6 - Level 0)               |\n'),
     write('|          5. Computer vs Player (6x6 - Level 0)               |\n'),
     write('|          6. Computer vs Computer (6x6 - Level 0)             |\n'),
