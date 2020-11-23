@@ -138,27 +138,36 @@ cleanInvalidMoves(GameState, [H | T], ListInt, ListFinal) :-
     cleanInvalidMoves(GameState, T, ListInt, ListFinal).
     
 
-valid_moves(GameState, Player, ListOfMoves) :-
+valid_moves(GameState, Player, ListOfMoves,Jump) :-
     getPlayerPos(GameState, Player, ListOfPositions),
-    getAllPossibleMoves(GameState, Player, ListOfPositions, ListOfMoves).
+    getAllPossibleMoves(GameState, Player, ListOfPositions, ListOfMoves,Jump).
 
-getAllPossibleMoves(GameState, Player, ListOfPositions, ListOfMoves) :-
-    getAllPossibleMoves(GameState, Player, ListOfPositions, [], ListOfMoves).
+getAllPossibleMoves(GameState, Player, ListOfPositions, ListOfMoves,Jump) :-
+    getAllPossibleMoves(GameState, Player, ListOfPositions, [], ListOfMoves,Jump).
 
-getAllPossibleMoves(_, _, [], ListOfMoves, ListOfMoves).
+getAllPossibleMoves(_, _, [], ListOfMoves, ListOfMoves,Jump).
 
-getAllPossibleMoves(GameState, Player, [H|T], ListInt, ListOfMoves) :-
+getAllPossibleMoves(GameState, Player, [H|T], ListInt, ListOfMoves,Jump) :-
     parsePos(H, InitRow, InitColumn),
-    getMoves(GameState, InitRow, InitColumn, Moves),
+    getMoves(GameState, InitRow, InitColumn, Moves,Jump),
     cleanInvalidMoves(GameState, Moves, [], FinalMoves),
     appendMoves(H, FinalMoves, ListAux),
     appendList(ListInt, ListAux, ListNew),
-    getAllPossibleMoves(GameState, Player, T, ListNew, ListOfMoves).
+    getAllPossibleMoves(GameState, Player, T, ListNew, ListOfMoves,Jump).
 
-getMoves(GameState, InitRow, InitColumn, ListOfMoves) :-
+getMoves(GameState, InitRow, InitColumn, ListOfMoves,Jump) :-
     getAdjacentes(GameState, InitRow, InitColumn, ListInt),
     getPossibleJumps(GameState, InitRow, InitColumn, ListInt, ListAux, ListRes),
+    length(ListRes,X),
+    checkIfJump(X,Jump),
     append(ListInt, ListRes, ListOfMoves).
+
+checkIfJump(X,Jump):-
+    X==0,
+    Jump = 0.
+checkIfJump(X,Jump):-
+    Jump = 1.
+
 
 
 getPossibleJumps(_, _, _, [], ListRes, ListRes).
@@ -184,8 +193,9 @@ getPossibleJumps(GameState, InitRow, InitColumn, [H|T], ListAux, ListRes) :-
         append(L5, [DiagonalLeftDownList], L6),
         append(L6, [DiagonalRightTopList], L7),
         append(L7, [DiagonalRightDownList], ListInt),
-        append(ListAux, ListInt, ListNew),
-        getPossibleJumps(GameState, InitRow, InitColumn, T, ListNew, ListRes)
+    getPossibleJumps(GameState, InitRow, InitColumn, T, ListNew, ListRes),
+        append(ListAux, ListInt, ListNew)
+        
     );
     getPossibleJumps(GameState, InitRow, InitColumn, T, ListAux, ListRes).
 

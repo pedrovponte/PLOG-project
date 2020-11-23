@@ -54,8 +54,8 @@ turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, FinalGam
 
 	display_game(GameState, Player),
 	display_info(Player, YellowScore, RedScore, YellowStones, RedStones),
-	valid_moves(GameState, Player, ListOfMoves),
-	write(ListOfMoves),
+	/*valid_moves(GameState, Player, ListOfMoves),
+	write(ListOfMoves),*/
 	write('\n'),
 	
 
@@ -68,7 +68,7 @@ turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, FinalGam
 		canPutStone(YellowStones, MidGameState, Player, FinalGameState, FinalStones, Jump),
 		getAdjacentes(GameState, NewRow, NewColumn, Adj),
 		calculateScore(FinalGameState, Adj, YellowScore, FinalScore),
-		checkGameOver(red, NextPlayer, FinalScore),
+		checkGameOver(red, NextPlayer, FinalScore)
 	);
 	(
 		Player == red,
@@ -106,7 +106,6 @@ turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScor
 
 	((
 		Player == yellow,
-		getRedsPos(Board, RedRow1, RedColumn1, RedRow2, RedColumn2),
 		selectPiece(GameState, Player, MidGameState, NewRow, NewColumn, Jump),
 		display_game(MidGameState, Player),
 		display_info_computer(Player, YellowScore, ComputerScore, YellowStones, ComputerStones),
@@ -117,15 +116,16 @@ turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScor
 	);
 	(
 		Player == computer,
-		getRedsPos(Board, RedRow1, RedColumn1, RedRow2, RedColumn2),
-		checkValueMatrix(GameState, RedRow1,RedColumn1,red),
-		getAdjacentes(GameState, RedRow1, RedColumn1, Adj),
+		valid_moves(GameState, red, Adj,Jump),
 	/*	bagof(X,member(X,Adj),JogadasPossiveis),*/
-		replaceValueMatrix(GameState, RedRow1, RedColumn1, empty, GameState1),
-		decideMove(Adj,GameState1,MidGameState,NewRow,NewColumn),
+		random(0,1,RedFish), /*choosing randomly between red fishes*/
+		nth0(RedFish,Adj,X),
+		[H1,H2|T]=X,
+		replaceValueMatrix(GameState, H1, H2, empty, GameState1),
+		decideMove(X,GameState1,MidGameState,NewRow,NewColumn),
 		display_game(MidGameState, Player),
 		display_info_computer(Player, YellowScore, ComputerScore, YellowStones, ComputerStones),
-		canPutStone(ComputerStones, MidGameState, Player, FinalGameState, FinalStones, 0),
+		canPutStone(ComputerStones, MidGameState, Player, FinalGameState, FinalStones, Jump),
 		getAdjacentes(GameState, NewRow, NewColumn, Adj2),
 		calculateScore(FinalGameState, Adj2, ComputerScore, FinalScore),
 		checkGameOver(yellow, NextPlayer, FinalScore)

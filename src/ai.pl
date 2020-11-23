@@ -1,10 +1,11 @@
 decideMove(Adj, GameState, MidGameState, FinalRow, FinalCol):-
     Player = red,
-    random_member((FinalRow,FinalCol),Adj),
+    [H,H2|T]=Adj,
+    random_member([FinalRow,FinalCol],T),
     /*setof(X, member(X,Adj), Moves),
     (FinalRow,FinalCol) is Moves[0],*/
     checkValueMatrix(GameState, FinalRow, FinalCol, Content),
-    checkMove(GameState, FinalRow, FinalCol, Player, Content,Adj,MidGameState).
+    checkMove(GameState, FinalRow, FinalCol, Player, Content,T,MidGameState).
 
 checkMove(GameState, FinalRow, FinalCol, Player, Content,_Adj,MidGameState):-
     Content==empty, 
@@ -29,6 +30,9 @@ checkStone(MidGameState, Row, Col, Content,FinalGameState):-
 
 checkStone(GameState, Row, Col,Content,MidGameState):-
     decideStone(MidGameState,FinalGameState).
+
+
+
 
 /*
 
