@@ -19,31 +19,36 @@ check(GameState, Row, Col, Score, Plus):-
 
 /*9 casos diferentes de posições no board*/
 getAdjacentes(GameState,Row,Col,Adj):-
-    Row==0, Col==0, 
+    Row==0, Col==0,
+    write('111111\n'), 
     appendList([],[1,0], Adj1),
     appendList(Adj1,[0,1], Adj2),
     appendList(Adj2,[1,1], Adj).
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==6, Col==0, 
+    write('222222\n'),
     appendList([],[5,0],Adj1),
     appendList(Adj1,[5,1], Adj2),
     appendList(Adj2,[6,1], Adj).
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==0, Col==6, 
+    write('3333333\n'),
     appendList([],[0,5], Adj1),
     appendList(Adj1,[1,6], Adj2),
     appendList(Adj2,[1,5], Adj).
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==6, Col==6, 
+    write('444444\n'),
     appendList([],[5,5], Adj1),
     appendList(Adj1,[6,5], Adj2),
     appendList(Adj2,[5,6], Adj).
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==0,
+    write('555\n'),
     Row1 is Row+1,
     Col1 is Col+1,
     Col2 is Col-1,
@@ -55,7 +60,7 @@ getAdjacentes(GameState,Row,Col,Adj):-
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==6,
-    Row1 is Row+1,
+    write('666666\n'),
     Row2 is Row-1,
     Col1 is Col+1,
     Col2 is Col-1,
@@ -67,10 +72,10 @@ getAdjacentes(GameState,Row,Col,Adj):-
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Col==0,
+    write('777777\n'),
     Row1 is Row+1,
     Row2 is Row-1,
     Col1 is Col+1,
-    Col2 is Col-1,
     appendList(Adj,[Row1,Col], Adj1),
     appendList(Adj1,[Row2,Col], Adj2),
     appendList(Adj2,[Row1,Col1], Adj3),
@@ -79,9 +84,9 @@ getAdjacentes(GameState,Row,Col,Adj):-
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Col==6,
+    write('88888888\n'),
     Row1 is Row+1,
     Row2 is Row-1,
-    Col1 is Col+1,
     Col2 is Col-1,
     appendList([],[Row1,Col], Adj1),
     appendList(Adj1,[Row2,Col], Adj2),
@@ -90,6 +95,7 @@ getAdjacentes(GameState,Row,Col,Adj):-
     appendList(Adj4,[Row2,Col2], Adj).
 
 getAdjacentes(GameState,Row,Col,Adj):-
+    write('999999\n'),
     Row1 is Row+1,
     Row2 is Row-1,
     Col1 is Col+1,
@@ -138,37 +144,27 @@ cleanInvalidMoves(GameState, [H | T], ListInt, ListFinal) :-
     cleanInvalidMoves(GameState, T, ListInt, ListFinal).
     
 
-valid_moves(GameState, Player, ListOfMoves,Jump) :-
+valid_moves(GameState, Player, ListOfMoves) :-
     getPlayerPos(GameState, Player, ListOfPositions),
-    getAllPossibleMoves(GameState, Player, ListOfPositions, ListOfMoves,Jump).
+    getAllPossibleMoves(GameState, Player, ListOfPositions, ListOfMoves).
 
-getAllPossibleMoves(GameState, Player, ListOfPositions, ListOfMoves,Jump) :-
-    getAllPossibleMoves(GameState, Player, ListOfPositions, [], ListOfMoves,Jump).
+getAllPossibleMoves(GameState, Player, ListOfPositions, ListOfMoves) :-
+    getAllPossibleMoves(GameState, Player, ListOfPositions, [], ListOfMoves).
 
-getAllPossibleMoves(_, _, [], ListOfMoves, ListOfMoves,Jump).
+getAllPossibleMoves(_, _, [], ListOfMoves, ListOfMoves).
 
-getAllPossibleMoves(GameState, Player, [H|T], ListInt, ListOfMoves,Jump) :-
+getAllPossibleMoves(GameState, Player, [H|T], ListInt, ListOfMoves) :-
     parsePos(H, InitRow, InitColumn),
-    getMoves(GameState, InitRow, InitColumn, Moves,Jump),
+    getMoves(GameState, InitRow, InitColumn, Moves),
     cleanInvalidMoves(GameState, Moves, [], FinalMoves),
     appendMoves(H, FinalMoves, ListAux),
     appendList(ListInt, ListAux, ListNew),
-    getAllPossibleMoves(GameState, Player, T, ListNew, ListOfMoves,Jump).
+    getAllPossibleMoves(GameState, Player, T, ListNew, ListOfMoves).
 
-getMoves(GameState, InitRow, InitColumn, ListOfMoves,Jump) :-
+getMoves(GameState, InitRow, InitColumn, ListOfMoves) :-
     getAdjacentes(GameState, InitRow, InitColumn, ListInt),
     getPossibleJumps(GameState, InitRow, InitColumn, ListInt, ListAux, ListRes),
-    length(ListRes,X),
-    checkIfJump(X,Jump),
     append(ListInt, ListRes, ListOfMoves).
-
-checkIfJump(X,Jump):-
-    X==0,
-    Jump = 0.
-checkIfJump(X,Jump):-
-    Jump = 1.
-
-
 
 getPossibleJumps(_, _, _, [], ListRes, ListRes).
 
@@ -193,7 +189,7 @@ getPossibleJumps(GameState, InitRow, InitColumn, [H|T], ListAux, ListRes) :-
         append(L5, [DiagonalLeftDownList], L6),
         append(L6, [DiagonalRightTopList], L7),
         append(L7, [DiagonalRightDownList], ListInt),
-    getPossibleJumps(GameState, InitRow, InitColumn, T, ListNew, ListRes),
+        getPossibleJumps(GameState, InitRow, InitColumn, T, ListNew, ListRes),
         append(ListAux, ListInt, ListNew)
         
     );

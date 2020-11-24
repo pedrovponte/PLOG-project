@@ -1,7 +1,7 @@
 decideMove(Adj, GameState, MidGameState, FinalRow, FinalCol):-
     Player = red,
     [H,H2|T]=Adj,
-    random_member([FinalRow,FinalCol],T),
+    random_member([FinalRow,FinalCol], T),
     /*setof(X, member(X,Adj), Moves),
     (FinalRow,FinalCol) is Moves[0],*/
     checkValueMatrix(GameState, FinalRow, FinalCol, Content),
@@ -17,15 +17,16 @@ checkMove(GameState, FinalRow, FinalCol, Player, MidGameState, Content,Adj,MidGa
     decideMove(Adj, GameState, MidGameState).
      
 decideStone(MidGameState,FinalGameState):-
-    random(0,6,Row),
-    random(0,6,Col),
+    random(0,7,Row),
+    random(0,7,Col),
     checkValueMatrix(MidGameState, Row, Col, Content),
-    checkStone(MidGameState, Row, Col, Content,FinalGameState).
+    checkStone(MidGameState, Row, Col, Content, FinalGameState).
 
 checkStone(MidGameState, Row, Col, Content,FinalGameState):-
-    Content==empty,
+    Content == empty,
     sleep(1),
     replaceValueMatrix(MidGameState, Row, Col, stone, FinalGameState),
+    format('\nPut stone in row ~d and column ~d\n', [Row, Col]),
     sleep(1).
 
 checkStone(GameState, Row, Col,Content,MidGameState):-

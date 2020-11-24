@@ -10,11 +10,12 @@ printMenu :-
     write('|         |______|_____|_| |_|  |______|_____|                 |\n'),
     write('|                                                              |\n'),
     write('|          1. Player vs Player (6x6)                           |\n'),
-    write('|          4. Player vs Computer (6x6 - Level 0)               |\n'),
-    write('|          5. Computer vs Player (6x6 - Level 0)               |\n'),
-    write('|          6. Computer vs Computer (6x6 - Level 0)             |\n'),
+    write('|          2. Player vs Computer (6x6 - Level 0)               |\n'),
+    write('|          3. Computer vs Player (6x6 - Level 0)               |\n'),
+    write('|          4. Computer vs Computer (6x6 - Level 0)             |\n'),
+    write('|          5. Computer vs Computer (6x6 - Level 1)             |\n'),
     write('|                                                              |\n'),
-    write('|          0. Exit                                             |\n'),
+    write('|          5. Exit                                             |\n'),
     write('|                                                              |\n'),
     write('|                                                              |\n'),
     write('|______________________________________________________________| \n').
@@ -46,6 +47,10 @@ selectAction(1) :-
     write('\nStarting game...\n\n'),
     play.
 
-selectAction(4) :-
+selectAction(2) :-
     write('\nStarting game...\n\n'),
-    playVsComputer.
+    playPVsComputer.
+
+selectAction(3) :-
+    write('\nStarting game...\n\n'),
+    playComputerVsP.

@@ -4,9 +4,13 @@ play :-
 	start_game(GameState, yellow, 10, 10, 0, 0).
 	/*play(GameState, Player, ScoreR,ScoreY, StonesR,StonesY, Turn).*/
 
-playVsComputer :-
+playPVsComputer :-
 	initial(GameState),
 	start_game2(GameState, yellow, 10, 10, 0, 0).
+
+playComputerVsP :-
+	initial(GameState),
+	start_game2(GameState, computer, 10, 10, 0, 0).
 
 % function to create the board
 initial(GameState):-
@@ -115,33 +119,65 @@ turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScor
 		checkGameOver(computer, NextPlayer, FinalScore)
 	);
 	(
+		sleep(3),
 		Player == computer,
-		valid_moves(GameState, red, Adj,Jump),
-	/*	bagof(X,member(X,Adj),JogadasPossiveis),*/
-		random(0,1,RedFish), /*choosing randomly between red fishes*/
-		nth0(RedFish,Adj,X),
-		[H1,H2|T]=X,
-		replaceValueMatrix(GameState, H1, H2, empty, GameState1),
-		decideMove(X,GameState1,MidGameState,NewRow,NewColumn),
+		valid_moves(GameState, red, ListOfMoves),
+		random(0, 2, RedFish), /*choosing randomly between red fishes*/
+		write(RedFish),
+		nl,
+		nth0(RedFish, ListOfMoves, X),
+		[InitRow, InitColumn | Moves] = X,
+		replaceValueMatrix(GameState, InitRow, InitColumn, empty, GameState1),
+		random_member([FinalRow,FinalColumn], Moves),
+		sleep(3),
+		replaceValueMatrix(GameState1, FinalRow, FinalColumn, red, MidGameState),
+		/*decideMove(X, GameState1, MidGameState, NewRow, NewColumn),*/
 		display_game(MidGameState, Player),
 		display_info_computer(Player, YellowScore, ComputerScore, YellowStones, ComputerStones),
+		format('\nMoved koi from row ~d and column ~d to row ~d and column ~d\n', [InitRow, InitColumn, FinalRow, FinalColumn]),
+		sleep(3),
+		write('hello\n'),
+		checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump),
 		canPutStone(ComputerStones, MidGameState, Player, FinalGameState, FinalStones, Jump),
-		getAdjacentes(GameState, NewRow, NewColumn, Adj2),
-		calculateScore(FinalGameState, Adj2, ComputerScore, FinalScore),
+		write('hello1\n'),
+		getAdjacentes(GameState, FinalRow, FinalColumn, Adj),
+		write('hello2\n'),
+		calculateScore(FinalGameState, Adj, ComputerScore, FinalScore),
+		write('hello3\n'),
 		checkGameOver(yellow, NextPlayer, FinalScore)
 	)).
 
 
 canPutStone(NumStones,MidGameState,Player,FinalGameState,NumStonesFinal, Jump):-
 	(NumStones =:= 0; Jump =:= 1),
+	write('here\n'),
 	NumStonesFinal is NumStones,
+	write('here1\n'),
 	copyMatrix(MidGameState, FinalGameState).
 
 canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump):-
-	Player==computer,
+	write('here2\n'),
+	Player == computer,
 	decideStone(MidGameState,FinalGameState),
+	write('here3\n'),
 	NumStonesFinal is NumStones - 1.
 
 canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump):-
 	selectSpotStone(MidGameState, Player, FinalGameState),
 	NumStonesFinal is NumStones - 1.
+
+checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
+	write('oi1\n'),
+	FinalRow - InitRow =:= 2,
+	Jump = 1,
+	write('finish1\n').
+
+checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
+	write('oi2\n'),
+	InitRow - FinalRow =:= 2,
+	Jump = 1,
+	write('finish2\n').
+
+checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
+	Jump = 0,
+	write('finish3\n').

@@ -267,7 +267,7 @@ validateJumpDiagonalRightDown(GameState, SelRow, SelCol, InitRow, InitCol, Final
 
 validateStoneSpot(GameState, SelRow, SelCol, FinalRow, FinalCol) :-
     checkValueMatrix(GameState, SelRow, SelCol, Content),
-    Content == empty, write(Content == empty), write('\n'), FinalRow is SelRow, write(FinalRow), write('\n'), FinalCol is SelCol, write(FinalCol), write('\n');
+    Content == empty, FinalRow is SelRow, FinalCol is SelCol;
     (
         write('Invalid spot! Choose another.\n'),
         readColumn(Column),
