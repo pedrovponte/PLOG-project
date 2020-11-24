@@ -32,7 +32,17 @@ checkStone(MidGameState, Row, Col, Content,FinalGameState):-
 checkStone(GameState, Row, Col,Content,MidGameState):-
     decideStone(MidGameState,FinalGameState).
 
-
+choose_move(GameState, Player, Level, Move) :-
+    write('hey\n'),
+    valid_moves(GameState, red, ListOfMoves),
+    write('ho\n'),
+    random(0, 2, RedFish), /*choosing randomly between red fishes*/
+    write(RedFish),
+    nl,
+    nth0(RedFish, ListOfMoves, X),
+    [InitRow, InitColumn | Moves] = X,
+    random_member([FinalRow,FinalColumn], Moves),
+    Move = [[InitRow, InitColumn], [FinalRow, FinalColumn]].
 
 
 /*

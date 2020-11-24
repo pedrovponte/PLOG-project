@@ -121,17 +121,12 @@ turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScor
 	(
 		sleep(3),
 		Player == computer,
-		valid_moves(GameState, red, ListOfMoves),
-		random(0, 2, RedFish), /*choosing randomly between red fishes*/
-		write(RedFish),
-		nl,
-		nth0(RedFish, ListOfMoves, X),
-		[InitRow, InitColumn | Moves] = X,
+		choose_move(GameState, red, 'random', Move),
+		Move = [InitPos, FinalPos],
+		InitPos = [InitRow, InitColumn],
+		FinalPos = [FinalRow, FinalColumn],
 		replaceValueMatrix(GameState, InitRow, InitColumn, empty, GameState1),
-		random_member([FinalRow,FinalColumn], Moves),
-		sleep(3),
 		replaceValueMatrix(GameState1, FinalRow, FinalColumn, red, MidGameState),
-		/*decideMove(X, GameState1, MidGameState, NewRow, NewColumn),*/
 		display_game(MidGameState, Player),
 		display_info_computer(Player, YellowScore, ComputerScore, YellowStones, ComputerStones),
 		format('\nMoved koi from row ~d and column ~d to row ~d and column ~d\n', [InitRow, InitColumn, FinalRow, FinalColumn]),
