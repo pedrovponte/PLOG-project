@@ -174,5 +174,19 @@ checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
 	write('finish2\n').
 
 checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
+	write('oi1\n'),
+	FinalColumn - InitColumn =:= 2,
+	Jump = 1,
+	write('finish1\n').
+
+checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
+	write('oi2\n'),
+	InitColumn - FinalColumn =:= 2,
+	Jump = 1,
+	write('finish2\n').
+
+
+
+checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
 	Jump = 0,
 	write('finish3\n').

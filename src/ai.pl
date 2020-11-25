@@ -5,7 +5,7 @@ decideMove(Adj, GameState, MidGameState, FinalRow, FinalCol):-
     /*setof(X, member(X,Adj), Moves),
     (FinalRow,FinalCol) is Moves[0],*/
     checkValueMatrix(GameState, FinalRow, FinalCol, Content),
-    checkMove(GameState, FinalRow, FinalCol, Player, Content,T,MidGameState).
+    checkMove(GameState, FinalRow, FinalCol, Player, Content,Adj,MidGameState).
 
 checkMove(GameState, FinalRow, FinalCol, Player, Content,_Adj,MidGameState):-
     Content==empty, 
