@@ -76,7 +76,7 @@ getAdjacentes(GameState,Row,Col,Adj):-
     Row1 is Row+1,
     Row2 is Row-1,
     Col1 is Col+1,
-    appendList(Adj,[Row1,Col], Adj1),
+    appendList([],[Row1,Col], Adj1),
     appendList(Adj1,[Row2,Col], Adj2),
     appendList(Adj2,[Row1,Col1], Adj3),
     appendList(Adj3,[Row,Col1], Adj4),
