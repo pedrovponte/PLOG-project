@@ -121,7 +121,7 @@ turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScor
 	(
 		sleep(3),
 		Player == computer,
-		choose_move(GameState, red, 'random', Move),
+		choose_move(GameState, red, 'greedy', Move),
 		Move = [InitPos, FinalPos],
 		InitPos = [InitRow, InitColumn],
 		FinalPos = [FinalRow, FinalColumn],
