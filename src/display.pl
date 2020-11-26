@@ -29,13 +29,13 @@ finalBoard([
 ]).
 
 testBoard([
-[empty,yellow,empty,stone,empty,empty,empty],
-[empty,stone,yellow,stone,stone,red,red],
-[empty,empty,stone,stone,stone,stone,stone],
-[empty,stone,stone,empty,empty,stone,stone],
-[stone,empty,stone,stone,stone,empty,empty],
-[empty,empty,stone,empty,stone,empty,empty],
-[empty,empty,empty,stone,empty,empty,empty]
+[empty,empty,empty,stone,empty,empty,empty],
+[empty,red,empty,empty,empty,red,empty],
+[empty,empty,empty,empty,stone,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty],
+[empty,empty,empty,empty,yellow,empty,empty],
+[empty,yellow,stone,stone,empty,empty,empty],
+[empty,empty,empty,empty,empty,empty,empty]
 ]).
 
 print_board(X) :-
