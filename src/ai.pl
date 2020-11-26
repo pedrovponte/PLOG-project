@@ -39,13 +39,7 @@ choose_move(GameState, Player, Level, Move) :-
     write('Final Pos2: '), write(FinalPos2), nl,
     write('Value 1: '), write(Value1), nl,
     write('Value 2: '), write(Value2), nl,
-    (
-        Value1 >= Value2,
-        Move = [[InitRow1, InitColumn1], FinalPos1]
-    );
-    (
-        Move = [[InitRow2, InitColumn2], FinalPos2]
-    ).
+    selectBestMove(Value1, Value2, [[InitRow1, InitColumn1], FinalPos1], [[InitRow2, InitColumn2], FinalPos2], Move).
     
 getMovesValuesBot(GameState, Player, ListOfValidMoves, InitPos, FinalPos, Value) :-
     findall(
@@ -70,9 +64,15 @@ getMovesValuesBot(GameState, Player, ListOfValidMoves, InitPos, FinalPos, Value)
 value(GameState, Player, FinalRow, FinalCol, Value) :-
     getAdjacentes(GameState, FinalRow, FinalCol, Adj),
     calculateScore(GameState, Adj, 0, Score),
-    Value = Score,!.
+    Value = Score, !.
 
+selectBestMove(Value1, Value2, Move1, Move2, FinalMove) :-
+    Value1 >= Value2,
+    FinalMove = Move1.
 
+selectBestMove(Value1, Value2, Move1, Move2, FinalMove) :-
+    Value2 > Value1,
+    FinalMove = Move2.
 
 
 
