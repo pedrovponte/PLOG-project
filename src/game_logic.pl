@@ -17,6 +17,66 @@ check(GameState, Row, Col, Score, Plus):-
     checkValueMatrix(GameState, Row, Col, Content),
     increment(Content,Score,Plus).
 
+/*VERIFICAÇÂO DE COLOCAR PEDRA*/
+canPutStone(NumStones,MidGameState,Player,FinalGameState,NumStonesFinal, Jump,_):-
+	(NumStones =:= 0; Jump =:= 1),
+	write('here\n'),
+	NumStonesFinal is NumStones,
+	write('here1\n'),
+	copyMatrix(MidGameState, FinalGameState).
+
+canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,Mode):-
+	write('here2\n'),
+	Player == computer,
+	choose_stone(MidGameState,FinalGameState,Mode),
+	write('here3\n'),
+	NumStonesFinal is NumStones - 1.
+canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,Mode):-
+	write('here2\n'),
+	Player == computer1,
+	choose_stone(MidGameState,FinalGameState,Mode),
+	write('here3\n'),
+	NumStonesFinal is NumStones - 1.
+canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,Mode):-
+	write('here2\n'),
+	Player == computer2,
+	choose_stone(MidGameState,FinalGameState,Mode),
+	write('here3\n'),
+	NumStonesFinal is NumStones - 1.
+
+canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,_):-
+	selectSpotStone(MidGameState, Player, FinalGameState),
+	NumStonesFinal is NumStones - 1.
+
+checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
+	write('oi1\n'),
+	FinalRow - InitRow =:= 2,
+	Jump = 1,
+	write('finish1\n').
+
+checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
+	write('oi2\n'),
+	InitRow - FinalRow =:= 2,
+	Jump = 1,
+	write('finish2\n').
+
+checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
+	write('oi1\n'),
+	FinalColumn - InitColumn =:= 2,
+	Jump = 1,
+	write('finish1\n').
+
+checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
+	write('oi2\n'),
+	InitColumn - FinalColumn =:= 2,
+	Jump = 1,
+	write('finish2\n').
+
+checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
+	Jump = 0,
+	write('finish3\n').
+
+
 /*9 casos diferentes de posições no board*/
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==0, Col==0,
