@@ -94,14 +94,25 @@ checkStone(GameState, Row, Col,Content,FinalGameState,Level):-
 
 choose_stone(MidGameState, FinalGameState, Level) :-
     Level == 'greedy',
-    Player = yellow, %colocar stones nos possiveis moves do adversário
+    Player = yellow, % colocar stone no move que mais pontos dará ao adversário
     valid_moves(MidGameState, Player, ListAdjacentes),
     nth0(0, ListAdjacentes, Fish1),
     nth0(1, ListAdjacentes, Fish2),
     Fish1 = [InitRow1, InitColumn1 | Moves1],
     Fish2 = [InitRow2, InitColumn2 | Moves2],
-    append(Moves1,Moves2,TotalMoves),
-    random_member([Row,Col],TotalMoves),
-    checkValueMatrix(MidGameState, Row, Col, Content),
-    checkStone(MidGameState, Row, Col, Content, FinalGameState,Level).
+    getMovesValuesBot(GameState, Player, Moves1, [InitRow1, InitColumn1], FinalPos1, Value1),
+    getMovesValuesBot(GameState, Player, Moves2, [InitRow2, InitColumn2], FinalPos2, Value2),
+    (
+        Value1 >= Value2,
+        Move = [[InitRow1, InitColumn1], FinalPos1],
+        FinalPos1 = [Row1, Col1],
+        checkValueMatrix(MidGameState, Row1, Col1, Content),
+        checkStone(MidGameState, Row1, Col1, Content, FinalGameState,Level)
+    );
+    (
+        Move = [[InitRow2, InitColumn2], FinalPos2],
+        FinalPos2 = [Row2, Col2],
+        checkValueMatrix(MidGameState, Row2, Col2, Content),
+        checkStone(MidGameState, Row2, Col2, Content, FinalGameState,Level)
+    ).
 
