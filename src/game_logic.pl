@@ -28,19 +28,19 @@ canPutStone(NumStones,MidGameState,Player,FinalGameState,NumStonesFinal, Jump,_)
 canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,Mode):-
 	write('here2\n'),
 	Player == computer,
-	choose_stone(MidGameState,FinalGameState,Mode),
+	choose_stone(MidGameState,FinalGameState,yellow,Mode),
 	write('here3\n'),
 	NumStonesFinal is NumStones - 1.
 canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,Mode):-
 	write('here2\n'),
 	Player == computer1,
-	choose_stone(MidGameState,FinalGameState,Mode),
+	choose_stone(MidGameState,FinalGameState,red,Mode),
 	write('here3\n'),
 	NumStonesFinal is NumStones - 1.
 canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,Mode):-
 	write('here2\n'),
 	Player == computer2,
-	choose_stone(MidGameState,FinalGameState,Mode),
+	choose_stone(MidGameState,FinalGameState,yellow,Mode),
 	write('here3\n'),
 	NumStonesFinal is NumStones - 1.
 

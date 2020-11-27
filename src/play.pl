@@ -40,6 +40,13 @@ display_info_computer(Player, YellowScore, ComputerScore, YellowStones, Computer
 	format('Yellow Score: ~d.\n', YellowScore),
 	format('Computer Score: ~d.\n\n', ComputerScore).
 
+display_info_2computer(Player, Computer1Score, Computer2Score, Computer1Stones, Computer2Stones) :-
+	format('\n ~a turn.\n\n', Player),
+	format('Computer 1 (Yellow) has ~d stones to play.\n', Computer1Stones),
+	format('Computer 2 (Red) has ~d stones to play.\n', Computer2Stones),
+	format('Computer 1 (Yellow) Score: ~d.\n', Computer1Score),
+	format('Computer 2 (Red) Score: ~d.\n\n', Computer2Score).
+
 % by now, yellow player is the first to play, but in the future we can put it random
 start_game(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
 	(
@@ -174,7 +181,7 @@ start_game3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score,Mode) :-
 turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer,Mode) :-
 
 	display_game(GameState, Player),
-	display_info_computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
+	display_info_2computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
 
 	((
 		sleep(3),
@@ -186,7 +193,7 @@ turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameStat
 		replaceValueMatrix(GameState, InitRow, InitColumn, empty, GameState1),
 		replaceValueMatrix(GameState1, FinalRow, FinalColumn, yellow, MidGameState),
 		display_game(MidGameState, Player),
-		display_info_computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
+		display_info_2computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
 		format('\nMoved koi from row ~d and column ~d to row ~d and column ~d\n', [InitRow, InitColumn, FinalRow, FinalColumn]),
 		sleep(3),
 		write('hello\n'),
@@ -209,7 +216,7 @@ turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameStat
 		replaceValueMatrix(GameState, InitRow, InitColumn, empty, GameState1),
 		replaceValueMatrix(GameState1, FinalRow, FinalColumn, red, MidGameState),
 		display_game(MidGameState, Player),
-		display_info_computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
+		display_info_2computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
 		format('\nMoved koi from row ~d and column ~d to row ~d and column ~d\n', [InitRow, InitColumn, FinalRow, FinalColumn]),
 		sleep(3),
 		write('hello\n'),
