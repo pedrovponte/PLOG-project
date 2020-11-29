@@ -1,3 +1,4 @@
+% Board representations
 initialBoard([
 [red,empty,empty,empty,empty,empty,red],
 [empty,empty,empty,empty,empty,empty,empty],
@@ -38,6 +39,8 @@ testBoard([
 [empty,empty,empty,empty,empty,empty,empty]
 ]).
 
+% Predicates to draw the boards
+
 print_board(X) :-
 	nl,
 	write('    0   1   2   3   4   5   6 \n'),
@@ -64,6 +67,8 @@ print_cell(C):-
 	code(C,P),
 	write(P),
 	write(' |').
+
+% Atoms 
 
 code(empty, '  ').
 code(red, 'RF').

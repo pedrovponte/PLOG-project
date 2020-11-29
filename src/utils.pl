@@ -1,3 +1,5 @@
+% Obtain content of the cell Row,Column 
+
 checkValueMatrix([H|_T], 0, Column, Content) :-
     checkValueList(H, Column, Content).
 
@@ -14,6 +16,8 @@ checkValueList([_H|T], Column, Content) :-
     Column1 is Column - 1,
     checkValueList(T, Column1, Content).
 
+% Replace value of a cell in the matrix 
+
 replaceValueMatrix([H|T], 0, Column, Value, [HSub|T]) :-
     replaceValueList(H, Column, Value, HSub).
 
@@ -29,18 +33,8 @@ replaceValueList([H|T], Column, Value, [H|TSub]) :-
     Column1 is Column - 1,
     replaceValueList(T,Column1,Value, TSub).
 
-copyMatrix(Init, Final) :- accCp(Init,Final).
-accCp([],[]).
-accCp([H|T1],[H|T2]) :- accCp(T1,T2).
 
-appendList(L1, [], L1).
-
-appendList(L1, L2, L) :-
-    append(L1, [L2], L).
-
-appendMoves(_, [], []).
-appendMoves(Pos, Moves, Ret):-
-  append(Pos, Moves, Ret).
+% Find the position of a player in the matrix
 
 getPlayerPosRow(GameState, List, Row, Column, Player, ListOfPositions) :-
     getPlayerPosRow(GameState, List, Row, Column, Player, [], ListOfPositions).
@@ -70,3 +64,16 @@ getPlayerPos(GameState, [H|T], Player, Row, ListInt, ListOfPositions) :-
     append(ListInt, List, Res),
     Next is Row + 1,
     getPlayerPos(GameState, T, Player, Next, Res, ListOfPositions).
+
+copyMatrix(Init, Final) :- accCp(Init,Final).
+accCp([],[]).
+accCp([H|T1],[H|T2]) :- accCp(T1,T2).
+
+appendList(L1, [], L1).
+
+appendList(L1, L2, L) :-
+    append(L1, [L2], L).
+
+appendMoves(_, [], []).
+appendMoves(Pos, Moves, Ret):-
+  append(Pos, Moves, Ret).

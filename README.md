@@ -11,11 +11,7 @@ Turma 3
 ---
 ## Installation and Execution
 
-### Windows
- Execute `spqin.exe`, click on `File`, then `Consult` and select the file `jin_li.pl`. On the SicStus console type `jin_li.` and press enter.
-
-### Linux
-????????????????????????????
+To correctly run and execute the game, using SICtus Prolog you just need to define the working directory of SICStus in the game folder and use the instruction consult('jin_li.pl') ou ['jin_li.pl'], followed by the predicate jin_li.
 
 ---
 
@@ -25,17 +21,17 @@ Jin Li is a strategy game for 2 players. The players each control two fish in a 
 
 - Each player’s Koi start in the corner squares closer to the player;
 - On his turn, a player must either swim one of his fish and drop a stone or jump over a stone.
-- A fish swims to an empty square adjacent (ortogonaly or diagonaly) to its current location. The stones are placed in any 
+- A fish swims to an empty square adjacent (orthogonally or diagonally) to its current location. The stones are placed in an
 empty square. If a player has run out of stones then he does not drop after swimming.
-- When jumping over a stone the jump must be along a straight line (ortogonaly or diagonaly).
+- When jumping over a stone the jump must be along a straight line (orthogonally or diagonally).
 
-After his turn the player scores one point for each other fish adjacent to his fish new location (the player can score 0, 1, 2 or 3 points on one turn). Keep track of the score using the scoring tracks placed on top and bottom of the board.
-The first player to score 10 poits wins.
+After his turn, the player scores one point for each other fish adjacent to his fish's new location (the player can score 0, 1, 2, or 3 points on one turn). Keep track of the score using the scoring tracks placed on the top and bottom of the board.
+The first player to score 10 points wins.
 
 Some alternative rules:
-
+???????????????????????????????????????????????????????????????????????
 - Give each player 6 stones instead of 10
-- After a player drops his last stone, the other player removes one stone from the board and gives it to that player to use next turn. 
+- After a player drops his last stone, the other player removes one stone from the board and gives it to that player to use ont the next turn. 
 
 [Source](https://boardgamegeek.com/boardgame/68743/jin-li), 
 [Rules](https://nestorgames.com/rulebooks/JINLI_EN.pdf)
@@ -187,20 +183,21 @@ G |   |   |   | O |   |   |   |
 
 #### **Menu**
 
-When iniciating the game with the predicate `jin_li/0`, it is displayed a main menu with options about the board size, the game type, the bot's difficulties and exiting the game. In order to select an option the user must press the corresponding number, dot and enter. The inputs are validated by the predicate `checkOption/2` and read by the predicate `selectAction(+Option)`.
+When initiating the game with the predicate `jin_li/0`, it is displayed the main menu with options about the board size, the game type, the bot's difficulties, and exiting the game. In order to select an option, the user must press the corresponding number, dot and enter. The inputs are validated by the predicate `checkOption/2` and read by the predicate `selectAction(+Option)`.
 After that, depending on the option chosen, one of the following predicates is called: 
-- `play/0` wich initializes the game Player vs Player,
-- `playPVsComputer(+Mode)` wich initializes the game Player vs Computer in the Mode 'random' or 'greedy',
-- `playComputerVsComputer(+Mode)` wich initializes the game Computer vs Computer in the Mode 'random' or 'greedy'.
-Each one of the predicates above choses randomly the first player to move their koi. And after that calls the main game loop `start_game(-GameState, -Player, -YellowStones, -RedStones, -YellowScore, -RedScore)`.
+- `play/0` which initializes the game Player vs Player,
+- `playPVsComputer(+Mode)` which initializes the game Player vs Computer in the Mode 'random' or 'greedy',
+- `playComputerVsComputer(+Mode)` which initializes the game Computer vs Computer in the Mode 'random' or 'greedy'.
+Each one of the predicates above chooses randomly the first player to move their koi. And after that calls the main game loop `start_game(-GameState, -Player, -YellowStones, -RedStones, -YellowScore, -RedScore)`.
 
+All the predicates mentioned in this section can be found in the file [menu.pl](src/menu.pl).
 
-![](images/menu.png)
+![](images/menu.PNG)
 
 
 #### **Board**
 
-In order to have a user friendly game visualization, we decided to represent the game pieces with some symbols: **RF** for red fishes, **YF** for yellow fishes, **O** for stones and **' '** for empty spaces. To do it, we use a predicate called ```code(Value, Symbol)```.
+In order to have a user-friendly game visualization, we decided to represent the game pieces with some symbols: **RF** for red fishes, **YF** for yellow fishes, **O** for stones, and **' '** for empty spaces. To do it, we use a predicate called ```code(Value, Symbol)```.
 To print the board, we use the predicates: 
 
 * ```print_board(X)``` - prints the superior limit of the table and calls the function ```print_tab```;
@@ -208,6 +205,7 @@ To print the board, we use the predicates:
 * ```print_line(List)``` - calls ```print_cell``` and next calls itself;
 * ```print_cell(List)``` - calls ```code``` function to get the symbol of the cell and prints that on the screen.
 
+All the predicates mentioned in this section can be found in the file [display.pl](src/display.pl).
 
 **Initial game visualization example:**
 
@@ -216,36 +214,44 @@ To print the board, we use the predicates:
 **Final game visualization example:**
 
 --- 
+
 ### Valid Moves
 
 The `valid_moves(+GameState,+Player,-ListOfMoves)` returns on ListOfPossibleMoves a list of moves in the format `[ [Fish1Row,Fish1Column,[MoveRow1,MoveColumn1], [MovRow2-MovColumn2], ...] [Fish2Row,Fish2Column,[MoveRow3,MoveColumn3], [MovRow4-MovColumn4], ...s]]`.
 This predicate first calls `getPlayerPos(+GameState,+Player,-ListOfPositions)` that goes through the board and gets the position of all the player's pieces, the positions are stored in Positions.
 
-Then it is called `getAllPossibleMoves(+GameState,+Palyer,+ListOfPositions,-ListOfMoves)` that using ` getMoves(+GameState, +InitRow, +InitColumn, -Moves),` sees if there are any possible movements in all directions (up, down, right and left). This verification consists of checking the existence of an empty cell in any surrounding position.
+Then it is called `getAllPossibleMoves(+GameState,+Palyer,+ListOfPositions,-ListOfMoves)` that using `getMoves(+GameState, +InitRow, +InitColumn, -Moves),` sees all the possible moves (with `getAdjacentes(+GameState,+Row,+Col,-Adj)` and `getPossibleJumps(+GameState, +InitRow, +InitColumn, +ListInt, +ListAux, -ListRes)`). This verification consists of checking the existence of an empty cell in any surrounding position including the ones after jumping.
 
 The predicate will fail if the ListOfPossible moves is empty.
+
+All the predicates mentioned in this section can be found in the file [game_logic.pl](src/game_logic.pl). They are mainly used on the game loop that you can find in [play.pl](src/play.pl)
 
 --- 
 
 ### Making moves
 
-The `selectPiece(GameState, Player, MidGameState, NewRow, NewColumn, Jump)` asks the player for position inputs for the selected piece and checks both row and column inputs (`checkRow`/`checkColumn`), in order to check if the player is selecting one of their pieces (using checkValueMatrix). If any of this verifications fails, the predicate asks again for input. If it succeds the predicate `selectSpot(GameState, Player, MidGameState, InitRow, InitColumn, NewRow, NewColumn, Jump)` is called asking the user for inputs and checking if it is an empty cell.
+The `move(GameState, Player, MidGameState, NewRow, NewColumn, Jump)` asks the player for position inputs that are validated using the predicates `checkRow/2` and `checkColumn/2`. After that, the predicate `validateContent` is called to check if the player is selecting one of their pieces.  If any of these verifications fail, the predicate asks again for the input. If it succeeds the predicate `selectSpot(GameState, Player, MidGameState, InitRow, InitColumn, NewRow, NewColumn, Jump)` is called asking the user for inputs and validating if it is an empty cell using the predicate `validateMove`. 
 
-If all the verifications checks out, then it is called 'replaceValueMatrix' that replaces the old player's position for an empty space and the piece at the moving position to the player's piece, obtaining the new GameState - MidGameState.
+If all the verifications check out, then it is called `replaceValueMatrix` that replaces the old player's position for an empty space and the piece at the moving position to the player's piece, obtaining a new GameState - MidGameState.
 
-After that it is asked the user to 
+Given that each player may or may not put a stone after a move we included the predicate `canPutStone(+YellowStones, +MidGameState, +Player, -FinalGameState, -FinalStones, +Jump,+Mode)` that checks if the player still has stones left and did not jump. If those conditions are met then the predicate `selectSpotStone(+GameState, -Player, -FinalGameState)` is called asking the user for inputs and validating if it is an empty cell using the predicate `validateStoneSpot`
+
+
+All the predicates mentioned in this section can be found in the file [inputs.pl](src/inputs.pl) except for the `canPutStone` that can be found in [game_logic.pl](src/game_logic.pl).
 
 ---
+
 ### Game Over
- 
-To check if the game is over , according to the rules already presented, we use `game_over(+Player, -NextPlayer,+Score)`. This predicate evaluates weather the current Player won or not by avaluating his current Score. If the Score is 10, means the game ended and in that case the parameter passed to the NextPlayer is 'end'.
+
+At the end of every turn, two predicates are called:
+- `calculateScore(+FinalGameState, +Adj, +Score, -FinalScore)`  that updates the score of the player who just played analyzing the current Game State with the predicate `getAdjacentes`,
+- `game_over(+Player, -NextPlayer,+Score)` in order to check if the game is over, according to the rules already presented. This predicate evaluates whether the current Player won or not by evaluating his current Score. If the Score is 10, means the game ended and in that case, the NextPlayer is unified with the term 'end'. Otherwise, the variable NextPlayer becomes the next player to play.
 
 ---
 
-### Board Avaluation
+### Board Evaluation
 
-`value(+GameState, +Player, +FinalRow, +FinalCol, -Value) :-`
-
+The evaluation of the board is made using the `value(+GameState, +Player, +FinalRow, +FinalCol, -Value)` predicate returning the highest value in the current board for the player. Although this predicate has a different amount of arguments than those requested by the teachers, we implemented the predicate this way to optimize the evaluation.
 
 
 ---
@@ -254,7 +260,7 @@ To check if the game is over , according to the rules already presented, we use 
  
 To choose a computer move we use the predicate `choose_move(+GameState, +Player, +Level, -Move)`, where `Level` will be 'random' or 'greedy', the two difficulties we implemented in our game.
  
-First `valid_moves(+GameState, +Player, -ListOfMoves)` is used to get all the possible moves, and then we will choose a move from `ListOfMoves` according to the level, explaind in the sections below.
+First, `valid_moves(+GameState, +Player, -ListOfMoves)` is used to get all the possible moves, and then we will choose a move from `ListOfMoves` according to the level, explained in the sections below.
  
 #### **Level 1 - Random**
  
@@ -262,19 +268,29 @@ In level 1 the move chosen will be random using `random_member(-Elem, +List)`.
  
 #### **Level 2 - Greedy**
  
-In level 2 the move will be greedy, choosing the best move in the current turn. In this case both  `getMovesValuesBot/6` and ` selectBestMove/5` select a move using `findall(+Template, +Generator, -List)`. In the `Generator` the`value/4` predicate ,explaind above, is used to evaluate the board after a move. 
+In level 2 the move will be greedy, choosing the best move in the current turn. In this case both  `getMovesValuesBot/6` and ` selectBestMove/5` select a move using `findall(+Template, +Generator, -List)`. In the `Generator` the`value/4` predicate, explained above, is used to evaluate the board after a move. 
 The `List` is `Value-SelectedPosition-MovePosition`, when there are available moves, and as `Value-SelectedPosition` otherwise. 
-Finally the list is sorted, using `sort(+List1, -List2)`, being in ascending order of Values and `reverse(+List, -Last)` is used so we can get the move with the highest value.
+Finally, the list is sorted, using `sort(+List1, -List2)`, being in ascending order of Values and `reverse(+List, -Last)` is used so we can get the move with the highest value.
+
 
 #### **Placing Stones**
 
 
 ---
+
 ## Conclusion
+
+Since Prolog was a brand new language to us, we had some doubts and difficulties starting the disenrollment of the game, however we quickly became accustomed to the syntax. We feel that this project developed our knowledge and understanding of Prolog.
+
+We didint encouter any issues, bugs or limitations.
+
+For possible improvements, ?????????????????????????????
 
 ---
 
 ## Bibliography
+
+
 
 ---
 TO-DO list:

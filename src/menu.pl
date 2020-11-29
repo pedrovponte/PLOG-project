@@ -1,3 +1,5 @@
+% Menu display
+
 printMenu :-
 	write('\n\n________________________________________________________________ \n'),
     write('|                                                              |\n'),
@@ -28,6 +30,8 @@ selectMenuOption :-
     checkOption(Option, NewOption),
     selectAction(NewOption).
 
+% Validating input 
+
 checkOption(0, 0).
 checkOption(1, 1).
 checkOption(2, 2).
@@ -40,6 +44,8 @@ checkOption(_, NewOption) :-
     write('\nInvalid option\nSelect again\n'),
     readColumn(Option),
     checkColumn(Option, NewOption).
+
+% Calling play predicate acording to the the chosen option
 
 selectAction(0) :-
     write('\nExiting...\n').

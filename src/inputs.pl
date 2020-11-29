@@ -1,3 +1,6 @@
+
+% Asking the player to chose the piece he wants to move
+
 selectPiece(GameState, Player, MidGameState, Move, Jump) :-
     write('Choose a piece:\n'),
     readColumn(Column),
@@ -10,14 +13,18 @@ selectPiece(GameState, Player, MidGameState, Move, Jump) :-
     selectSpot(FirstGameState, Player, MidGameState, FinalRow, FinalCol, NewRow, NewColumn, Jump),
     append(MidMove, [NewRow, NewColumn], Move).
 
+% Asking the player to chose a place where he wants to move
+
 selectSpot(GameState, Player, MidGameState, InitRow, InitColumn, NewRow, NewColumn, Jump) :-
     write('Move to:\n'),
     readColumn(Column),
     checkColumn(Column, NewColumn),
     readRow(Row),
     checkRow(Row, NewRow),
-    validateMoveRow(GameState, NewRow, NewColumn, InitRow, InitColumn, FinalRow, FinalCol, Player, Jump),
+    validateMove(GameState, NewRow, NewColumn, InitRow, InitColumn,FinalRow,FinalCol ,Player, Jump),
     replaceValueMatrix(GameState, FinalRow, FinalCol, Player, MidGameState).
+
+% Asking the player to chose a place for the stone
 
 selectSpotStone(GameState, Player, FinalGameState) :-
     write('Choose a spot to put one stone:\n'),
@@ -28,17 +35,17 @@ selectSpotStone(GameState, Player, FinalGameState) :-
     validateStoneSpot(GameState, StoneRow, StoneColumn, FinalStoneRow, FinalStoneColumn),
     replaceValueMatrix(GameState, FinalStoneRow, FinalStoneColumn, stone, FinalGameState).
 
-% read column from user
+% Read column from user
 readColumn(Column):-
     write('Choose a column (0 - 6): '),
     read(Column).
 
-% read row from user 
+% Read row from user 
 readRow(Row):-
     write('Choose a row (A - G): '),
     read(Row).
 
-% check if introduced column is valid
+% Check if introduced column is valid
 checkColumn(0, 0).
 checkColumn(1, 1).
 checkColumn(2, 2).
@@ -47,13 +54,13 @@ checkColumn(4, 4).
 checkColumn(5, 5).
 checkColumn(6, 6).
 
-% case not, asks for a new column
+% If not, asks for a new column
 checkColumn(_Column, InitColumn):-
     write('Invalid column\nSelect again\n'),
     readColumn(Column),
     checkColumn(Column, InitColumn).
 
-% check if introduced row is valid
+% Check if introduced row is valid
 checkRow('A', 0).
 checkRow('B', 1).
 checkRow('C', 2).
@@ -69,13 +76,15 @@ checkRow('e', 4).
 checkRow('f', 5).
 checkRow('g', 6).
 
-% case not, asks for a new row
+% If not, asks for a new row
+
 checkRow(_Row, InitRow) :-
     write('Invalid row\nSelect again\n'),
     readRow(NewRow),
     checkRow(NewRow, InitRow).
 
-% verify if the select space has a player piece
+% Verify if the select space has a player piece
+
 validateContent(Player, GameState, InitRow, InitColumn, FinalRow, FinalCol) :-
     checkValueMatrix(GameState, InitRow, InitColumn, Content),
     Player == Content, FinalRow is InitRow, FinalCol is InitColumn;
@@ -89,182 +98,21 @@ validateContent(Player, GameState, InitRow, InitColumn, FinalRow, FinalCol) :-
         validateContent(Player, GameState, NewRow, NewColumn, FinalRow, FinalCol)
     ).
 
-validateMoveRow(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump) :-
-    checkValueMatrix(GameState, SelRow, SelCol, Content),
-    SelRow =:= InitRow, 
-    (SelCol =:= InitCol + 1; SelCol =:= InitCol - 1), 
-    Content == empty, 
-    FinalRow is SelRow, 
-    FinalCol is SelCol,
-    Jump is 0; /*same row move*/
-    (
-        validateMoveColumn(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump)
-    ).  
+% Verify if the player can move to the chosen place
 
-validateMoveColumn(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump) :-
-    checkValueMatrix(GameState, SelRow, SelCol, Content),
-    SelCol =:= InitCol, 
-    (SelRow =:= InitRow + 1; SelRow =:= InitRow - 1), 
-    Content == empty, 
-    FinalRow is SelRow, 
-    FinalCol is SelCol,
-    Jump is 0; /*same column move*/
+validateMove(GameState, SelR, SelC, InitRow, InitCol, FinalRow,FinalCol,Player, Jump) :-
+    getMoves(GameState, InitRow, InitCol, ListOfMoves),
+    member([SelR,SelC],ListOfMoves),FinalRow is SelR , FinalCol is SelC,checkJump(InitRow, InitCol, SelR, SelC, Jump);
     (
-        validateMoveDiagonalLeft(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump)
-    ).
-
-validateMoveDiagonalLeft(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump) :-
-    checkValueMatrix(GameState, SelRow, SelCol, Content),
-    SelCol =:= InitCol - 1, 
-    (SelRow =:= InitRow + 1; SelRow =:= InitRow - 1), 
-    Content == empty, 
-    FinalRow is SelRow, 
-    FinalCol is SelCol,
-    Jump is 0; /*diagonal left*/
-    (
-        validateMoveDiagonalRight(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump)
-    ).
-
-validateMoveDiagonalRight(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump) :-
-    checkValueMatrix(GameState, SelRow, SelCol, Content),
-    SelCol =:= InitCol + 1, 
-    (SelRow =:= InitRow + 1; SelRow =:= InitRow - 1), 
-    Content == empty, 
-    FinalRow is SelRow, 
-    FinalCol is SelCol,
-    Jump is 0; /*diagonal right*/
-    (
-        validateJumpRowRight(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump)
-    ).
-
-validateJumpRowRight(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump) :-
-    SelCol > InitCol,
-    checkValueMatrix(GameState, SelRow, SelCol, Content),
-    SelRow =:= InitRow,
-    SelCol =:= InitCol + 2,
-    Content == empty, 
-    checkValueMatrix(GameState, SelRow, InitCol + 1, Content1),
-    Content1 == stone,
-    FinalRow is SelRow,
-    FinalCol is SelCol,
-    Jump is 1; /*jump same row right*/
-    (
-        validateJumpRowLeft(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump)
-    ).
-
-validateJumpRowLeft(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump) :-
-    SelCol < InitCol,
-    checkValueMatrix(GameState, SelRow, SelCol, Content),
-    SelRow =:= InitRow,
-    SelCol =:= InitCol - 2,
-    Content == empty, 
-    checkValueMatrix(GameState, SelRow, InitCol - 1, Content1),
-    Content1 == stone,
-    FinalRow is SelRow,
-    FinalCol is SelCol,
-    Jump is 1; /*jump same row left*/
-    (
-        validateJumpColumnUp(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump)
-    ).
-
-validateJumpColumnUp(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump) :-
-    SelRow < InitRow,
-    checkValueMatrix(GameState, SelRow, SelCol, Content),
-    SelCol =:= InitCol,
-    SelRow =:= InitRow - 2,
-    Content == empty,
-    checkValueMatrix(GameState, InitRow - 1, SelCol, Content1),
-    Content1 == stone,
-    FinalRow is SelRow,
-    FinalCol is SelCol,
-    Jump is 1; /*jump same column*/
-    (
-        validateJumpColumnDown(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump)
-    ).
-
-validateJumpColumnDown(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump) :-
-    SelRow > InitRow,
-    checkValueMatrix(GameState, SelRow, SelCol, Content),
-    SelCol =:= InitCol,
-    SelRow =:= InitRow + 2,
-    Content == empty,
-    checkValueMatrix(GameState, InitRow + 1, SelCol, Content1),
-    Content1 == stone,
-    FinalRow is SelRow,
-    FinalCol is SelCol,
-    Jump is 1; /*jump same column*/
-    (
-        validateJumpDiagonalLeftUp(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump)
-    ).
-
-validateJumpDiagonalLeftUp(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump) :-
-    SelRow < InitRow,
-    SelCol < InitCol,
-    checkValueMatrix(GameState, SelRow, SelCol, Content),
-    SelCol =:= InitCol - 2,
-    SelRow =:= InitRow - 2,
-    Content == empty,
-    checkValueMatrix(GameState, InitRow - 1, InitCol - 1, Content1),
-    Content1 == stone,
-    FinalRow is SelRow,
-    FinalCol is SelCol,
-    Jump is 1; /*jump diagonal left up*/
-    (
-        validateJumpDiagonalLeftDown(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump)
-    ).
-
-validateJumpDiagonalLeftDown(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump) :-
-    SelRow > InitRow,
-    SelCol < InitCol,
-    checkValueMatrix(GameState, SelRow, SelCol, Content),
-    SelCol =:= InitCol - 2,
-    SelRow =:= InitRow + 2,
-    Content == empty,
-    checkValueMatrix(GameState, InitRow + 1, InitCol - 1, Content1),
-    Content1 == stone,
-    FinalRow is SelRow,
-    FinalCol is SelCol,
-    Jump is 1; /*jump diagonal left down*/
-    (
-        validateJumpDiagonalRightUp(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump)
-    ).
-
-validateJumpDiagonalRightUp(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump) :-
-    SelRow < InitRow,
-    SelCol > InitCol,
-    checkValueMatrix(GameState, SelRow, SelCol, Content),
-    SelCol =:= InitCol + 2,
-    SelRow =:= InitRow - 2,
-    Content == empty,
-    checkValueMatrix(GameState, InitRow - 1, InitCol + 1, Content1),
-    Content1 == stone,
-    FinalRow is SelRow,
-    FinalCol is SelCol,
-    Jump is 1; /*jump diagonal right up*/
-    (
-        validateJumpDiagonalRightDown(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump)
-    ).
-
-validateJumpDiagonalRightDown(GameState, SelRow, SelCol, InitRow, InitCol, FinalRow, FinalCol, Player, Jump) :-
-    SelRow > InitRow,
-    SelCol > InitCol,
-    checkValueMatrix(GameState, SelRow, SelCol, Content),
-    SelCol =:= InitCol + 2,
-    SelRow =:= InitRow + 2,
-    Content == empty,
-    checkValueMatrix(GameState, InitRow + 1, InitCol + 1, Content1),
-    Content1 == stone,
-    FinalRow is SelRow,
-    FinalCol is SelCol,
-    Jump is 1; /*jump diagonal right down*/
-    (
-        write('Invalid move! Choose another.\n'),
+        write('Invalid Move! Choose another...\n'),
         readColumn(Column),
         checkColumn(Column, NewColumn),
         readRow(Row),
         checkRow(Row, NewRow),
-        validateMoveRow(GameState, NewRow, NewColumn, InitRow, InitCol, FinalRow, FinalCol, Player, Jump)
+        validateMove(GameState, NewRow, NewColumn, InitRow, InitCol,FinalRow,FinalCol, Player, Jump)
     ).
+
+% Validating if stone spot is empty
 
 validateStoneSpot(GameState, SelRow, SelCol, FinalRow, FinalCol) :-
     checkValueMatrix(GameState, SelRow, SelCol, Content),
