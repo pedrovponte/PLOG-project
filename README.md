@@ -11,7 +11,7 @@ Turma 3
 ---
 ## Installation and Execution
 
-To correctly run and execute the game, using SICtus Prolog you just need to define the working directory of SICStus in the game folder and use the instruction consult('jin_li.pl') ou ['jin_li.pl'], followed by the predicate jin_li.
+To correctly run and execute the game, you just need to, using SICstus Prolog, define the working directory of SICStus in the game folder and use the instruction consult('jin_li.pl') ou ['jin_li.pl'], followed by the predicate jin_li.
 
 ---
 
@@ -230,9 +230,9 @@ All the predicates mentioned in this section can be found in the file [game_logi
 
 ### Making moves
 
-The `move(GameState, Player, MidGameState, NewRow, NewColumn, Jump)` asks the player for position inputs that are validated using the predicates `checkRow/2` and `checkColumn/2`. After that, the predicate `validateContent` is called to check if the player is selecting one of their pieces.  If any of these verifications fail, the predicate asks again for the input. If it succeeds the predicate `selectSpot(GameState, Player, MidGameState, InitRow, InitColumn, NewRow, NewColumn, Jump)` is called asking the user for inputs and validating if it is an empty cell using the predicate `validateMove`. 
+The `move(+GameState, +Player, -MidGameState, -NewRow, -NewColumn, -Jump)` asks the player for position inputs that are validated using the predicates `checkRow/2` and `checkColumn/2`. After that, the predicate `validateContent` is called to check if the player is selecting one of their pieces.  If any of these verifications fail, the predicate asks again for the input. If it succeeds the predicate `selectSpot(+GameState, +Player, -MidGameState, +InitRow, +InitColumn, -NewRow, -NewColumn, -Jump)` is called asking the user for inputs and validating if it is an empty cell using the predicate `validateMove`. 
 
-If all the verifications check out, then it is called `replaceValueMatrix` that replaces the old player's position for an empty space and the piece at the moving position to the player's piece, obtaining a new GameState - MidGameState.
+If all the verifications suceed, then it is called `replaceValueMatrix` that replaces the old player's position for an empty space and the piece at the moving position to the player's piece, obtaining a new GameState - MidGameState.
 
 Given that each player may or may not put a stone after a move we included the predicate `canPutStone(+YellowStones, +MidGameState, +Player, -FinalGameState, -FinalStones, +Jump,+Mode)` that checks if the player still has stones left and did not jump. If those conditions are met then the predicate `selectSpotStone(+GameState, -Player, -FinalGameState)` is called asking the user for inputs and validating if it is an empty cell using the predicate `validateStoneSpot`
 
@@ -244,15 +244,16 @@ All the predicates mentioned in this section can be found in the file [inputs.pl
 ### Game Over
 
 At the end of every turn, two predicates are called:
-- `calculateScore(+FinalGameState, +Adj, +Score, -FinalScore)`  that updates the score of the player who just played analyzing the current Game State with the predicate `getAdjacentes`,
-- `game_over(+Player, -NextPlayer,+Score)` in order to check if the game is over, according to the rules already presented. This predicate evaluates whether the current Player won or not by evaluating his current Score. If the Score is 10, means the game ended and in that case, the NextPlayer is unified with the term 'end'. Otherwise, the variable NextPlayer becomes the next player to play.
+- `calculateScore(+FinalGameState, +Adj, +Score, -FinalScore)`  that updates the score of the player who just played analyzing the current Game State with the help of the previously called predicate `getAdjacentes`;
+- `game_over(+Player, -NextPlayer,+Score)` in order to check if the game is over, according to the rules already presented. This predicate evaluates whether the current Player won or not by evaluating his current Score. If the Score is 10, means the game ended and in that case, NextPlayer is unified with the term 'end'. Otherwise, the variable NextPlayer becomes the next player to play.
+
+All the predicates mentioned in this section can be found in the file [game_logic.pl](src/game_logic.pl).
 
 ---
 
 ### Board Evaluation
 
-The evaluation of the board is made using the `value(+GameState, +Player, +FinalRow, +FinalCol, -Value)` predicate returning the highest value in the current board for the player. Although this predicate has a different amount of arguments than those requested by the teachers, we implemented the predicate this way to optimize the evaluation.
-
+The evaluation of the board is made using the `value(+GameState, +Player, +FinalRow, +FinalCol, -Value)`. Although this predicate has a different amount of arguments than those requested by the teachers, we implemented the predicate this way to optimize the evaluation. Using the predicate getAdjacentes and calculateScore we just unified the variavel Value with the Score obtained. This way we can move the kois to the possible place that will add the most score.
 
 ---
 
@@ -260,7 +261,7 @@ The evaluation of the board is made using the `value(+GameState, +Player, +Final
  
 To choose a computer move we use the predicate `choose_move(+GameState, +Player, +Level, -Move)`, where `Level` will be 'random' or 'greedy', the two difficulties we implemented in our game.
  
-First, `valid_moves(+GameState, +Player, -ListOfMoves)` is used to get all the possible moves, and then we will choose a move from `ListOfMoves` according to the level, explained in the sections below.
+First, `valid_moves/3` (explained above) is used to get all the possible moves, and then we will choose a move from `ListOfMoves` according to the level, explained in the sections below.
  
 #### **Level 1 - Random**
  
@@ -268,21 +269,24 @@ In level 1 the move chosen will be random using `random_member(-Elem, +List)`.
  
 #### **Level 2 - Greedy**
  
-In level 2 the move will be greedy, choosing the best move in the current turn. In this case both  `getMovesValuesBot/6` and ` selectBestMove/5` select a move using `findall(+Template, +Generator, -List)`. In the `Generator` the`value/4` predicate, explained above, is used to evaluate the board after a move. 
-The `List` is `Value-SelectedPosition-MovePosition`, when there are available moves, and as `Value-SelectedPosition` otherwise. 
+In level 2 the move will be greedy, choosing the best move in the current turn. In this case both  `getMovesValuesBot/6` and ` selectBestMove/5` select a move using `findall(+Template, +Generator, -List)`. In the `Generator` the`value/4` predicate, explained above, is used to evaluate the board after a move.  This way these predicates end up returning the highest value in the current board for the player. 
+The `List` is `Value-InitialPosition-FinalPosition-Index`.
 Finally, the list is sorted, using `sort(+List1, -List2)`, being in ascending order of Values and `reverse(+List, -Last)` is used so we can get the move with the highest value.
 
 
 #### **Placing Stones**
+
+Given that each player may or may not put a stone after a move we created the predicate `choose_stone(+MidGameState, -FinalGameState, +Player, +Level)` that is called after checking if the player can acttualy place a stone on the board. This predicate receives a Level just like the chose_move. If the Level is 'random' then the stone will be placed on an empty cell of the matrix. Otherwise, if the Level is 'greedy', we decided to go for an sabotaging 
+approach. The predicate `choose_move` is called passing the oponent Player. This way we are able to put a stone in the possition where the oponent would make more points.
 
 
 ---
 
 ## Conclusion
 
-Since Prolog was a brand new language to us, we had some doubts and difficulties starting the disenrollment of the game, however we quickly became accustomed to the syntax. We feel that this project developed our knowledge and understanding of Prolog.
+ We feel that this project developed our knowledge and understanding of Prolog. Since Prolog was a brand new language to us, we had some difficulties starting the disenrollment of the game, however we quickly became accustomed to the syntax.
 
-We didint encouter any issues, bugs or limitations.
+We didint encouter any bugs or limitations.
 
 For possible improvements, ?????????????????????????????
 
@@ -290,25 +294,3 @@ For possible improvements, ?????????????????????????????
 
 ## Bibliography
 
-
-
----
-TO-DO list:
-
-- [ ] localização inicial das carpas? (têm só nas regras alternativas) (TO THINK: should the kois always start in the corners?);
-
-- [X] representação devia ter primeiro explicação de como o fazem;
-  
-- [X] não é aceitável que o tabuleiro tenha todos aqueles símbolos ligados à visualização: o tabuleiro deve ter apenas a parte do tabuleiro (carpas e pedras), complementado por informação de jogador atual, pedras e score atual de cada um;
-
-- [ ] Será que alguma representação numérica poderia ajudar? 0 vazio, 1 pedra, 10 e 11 kois (10 + player) -> sum(surrounding cells)/10;
-
-- [X] visualização fica muito confusa: muita densidade de coisas que não são parte do jogo só confundem... aconselhado ter tabuleiro 'isolado', complementado depois por pontuação (basta um número para isso) e pedras;
-
-- [X] Junto da informação do turno do jogador, acrescentar o resultado atual e o número de pedras de cada um;
-
-- [X] Faltam coordenadas!
-  
-- [ ] código podia estar mais flexível para dimensões de tabuleiro diferentes. - Do 8x8
-
-- [] Regras e nossos nomes no menu
