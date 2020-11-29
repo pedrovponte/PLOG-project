@@ -19,7 +19,8 @@ check(GameState, Row, Col, Score, Plus):-
 
 % Obtaining list of adjacent cels to the position Row,Col
 
-getAdjacentes(GameState,Row,Col,Adj):-
+getAdjacentes(GameState, Row, Col, Adj, Size):-
+    RealSize is Size - 1,
     Row1 is Row+1,
     Row2 is Row-1,
     Col1 is Col+1,
@@ -35,34 +36,36 @@ getAdjacentes(GameState,Row,Col,Adj):-
     findall([R,C], 
             (
                 member([R,C], List7),
-                R >= 0, R =< 6,
-                C >= 0, C =< 6
+                R >= 0, R =< RealSize,
+                C >= 0, C =< RealSize
             ), 
             Adj).
 
 %Checking if the player can add a stone to the bord: has stones left && didn't jump
 
-canPutStone(NumStones,MidGameState,Player,FinalGameState,NumStonesFinal, Jump,_):-
+% verificaçao para colocaçao de pedra
+canPutStone(NumStones,MidGameState,Player,FinalGameState,NumStonesFinal, Jump, _, _):-
 	(NumStones =:= 0; Jump =:= 1),
 	NumStonesFinal is NumStones,
-	copyMatrix(MidGameState, FinalGameState).
+	copyMatrix(MidGameState, FinalGameState),
+    write('No stone played\n').
 
-canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,Mode):-
+canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, Mode, Size):-
 	Player == computer,
-	choose_stone(MidGameState,FinalGameState,yellow,Mode),
+	choose_stone(MidGameState, FinalGameState, yellow, Mode, Size),
 	NumStonesFinal is NumStones - 1.
 
-canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,Mode):-
+canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, Mode, Size):-
 	Player == computer1,
-	choose_stone(MidGameState,FinalGameState,red,Mode),
+	choose_stone(MidGameState, FinalGameState, red, Mode, Size),
 	NumStonesFinal is NumStones - 1.
 
-canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,Mode):-
+canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, Mode, Size):-
 	Player == computer2,
-	choose_stone(MidGameState,FinalGameState,yellow,Mode),
+	choose_stone(MidGameState, FinalGameState, yellow, Mode, Size),
 	NumStonesFinal is NumStones - 1.
 
-canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,_):-
+canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, _, _):-
 	selectSpotStone(MidGameState, Player, FinalGameState),
 	NumStonesFinal is NumStones - 1.
 
@@ -70,7 +73,7 @@ canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,_
 % Checking end of the game
 
 checkGameOver(_Player,NextPlayer,Score):-
-	Score==10,
+	Score >= 10,
 	NextPlayer = end.
 
 checkGameOver(Player,NextPlayer,_Score):-
@@ -107,8 +110,7 @@ checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
 
 checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
 	Jump = 0.
-
-
+    
 % Auxiliar functions to get all possible moves 
 
 parsePos([Row, Column | _], Row, Column).

@@ -1,30 +1,31 @@
 % Main function, that initializes the game and calls the game loop
-play :-
-	initial(GameState),
+play(Size) :-
+	initial(GameState, Size),
 	Players = [yellow,red],
 	random_member(X,Players),
-	start_game(GameState, X, 10, 10, 0, 0).
+	start_game(GameState, X, 10, 10, 0, 0, Size).
 
-playPVsComputer(Mode) :-
-	initial(GameState),
+playPVsComputer(Size, Mode) :-
+	initial(GameState, Size),
 	Players = [yellow,computer],
 	random_member(X,Players),
-	start_game2(GameState, X, 10, 10, 0, 0,Mode).
+	start_game2(GameState, X, 10, 10, 0, 0, Mode, Size).
 
-playComputerVsComputer(Mode) :-
-	initial(GameState),
-	start_game3(GameState, computer1, 10, 10, 0, 0,Mode).
+playComputerVsComputer(Size, Mode) :-
+	initial(GameState, Size),
+	start_game3(GameState, computer1, 10, 10, 0, 0, Mode, Size).
 
 % Predicate that creates the board
-initial(GameState):-
-	initialBoard(GameState).
+initial(GameState, Size):-
+	generateRandomBoard(GameState, Size).
+	% initialBoard(GameState).
 	% intermediateBoard(GameState).
 	% finalBoard(GameState).
 	% testBoard(GameState).
 
 % Predicate that displays the board
 display_game(GameState, Player):-
-	print_board(GameState).
+	printBoard(GameState).
 
 %Predicate to display Scores and number of Stones of each Player
 display_info(Player, YellowScore, RedScore, YellowStones, RedStones) :-
@@ -48,45 +49,43 @@ display_info_2computer(Player, Computer1Score, Computer2Score, Computer1Stones, 
 	format('Computer 1 (Yellow) Score: ~d.\n', Computer1Score),
 	format('Computer 2 (Red) Score: ~d.\n\n', Computer2Score).
 
-
-start_game(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
+start_game(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, Size) :-
 	(
 		Player == end,
 		endGame(YellowScore,RedScore)
 	);
 	(
 		Player == yellow,
-		turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, FinalGameState, FinalStones, FinalScore, NextPlayer),
-		start_game(FinalGameState, NextPlayer, FinalStones, RedStones, FinalScore, RedScore)
+		turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, FinalGameState, FinalStones, FinalScore, NextPlayer, Size),
+		start_game(FinalGameState, NextPlayer, FinalStones, RedStones, FinalScore, RedScore, Size)
 	);
 	(
 		Player == red,
-		turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, FinalGameState, FinalStones, FinalScore, NextPlayer),
-		start_game(FinalGameState, NextPlayer, YellowStones, FinalStones, YellowScore, FinalScore)
+		turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, FinalGameState, FinalStones, FinalScore, NextPlayer, Size),
+		start_game(FinalGameState, NextPlayer, YellowStones, FinalStones, YellowScore, FinalScore, Size)
 	).
 
-turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, FinalGameState, FinalStones, FinalScore, NextPlayer) :-
+turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, FinalGameState, FinalStones, FinalScore, NextPlayer, Size) :-
 
 	display_game(GameState, Player),
 	display_info(Player, YellowScore, RedScore, YellowStones, RedStones),
 
 	move(GameState, Move, MidGameState, Player, Jump),
 	Move = [InitRow, InitColumn, NewRow, NewColumn],
-	nl,write(InitRow), write(InitColumn), nl, write(NewRow), write(NewColumn), nl,
 	display_game(MidGameState, Player),
 	display_info(Player, YellowScore, RedScore, YellowStones, RedStones),
 
 	((
 		Player == yellow,
-		canPutStone(YellowStones, MidGameState, Player, FinalGameState, FinalStones, Jump,'random'),
-		getAdjacentes(GameState, NewRow, NewColumn, Adj),
+		canPutStone(YellowStones, MidGameState, Player, FinalGameState, FinalStones, Jump, 'random', Size),
+		getAdjacentes(GameState, NewRow, NewColumn, Adj, Size),
 		calculateScore(FinalGameState, Adj, YellowScore, FinalScore),
 		checkGameOver(red, NextPlayer, FinalScore)
 	);
 	(
 		Player == red,
-		canPutStone(RedStones, MidGameState, Player, FinalGameState, FinalStones, Jump,'random'),
-		getAdjacentes(GameState, NewRow, NewColumn, Adj),
+		canPutStone(RedStones, MidGameState, Player, FinalGameState, FinalStones, Jump, 'random', Size),
+		getAdjacentes(GameState, NewRow, NewColumn, Adj, Size),
 		calculateScore(FinalGameState, Adj, RedScore, FinalScore),
 		checkGameOver(yellow, NextPlayer, FinalScore)
 	)).
@@ -96,24 +95,24 @@ turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, FinalGam
 /*===========================================================================================================================================*/
 
 
-start_game2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScore,Mode) :-
+start_game2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScore, Mode, Size) :-
 	(
 		Player == end,
 		endGame(YellowScore,ComputerScore)
 	);
 	(
 		Player == yellow,
-		turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScore, FinalGameState, FinalStones, FinalScore, NextPlayer,Mode),
-		start_game2(FinalGameState, NextPlayer, FinalStones, ComputerStones, FinalScore, ComputerScore,Mode)
+		turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScore, FinalGameState, FinalStones, FinalScore, NextPlayer, Mode, Size),
+		start_game2(FinalGameState, NextPlayer, FinalStones, ComputerStones, FinalScore, ComputerScore, Mode, Size)
 	);
 	(
 		Player == computer,
-		turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScore, FinalGameState, FinalStones, FinalScore, NextPlayer,Mode),
-		start_game2(FinalGameState, NextPlayer, YellowStones, FinalStones, YellowScore, FinalScore,Mode)
+		turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScore, FinalGameState, FinalStones, FinalScore, NextPlayer, Mode, Size),
+		start_game2(FinalGameState, NextPlayer, YellowStones, FinalStones, YellowScore, FinalScore, Mode, Size)
 	).
 
 
-turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScore, FinalGameState, FinalStones, FinalScore, NextPlayer,Mode) :-
+turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScore, FinalGameState, FinalStones, FinalScore, NextPlayer, Mode, Size) :-
 
 	display_game(GameState, Player),
 	display_info_computer(Player, YellowScore, ComputerScore, YellowStones, ComputerStones),
@@ -121,13 +120,12 @@ turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScor
 	((
 		Player == yellow,
 		/*selectPiece(GameState, Player, MidGameState, NewRow, NewColumn, Jump),*/
-		move(GameState, Move, MidGameState, Player, Jump),
+		move(GameState, Move, MidGameState, Player, Jump, Size),
 		Move = [InitRow, InitColumn, NewRow, NewColumn],
-		write(InitRow), write(InitColumn), nl, write(NewRow), write(NewColumn), nl,
 		display_game(MidGameState, Player),
 		display_info_computer(Player, YellowScore, ComputerScore, YellowStones, ComputerStones),
-		canPutStone(YellowStones, MidGameState, Player, FinalGameState, FinalStones, Jump,Mode),
-		getAdjacentes(GameState, NewRow, NewColumn, Adj),
+		canPutStone(YellowStones, MidGameState, Player, FinalGameState, FinalStones, Jump, Mode, Size),
+		getAdjacentes(GameState, NewRow, NewColumn, Adj, Size),
 		calculateScore(FinalGameState, Adj, YellowScore, FinalScore),
 		checkGameOver(computer, NextPlayer, FinalScore)
 	);
@@ -144,14 +142,10 @@ turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScor
 		display_info_computer(Player, YellowScore, ComputerScore, YellowStones, ComputerStones),
 		format('\nMoved koi from row ~d and column ~d to row ~d and column ~d\n', [InitRow, InitColumn, FinalRow, FinalColumn]),
 		sleep(3),
-		write('hello\n'),
 		checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump),
-		canPutStone(ComputerStones, MidGameState, Player, FinalGameState, FinalStones, Jump,Mode),
-		write('hello1\n'),
-		getAdjacentes(GameState, FinalRow, FinalColumn, Adj),
-		write('hello2\n'),
+		canPutStone(ComputerStones, MidGameState, Player, FinalGameState, FinalStones, Jump, Mode, Size),
+		getAdjacentes(GameState, FinalRow, FinalColumn, Adj, Size),
 		calculateScore(FinalGameState, Adj, ComputerScore, FinalScore),
-		write('hello3\n'),
 		checkGameOver(yellow, NextPlayer, FinalScore)
 	)).
 
@@ -163,24 +157,24 @@ turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScor
 /*===========================================================================================================================================*/
 
 
-start_game3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score,Mode) :-
+start_game3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, Mode, Size) :-
 	(
 		Player == end,
 		endGame(PC1Score,PC2Score)
 	);
 	(
 		Player == computer1,
-		turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer,Mode),
-		start_game3(FinalGameState, NextPlayer, FinalStones, PC2Stones, FinalScore, PC2Score,Mode)
+		turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer, Mode, Size),
+		start_game3(FinalGameState, NextPlayer, FinalStones, PC2Stones, FinalScore, PC2Score, Mode, Size)
 	);
 	(
 		Player == computer2,
-		turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer,Mode),
-		start_game3(FinalGameState, NextPlayer, PC1Stones, FinalStones, PC1Score, FinalScore,Mode)
+		turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer, Mode, Size),
+		start_game3(FinalGameState, NextPlayer, PC1Stones, FinalStones, PC1Score, FinalScore, Mode, Size)
 	).
 
 
-turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer,Mode) :-
+turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer, Mode, Size) :-
 
 	display_game(GameState, Player),
 	display_info_2computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
@@ -198,14 +192,10 @@ turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameStat
 		display_info_2computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
 		format('\nMoved koi from row ~d and column ~d to row ~d and column ~d\n', [InitRow, InitColumn, FinalRow, FinalColumn]),
 		sleep(3),
-		write('hello\n'),
 		checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump),
-		canPutStone(PC2Stones, MidGameState, Player, FinalGameState, FinalStones, Jump,Mode),
-		write('hello1\n'),
-		getAdjacentes(GameState, FinalRow, FinalColumn, Adj),
-		write('hello2\n'),
+		canPutStone(PC2Stones, MidGameState, Player, FinalGameState, FinalStones, Jump, Mode, Size),
+		getAdjacentes(GameState, FinalRow, FinalColumn, Adj, Size),
 		calculateScore(FinalGameState, Adj, PC1Score, FinalScore),
-		write('hello3\n'),
 		checkGameOver(computer2, NextPlayer, FinalScore)
 	);
 	(
@@ -221,14 +211,10 @@ turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameStat
 		display_info_2computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
 		format('\nMoved koi from row ~d and column ~d to row ~d and column ~d\n', [InitRow, InitColumn, FinalRow, FinalColumn]),
 		sleep(3),
-		write('hello\n'),
 		checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump),
-		canPutStone(PC2Stones, MidGameState, Player, FinalGameState, FinalStones, Jump,Mode),
-		write('hello1\n'),
-		getAdjacentes(GameState, FinalRow, FinalColumn, Adj),
-		write('hello2\n'),
+		canPutStone(PC2Stones, MidGameState, Player, FinalGameState, FinalStones, Jump, Mode, Size),
+		getAdjacentes(GameState, FinalRow, FinalColumn, Adj, Size),
 		calculateScore(FinalGameState, Adj, PC2Score, FinalScore),
-		write('hello3\n'),
 		checkGameOver(computer1, NextPlayer, FinalScore)
 	)).
 
@@ -237,7 +223,7 @@ turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameStat
 move(GameState, Move, FinalGameState, Player, Jump) :-
 	selectPiece(GameState, Player, FinalGameState, Move, Jump).
 
-%Evaluation about the end of the game
+% Evaluation about the end of the game
 game_over(GameState, Winner, Player, NextPlayer, FinalScore, Score1, Score2) :-
 	checkGameOver(Player, NextPlayer,  FinalScore),
 	NextPlayer == end, 

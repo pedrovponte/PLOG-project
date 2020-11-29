@@ -75,12 +75,12 @@ chooseRandomMove(X, Move1, Move2, Move2) :-
 
 % Random algorithm to chose stone spot
 
-choose_stone(MidGameState, FinalGameState,Player, Level) :-
+choose_stone(MidGameState, FinalGameState, Player, Level, Size) :-
     Level == 'random',
-    random(0,7,Row),
-    random(0,7,Col),
+    random(0, Size, Row),
+    random(0, Size, Col),
     checkValueMatrix(MidGameState, Row, Col, Content),
-    checkStone(MidGameState, Row, Col, Content, FinalGameState,Level).
+    checkStone(MidGameState, Row, Col, Content, FinalGameState, Level).
 
 % Greedy algorithm to chose stone spot
 
@@ -90,7 +90,7 @@ choose_stone(MidGameState, FinalGameState,Player, Level) :-
     Move = [InitPos, FinalPos],
     FinalPos = [Row, Col],
     checkValueMatrix(MidGameState, Row, Col, Content),
-    checkStone(MidGameState, Row, Col, Content, FinalGameState,Level).
+    checkStone(MidGameState, Row, Col, Content, FinalGameState, Level).
 
 % Evaluating stone spot chosen
 
