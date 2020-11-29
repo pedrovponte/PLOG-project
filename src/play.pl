@@ -3,7 +3,7 @@ play(Size) :-
 	initial(GameState, Size),
 	Players = [yellow,red],
 	random_member(X,Players),
-	start_game(GameState, red, 7, 3, 7, 9, Size).
+	start_game(GameState, X, 10, 10, 0, 0, Size).
 
 playPVsComputer(Size, Mode) :-
 	initial(GameState, Size),

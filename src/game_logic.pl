@@ -19,7 +19,8 @@ check(GameState, Row, Col, Score, Plus):-
 
 % Obtaining list of adjacent cels to the position Row,Col
 
-getAdjacentes(GameState,Row,Col,Adj):-
+getAdjacentes(GameState, Row, Col, Adj, Size):-
+    RealSize is Size - 1,
     Row1 is Row+1,
     Row2 is Row-1,
     Col1 is Col+1,
@@ -35,14 +36,14 @@ getAdjacentes(GameState,Row,Col,Adj):-
     findall([R,C], 
             (
                 member([R,C], List7),
-                R >= 0, R =< 6,
-                C >= 0, C =< 6
+                R >= 0, R =< RealSize,
+                C >= 0, C =< RealSize
             ), 
             Adj).
 
 %Checking if the player can add a stone to the bord: has stones left && didn't jump
 
-/*VERIFICAÇÂO DE COLOCAR PEDRA*/
+% verificaçao para colocaçao de pedra
 canPutStone(NumStones,MidGameState,Player,FinalGameState,NumStonesFinal, Jump, _, _):-
 	(NumStones =:= 0; Jump =:= 1),
 	NumStonesFinal is NumStones,
