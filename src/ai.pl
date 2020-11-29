@@ -78,8 +78,8 @@ selectBestMove(Value1, Value2, Move1, Move2, FinalMove) :-
 
 choose_stone(MidGameState, FinalGameState,Player, Level) :-
     Level == 'random',
-    random(0,6,Row),
-    random(0,6,Col),
+    random(0,7,Row),
+    random(0,7,Col),
     checkValueMatrix(MidGameState, Row, Col, Content),
     checkStone(MidGameState, Row, Col, Content, FinalGameState,Level).
 
@@ -88,7 +88,7 @@ checkStone(MidGameState, Row, Col, Content,FinalGameState,_Level):-
     replaceValueMatrix(MidGameState, Row, Col, stone, FinalGameState),
     format('\nPut stone in row ~d and column ~d\n', [Row, Col]).
 
-checkStone(GameState, Row, Col,Content,FinalGameState,Level):-
+checkStone(MidGameState, Row, Col,Content,FinalGameState,Level):-
     choose_stone(MidGameState,FinalGameState,Player,Level).
 
 

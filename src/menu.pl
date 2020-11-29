@@ -11,7 +11,7 @@ printMenu :-
     write('|                                                              |\n'),
     write('|                                                              |\n'),
     write('|       1. Player vs Player (6x6)                              |\n'),
-    write('|  TODO 2. Player vs Player (8x8)                              |\n'),
+    write('|       2. Player vs Player (8x8)                              |\n'),
     write('|       3. Player vs Computer (6x6 - Easy Level - Random)      |\n'),
     write('|       4. Player vs Computer (6x6 - Hard Level - Greedy)      |\n'),
     write('|       5. Computer vs Computer (6x6 - Easy Level - Random)    |\n'),
