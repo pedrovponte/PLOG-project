@@ -1,3 +1,4 @@
+% Board representations
 initialBoard([
 [red,empty,empty,empty,empty,empty,red],
 [empty,empty,empty,empty,empty,empty,empty],
@@ -117,6 +118,8 @@ print_cell(C):-
 	code(C,P),
 	write(P),
 	write(' |').
+
+% Atoms 
 
 code(empty, '  ').
 code(red, 'RF').

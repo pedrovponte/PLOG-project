@@ -1,16 +1,22 @@
+
+% Obtaining possible game moves
+
 valid_moves(GameState, Player, ListOfMoves) :-
     getPlayerPos(GameState, Player, ListOfPositions),
     getAllPossibleMoves(GameState, Player, ListOfPositions, ListOfMoves).
 
+% Random algorithm to chose move
+
 choose_move(GameState, Player, Level, Move) :-
     Level == 'random',
     valid_moves(GameState, Player, ListOfMoves),
-    random(0, 2, RedFish), /*choosing randomly between red fishes*/
+    random(0, 2, RedFish), /*choosing randomly between fishes*/
     nth0(RedFish, ListOfMoves, X),
     [InitRow, InitColumn | Moves] = X,
-    random_member([FinalRow,FinalColumn], Moves),
+    random_member([FinalRow,FinalColumn], Moves), /*random move*/
     Move = [[InitRow, InitColumn], [FinalRow, FinalColumn]].
 
+% Greedy algorithm to chose move
 
 choose_move(GameState, Player, Level, Move) :-
     Level == 'greedy',
@@ -19,12 +25,8 @@ choose_move(GameState, Player, Level, Move) :-
     nth0(1, ListOfMoves, Fish2),
     Fish1 = [InitRow1, InitColumn1 | Moves1],
     Fish2 = [InitRow2, InitColumn2 | Moves2],
-    getMovesValuesBot(GameState, Player, Moves1, [InitRow1, InitColumn1], FinalPos1, Value1),
+    getMovesValuesBot(GameState, Player, Moves1, [InitRow1, InitColumn1], FinalPos1, Value1), % obtaining value of final position for each fish
     getMovesValuesBot(GameState, Player, Moves2, [InitRow2, InitColumn2], FinalPos2, Value2),
-    /*write('Final Pos1: '), write(FinalPos1), nl,
-    write('Final Pos2: '), write(FinalPos2), nl,
-    write('Value 1: '), write(Value1), nl,
-    write('Value 2: '), write(Value2), nl,*/
     selectBestMove(Value1, Value2, [[InitRow1, InitColumn1], FinalPos1], [[InitRow2, InitColumn2], FinalPos2], Move).
     
 getMovesValuesBot(GameState, Player, ListOfValidMoves, InitPos, FinalPos, Value) :-
@@ -71,6 +73,7 @@ chooseRandomMove(X, Move1, Move2, Move2) :-
     X == 1.
 
 
+% Random algorithm to chose stone spot
 
 choose_stone(MidGameState, FinalGameState, Player, Level, Size) :-
     Level == 'random',
@@ -79,19 +82,22 @@ choose_stone(MidGameState, FinalGameState, Player, Level, Size) :-
     checkValueMatrix(MidGameState, Row, Col, Content),
     checkStone(MidGameState, Row, Col, Content, FinalGameState, Level).
 
-checkStone(MidGameState, Row, Col, Content, FinalGameState, _Level):-
-    Content == empty,
-    replaceValueMatrix(MidGameState, Row, Col, stone, FinalGameState),
-    format('\nPut stone in row ~d and column ~d\n', [Row, Col]).
+% Greedy algorithm to chose stone spot
 
-checkStone(MidGameState, Row, Col, Content, FinalGameState, Level):-
-    choose_stone(MidGameState,FinalGameState,Player,Level).
-
-
-choose_stone(MidGameState, FinalGameState,Player, Level, Size) :-
+choose_stone(MidGameState, FinalGameState,Player, Level) :-
     Level == 'greedy', % colocar stone no move que mais pontos dará ao adversário
     choose_move(MidGameState, Player, Level, Move),
     Move = [InitPos, FinalPos],
     FinalPos = [Row, Col],
     checkValueMatrix(MidGameState, Row, Col, Content),
     checkStone(MidGameState, Row, Col, Content, FinalGameState, Level).
+
+% Evaluating stone spot chosen
+
+checkStone(MidGameState, Row, Col, Content,FinalGameState,_Level):-
+    Content == empty,
+    replaceValueMatrix(MidGameState, Row, Col, stone, FinalGameState),
+    format('\nPut stone in row ~d and column ~d\n', [Row, Col]).
+
+checkStone(MidGameState, Row, Col,Content,FinalGameState,Level):-
+    choose_stone(MidGameState,FinalGameState,Player,Level).

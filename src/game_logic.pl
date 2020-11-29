@@ -1,7 +1,8 @@
-/*Score*/
-calculateScore(_GameState, [], Score1, Score1).
+% Calculating Score based on the game state
 
-calculateScore(GameState,[[H,H2]|T], Score, ScorePlus):-
+calculateScore(_GameState,[],Score,Score).
+
+calculateScore(GameState,[[H,H2]|T],Score, ScorePlus):-
     check(GameState,H,H2,Score,Score1),
     calculateScore(GameState,T,Score1,ScorePlus).
 
@@ -12,10 +13,34 @@ increment(Content,Score,ScorePlus):-
 increment(Content,Score,ScorePlus):-
     ScorePlus is Score + 1.
 
-
 check(GameState, Row, Col, Score, Plus):-
     checkValueMatrix(GameState, Row, Col, Content),
     increment(Content,Score,Plus).
+
+% Obtaining list of adjacent cels to the position Row,Col
+
+getAdjacentes(GameState,Row,Col,Adj):-
+    Row1 is Row+1,
+    Row2 is Row-1,
+    Col1 is Col+1,
+    Col2 is Col-1,
+    appendList([],[Row1,Col], List),
+    appendList(List,[Row2,Col], List1),
+    appendList(List1,[Row1,Col1], List2),
+    appendList(List2,[Row2,Col1], List3),
+    appendList(List3,[Row,Col1], List4),
+    appendList(List4,[Row1,Col2], List5),
+    appendList(List5,[Row2,Col2], List6),
+    appendList(List6,[Row,Col2], List7),
+    findall([R,C], 
+            (
+                member([R,C], List7),
+                R >= 0, R =< 6,
+                C >= 0, C =< 6
+            ), 
+            Adj).
+
+%Checking if the player can add a stone to the bord: has stones left && didn't jump
 
 /*VERIFICAÇÂO DE COLOCAR PEDRA*/
 canPutStone(NumStones,MidGameState,Player,FinalGameState,NumStonesFinal, Jump, _, _):-
@@ -43,6 +68,29 @@ canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, 
 	selectSpotStone(MidGameState, Player, FinalGameState),
 	NumStonesFinal is NumStones - 1.
 
+
+% Checking end of the game
+
+checkGameOver(_Player,NextPlayer,Score):-
+	Score >= 10,
+	NextPlayer = end.
+
+checkGameOver(Player,NextPlayer,_Score):-
+	NextPlayer = Player.
+
+endGame(YellowScore,RedScore):-
+	format('Yellow Score: ~d.\n', YellowScore),
+	format('Red Score: ~d.\n\n', RedScore),
+	write('GAME ENDED\n'),
+    YellowScore > RedScore,
+    write('Yellow player wins the game!\n');
+    (
+        write('Red player wins the game!\n')
+    ).
+
+
+% Checking if the player jumped over a stone (Jump=1) or not (Jump=0)
+
 checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
 	FinalRow - InitRow =:= 2,
 	Jump = 1.
@@ -61,113 +109,8 @@ checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
 
 checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
 	Jump = 0.
-
-
-/*9 casos diferentes de posições no board*/
-getAdjacentes(GameState,Row,Col,Adj, Size):-
-    Row==0, Col==0,
-    appendList([],[1,0], Adj1),
-    appendList(Adj1,[0,1], Adj2),
-    appendList(Adj2,[1,1], Adj).
-
-getAdjacentes(GameState,Row,Col,Adj, Size):-
-    Size1 is Size - 1,
-    Row==Size1, Col==0, 
-    appendList([],[5,0],Adj1),
-    appendList(Adj1,[5,1], Adj2),
-    appendList(Adj2,[6,1], Adj).
-
-getAdjacentes(GameState,Row,Col,Adj, Size):-
-    Size1 is Size - 1,
-    Row==0, Col==Size1, 
-    appendList([],[0,5], Adj1),
-    appendList(Adj1,[1,6], Adj2),
-    appendList(Adj2,[1,5], Adj).
-
-getAdjacentes(GameState,Row,Col,Adj, Size):-
-    Size1 is Size - 1,
-    Row==Size1, Col==Size1, 
-    appendList([],[5,5], Adj1),
-    appendList(Adj1,[6,5], Adj2),
-    appendList(Adj2,[5,6], Adj).
-
-getAdjacentes(GameState,Row,Col,Adj, Size):-
-    Row==0,
-    Row1 is Row+1,
-    Col1 is Col+1,
-    Col2 is Col-1,
-    appendList([],[Row1,Col], Adj1),
-    appendList(Adj1,[Row,Col2], Adj2),
-    appendList(Adj2,[Row,Col1], Adj3),
-    appendList(Adj3,[Row1,Col1], Adj4),
-    appendList(Adj4,[Row1,Col2], Adj).
-
-getAdjacentes(GameState,Row,Col,Adj, Size):-
-    Size1 is Size - 1,
-    Row==Size1,
-    Row2 is Row-1,
-    Col1 is Col+1,
-    Col2 is Col-1,
-    appendList([],[Row2,Col], Adj1),
-    appendList(Adj1,[Row,Col2], Adj2),
-    appendList(Adj2,[Row,Col1], Adj3),
-    appendList(Adj3,[Row2,Col1], Adj4),
-    appendList(Adj4,[Row2,Col2], Adj).
-
-getAdjacentes(GameState,Row,Col,Adj, Size):-
-    Col==0,
-    Row1 is Row+1,
-    Row2 is Row-1,
-    Col1 is Col+1,
-    appendList([],[Row1,Col], Adj1),
-    appendList(Adj1,[Row2,Col], Adj2),
-    appendList(Adj2,[Row1,Col1], Adj3),
-    appendList(Adj3,[Row,Col1], Adj4),
-    appendList(Adj4,[Row2,Col1], Adj).
-
-getAdjacentes(GameState,Row,Col,Adj, Size):-
-    Size1 is Size - 1,
-    Col==Size1,
-    Row1 is Row+1,
-    Row2 is Row-1,
-    Col2 is Col-1,
-    appendList([],[Row1,Col], Adj1),
-    appendList(Adj1,[Row2,Col], Adj2),
-    appendList(Adj2,[Row1,Col2], Adj3),
-    appendList(Adj3,[Row,Col2], Adj4),
-    appendList(Adj4,[Row2,Col2], Adj).
-
-getAdjacentes(GameState,Row,Col,Adj, Size):-
-    Row1 is Row+1,
-    Row2 is Row-1,
-    Col1 is Col+1,
-    Col2 is Col-1,
-    appendList([],[Row1,Col], Adj1),
-    appendList(Adj1,[Row2,Col], Adj2),
-    appendList(Adj2,[Row1,Col1], Adj3),
-    appendList(Adj3,[Row2,Col1], Adj4),
-    appendList(Adj4,[Row,Col1], Adj5),
-    appendList(Adj5,[Row1,Col2], Adj6),
-    appendList(Adj6,[Row2,Col2], Adj7),
-    appendList(Adj7,[Row,Col2], Adj).
-
-/*End Game*/
-checkGameOver(_Player,NextPlayer,Score):-
-	Score >= 10,
-	NextPlayer = end.
-
-checkGameOver(Player,NextPlayer,_Score):-
-	NextPlayer = Player.
-
-endGame(YellowScore,RedScore):-
-	format('Yellow Score: ~d.\n', YellowScore),
-	format('Red Score: ~d.\n\n', RedScore),
-	write('GAME ENDED\n'),
-    YellowScore > RedScore,
-    write('Yellow player wins the game!\n');
-    (
-        write('Red player wins the game!\n')
-    ).
+    
+% Auxiliar functions to get all possible moves 
 
 parsePos([Row, Column | _], Row, Column).
 
@@ -201,7 +144,7 @@ getAllPossibleMoves(GameState, Player, [H|T], ListInt, ListOfMoves) :-
 
 getMoves(GameState, InitRow, InitColumn, ListOfMoves) :-
     getAdjacentes(GameState, InitRow, InitColumn, ListInt),
-    getPossibleJumps(GameState, InitRow, InitColumn, ListInt, ListAux, ListRes),
+    getPossibleJumps(GameState, InitRow, InitColumn, ListInt, [], ListRes),
     append(ListInt, ListRes, ListOfMoves).
 
 getPossibleJumps(_, _, _, [], ListRes, ListRes).
