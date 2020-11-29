@@ -1,20 +1,6 @@
-decideMove(Adj, GameState, MidGameState, FinalRow, FinalCol):-
-    Player = red,
-    [H,H2|T]=Adj,
-    random_member([FinalRow,FinalCol], T),
-    /*setof(X, member(X,Adj), Moves),
-    (FinalRow,FinalCol) is Moves[0],*/
-    checkValueMatrix(GameState, FinalRow, FinalCol, Content),
-    checkMove(GameState, FinalRow, FinalCol, Player, Content,Adj,MidGameState).
-
-checkMove(GameState, FinalRow, FinalCol, Player, Content,_Adj,MidGameState):-
-    Content==empty, 
-    replaceValueMatrix(GameState, FinalRow, FinalCol, red, MidGameState).
-
-checkMove(GameState, FinalRow, FinalCol, Player, MidGameState, Content,Adj,MidGameState):-
-    decideMove(Adj, GameState, MidGameState).
-     
-
+valid_moves(GameState, Player, ListOfMoves) :-
+    getPlayerPos(GameState, Player, ListOfPositions),
+    getAllPossibleMoves(GameState, Player, ListOfPositions, ListOfMoves).
 
 choose_move(GameState, Player, Level, Move) :-
     Level == 'random',
@@ -35,10 +21,10 @@ choose_move(GameState, Player, Level, Move) :-
     Fish2 = [InitRow2, InitColumn2 | Moves2],
     getMovesValuesBot(GameState, Player, Moves1, [InitRow1, InitColumn1], FinalPos1, Value1),
     getMovesValuesBot(GameState, Player, Moves2, [InitRow2, InitColumn2], FinalPos2, Value2),
-    write('Final Pos1: '), write(FinalPos1), nl,
+    /*write('Final Pos1: '), write(FinalPos1), nl,
     write('Final Pos2: '), write(FinalPos2), nl,
     write('Value 1: '), write(Value1), nl,
-    write('Value 2: '), write(Value2), nl,
+    write('Value 2: '), write(Value2), nl,*/
     selectBestMove(Value1, Value2, [[InitRow1, InitColumn1], FinalPos1], [[InitRow2, InitColumn2], FinalPos2], Move).
     
 getMovesValuesBot(GameState, Player, ListOfValidMoves, InitPos, FinalPos, Value) :-
@@ -67,19 +53,29 @@ value(GameState, Player, FinalRow, FinalCol, Value) :-
     Value = Score, !.
 
 selectBestMove(Value1, Value2, Move1, Move2, FinalMove) :-
-    Value1 >= Value2,
+    Value1 > Value2,
     FinalMove = Move1.
 
 selectBestMove(Value1, Value2, Move1, Move2, FinalMove) :-
     Value2 > Value1,
     FinalMove = Move2.
 
+selectBestMove(Value1, Value2, Move1, Move2, FinalMove) :-
+    random(0, 2, X),
+    chooseRandomMove(X, Move1, Move2, FinalMove).
+
+chooseRandomMove(X, Move1, Move2, Move1) :-
+    X == 0.
+
+chooseRandomMove(X, Move1, Move2, Move2) :-
+    X == 1.
+
 
 
 choose_stone(MidGameState, FinalGameState,Player, Level) :-
     Level == 'random',
-    random(0,6,Row),
-    random(0,6,Col),
+    random(0,7,Row),
+    random(0,7,Col),
     checkValueMatrix(MidGameState, Row, Col, Content),
     checkStone(MidGameState, Row, Col, Content, FinalGameState,Level).
 
@@ -88,7 +84,7 @@ checkStone(MidGameState, Row, Col, Content,FinalGameState,_Level):-
     replaceValueMatrix(MidGameState, Row, Col, stone, FinalGameState),
     format('\nPut stone in row ~d and column ~d\n', [Row, Col]).
 
-checkStone(GameState, Row, Col,Content,FinalGameState,Level):-
+checkStone(MidGameState, Row, Col,Content,FinalGameState,Level):-
     choose_stone(MidGameState,FinalGameState,Player,Level).
 
 

@@ -1,4 +1,4 @@
-selectPiece(GameState, Player, MidGameState, NewRow, NewColumn, Jump):-
+selectPiece(GameState, Player, MidGameState, Move, Jump) :-
     write('Choose a piece:\n'),
     readColumn(Column),
     checkColumn(Column, InitColumn),
@@ -6,8 +6,9 @@ selectPiece(GameState, Player, MidGameState, NewRow, NewColumn, Jump):-
     checkRow(Row, InitRow),
     validateContent(Player, GameState, InitRow, InitColumn, FinalRow, FinalCol),
     replaceValueMatrix(GameState, FinalRow, FinalCol, empty, FirstGameState),
-    selectSpot(FirstGameState, Player, MidGameState, FinalRow, FinalCol, NewRow, NewColumn, Jump).
-
+    append([], [FinalRow, FinalCol], MidMove),
+    selectSpot(FirstGameState, Player, MidGameState, FinalRow, FinalCol, NewRow, NewColumn, Jump),
+    append(MidMove, [NewRow, NewColumn], Move).
 
 selectSpot(GameState, Player, MidGameState, InitRow, InitColumn, NewRow, NewColumn, Jump) :-
     write('Move to:\n'),

@@ -20,28 +20,22 @@ check(GameState, Row, Col, Score, Plus):-
 /*VERIFICAÇÂO DE COLOCAR PEDRA*/
 canPutStone(NumStones,MidGameState,Player,FinalGameState,NumStonesFinal, Jump,_):-
 	(NumStones =:= 0; Jump =:= 1),
-	write('here\n'),
 	NumStonesFinal is NumStones,
-	write('here1\n'),
 	copyMatrix(MidGameState, FinalGameState).
 
 canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,Mode):-
-	write('here2\n'),
 	Player == computer,
 	choose_stone(MidGameState,FinalGameState,yellow,Mode),
-	write('here3\n'),
 	NumStonesFinal is NumStones - 1.
+
 canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,Mode):-
-	write('here2\n'),
 	Player == computer1,
 	choose_stone(MidGameState,FinalGameState,red,Mode),
-	write('here3\n'),
 	NumStonesFinal is NumStones - 1.
+
 canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,Mode):-
-	write('here2\n'),
 	Player == computer2,
 	choose_stone(MidGameState,FinalGameState,yellow,Mode),
-	write('here3\n'),
 	NumStonesFinal is NumStones - 1.
 
 canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,_):-
@@ -49,66 +43,52 @@ canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,_
 	NumStonesFinal is NumStones - 1.
 
 checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
-	write('oi1\n'),
 	FinalRow - InitRow =:= 2,
-	Jump = 1,
-	write('finish1\n').
+	Jump = 1.
 
 checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
-	write('oi2\n'),
 	InitRow - FinalRow =:= 2,
-	Jump = 1,
-	write('finish2\n').
+	Jump = 1.
 
 checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
-	write('oi1\n'),
 	FinalColumn - InitColumn =:= 2,
-	Jump = 1,
-	write('finish1\n').
+	Jump = 1.
 
 checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
-	write('oi2\n'),
 	InitColumn - FinalColumn =:= 2,
-	Jump = 1,
-	write('finish2\n').
+	Jump = 1.
 
 checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
-	Jump = 0,
-	write('finish3\n').
+	Jump = 0.
 
 
 /*9 casos diferentes de posições no board*/
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==0, Col==0,
-    write('111111\n'), 
     appendList([],[1,0], Adj1),
     appendList(Adj1,[0,1], Adj2),
     appendList(Adj2,[1,1], Adj).
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==6, Col==0, 
-    write('222222\n'),
     appendList([],[5,0],Adj1),
     appendList(Adj1,[5,1], Adj2),
     appendList(Adj2,[6,1], Adj).
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==0, Col==6, 
-    write('3333333\n'),
     appendList([],[0,5], Adj1),
     appendList(Adj1,[1,6], Adj2),
     appendList(Adj2,[1,5], Adj).
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==6, Col==6, 
-    write('444444\n'),
     appendList([],[5,5], Adj1),
     appendList(Adj1,[6,5], Adj2),
     appendList(Adj2,[5,6], Adj).
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==0,
-    write('555\n'),
     Row1 is Row+1,
     Col1 is Col+1,
     Col2 is Col-1,
@@ -120,7 +100,6 @@ getAdjacentes(GameState,Row,Col,Adj):-
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Row==6,
-    write('666666\n'),
     Row2 is Row-1,
     Col1 is Col+1,
     Col2 is Col-1,
@@ -132,7 +111,6 @@ getAdjacentes(GameState,Row,Col,Adj):-
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Col==0,
-    write('777777\n'),
     Row1 is Row+1,
     Row2 is Row-1,
     Col1 is Col+1,
@@ -144,7 +122,6 @@ getAdjacentes(GameState,Row,Col,Adj):-
 
 getAdjacentes(GameState,Row,Col,Adj):-
     Col==6,
-    write('88888888\n'),
     Row1 is Row+1,
     Row2 is Row-1,
     Col2 is Col-1,
@@ -155,7 +132,6 @@ getAdjacentes(GameState,Row,Col,Adj):-
     appendList(Adj4,[Row2,Col2], Adj).
 
 getAdjacentes(GameState,Row,Col,Adj):-
-    write('999999\n'),
     Row1 is Row+1,
     Row2 is Row-1,
     Col1 is Col+1,
@@ -202,11 +178,7 @@ cleanInvalidMoves(GameState, [H | T], ListInt, ListFinal) :-
         cleanInvalidMoves(GameState, T, ListNew, ListFinal)
     );
     cleanInvalidMoves(GameState, T, ListInt, ListFinal).
-    
 
-valid_moves(GameState, Player, ListOfMoves) :-
-    getPlayerPos(GameState, Player, ListOfPositions),
-    getAllPossibleMoves(GameState, Player, ListOfPositions, ListOfMoves).
 
 getAllPossibleMoves(GameState, Player, ListOfPositions, ListOfMoves) :-
     getAllPossibleMoves(GameState, Player, ListOfPositions, [], ListOfMoves).
