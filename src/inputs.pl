@@ -1,20 +1,20 @@
-selectPiece(GameState, Player, MidGameState, Move, Jump) :-
+selectPiece(GameState, Player, MidGameState, Move, Jump, Size) :-
     write('Choose a piece:\n'),
-    readColumn(Column),
+    readColumn(Column, Size),
     checkColumn(Column, InitColumn),
-    readRow(Row),
+    readRow(Row, Size),
     checkRow(Row, InitRow),
     validateContent(Player, GameState, InitRow, InitColumn, FinalRow, FinalCol),
     replaceValueMatrix(GameState, FinalRow, FinalCol, empty, FirstGameState),
     append([], [FinalRow, FinalCol], MidMove),
-    selectSpot(FirstGameState, Player, MidGameState, FinalRow, FinalCol, NewRow, NewColumn, Jump),
+    selectSpot(FirstGameState, Player, MidGameState, FinalRow, FinalCol, NewRow, NewColumn, Jump, Size),
     append(MidMove, [NewRow, NewColumn], Move).
 
-selectSpot(GameState, Player, MidGameState, InitRow, InitColumn, NewRow, NewColumn, Jump) :-
+selectSpot(GameState, Player, MidGameState, InitRow, InitColumn, NewRow, NewColumn, Jump, Size) :-
     write('Move to:\n'),
-    readColumn(Column),
+    readColumn(Column, Size),
     checkColumn(Column, NewColumn),
-    readRow(Row),
+    readRow(Row, Size),
     checkRow(Row, NewRow),
     validateMoveRow(GameState, NewRow, NewColumn, InitRow, InitColumn, FinalRow, FinalCol, Player, Jump),
     replaceValueMatrix(GameState, FinalRow, FinalCol, Player, MidGameState).
@@ -25,18 +25,30 @@ selectSpotStone(GameState, Player, FinalGameState) :-
     checkColumn(Column, StoneColumn),
     readRow(Row),
     checkRow(Row, StoneRow),
+    write('hello1\n'), nl,
     validateStoneSpot(GameState, StoneRow, StoneColumn, FinalStoneRow, FinalStoneColumn),
+    write('hello2\n'), nl,
     replaceValueMatrix(GameState, FinalStoneRow, FinalStoneColumn, stone, FinalGameState).
 
 % read column from user
-readColumn(Column):-
-    write('Choose a column (0 - 6): '),
+readColumn(Column, Size):-
+    format('Choose a column (0 - ~d): ', Size),
     read(Column).
 
 % read row from user 
-readRow(Row):-
+readRow(Row, Size):-
+    Size =:= 7,
     write('Choose a row (A - G): '),
     read(Row).
+
+readRow(Row, Size) :-
+    Size =:= 9,
+    write('Choose a row (A - I): '),
+    readRow(Row).
+
+readRow(Row, Size) :-
+    write('Choose a row: '),
+    readRow(Row).
 
 % check if introduced column is valid
 checkColumn(0, 0).
@@ -46,6 +58,10 @@ checkColumn(3, 3).
 checkColumn(4, 4).
 checkColumn(5, 5).
 checkColumn(6, 6).
+checkColumn(7, 7).
+checkColumn(8, 8).
+checkColumn(9, 9).
+checkColumn(10, 10).
 
 % case not, asks for a new column
 checkColumn(_Column, InitColumn):-
@@ -61,6 +77,9 @@ checkRow('D', 3).
 checkRow('E', 4).
 checkRow('F', 5).
 checkRow('G', 6).
+checkRow('H', 7).
+checkRow('I', 8).
+checkRow('J', 9).
 checkRow('a', 0).
 checkRow('b', 1).
 checkRow('c', 2).
@@ -68,6 +87,9 @@ checkRow('d', 3).
 checkRow('e', 4).
 checkRow('f', 5).
 checkRow('g', 6).
+checkRow('h', 7).
+checkRow('i', 8).
+checkRow('j', 9).
 
 % case not, asks for a new row
 checkRow(_Row, InitRow) :-
@@ -267,7 +289,9 @@ validateJumpDiagonalRightDown(GameState, SelRow, SelCol, InitRow, InitCol, Final
     ).
 
 validateStoneSpot(GameState, SelRow, SelCol, FinalRow, FinalCol) :-
+    write('hello3\n'), nl,
     checkValueMatrix(GameState, SelRow, SelCol, Content),
+    write('hello4\n'), nl, write(SelRow), write(SelCol), write(Content), nl,
     Content == empty, FinalRow is SelRow, FinalCol is SelCol;
     (
         write('Invalid spot! Choose another.\n'),

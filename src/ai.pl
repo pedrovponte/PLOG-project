@@ -72,26 +72,26 @@ chooseRandomMove(X, Move1, Move2, Move2) :-
 
 
 
-choose_stone(MidGameState, FinalGameState,Player, Level) :-
+choose_stone(MidGameState, FinalGameState, Player, Level, Size) :-
     Level == 'random',
-    random(0,7,Row),
-    random(0,7,Col),
+    random(0, Size, Row),
+    random(0, Size, Col),
     checkValueMatrix(MidGameState, Row, Col, Content),
-    checkStone(MidGameState, Row, Col, Content, FinalGameState,Level).
+    checkStone(MidGameState, Row, Col, Content, FinalGameState, Level).
 
-checkStone(MidGameState, Row, Col, Content,FinalGameState,_Level):-
+checkStone(MidGameState, Row, Col, Content, FinalGameState, _Level):-
     Content == empty,
     replaceValueMatrix(MidGameState, Row, Col, stone, FinalGameState),
     format('\nPut stone in row ~d and column ~d\n', [Row, Col]).
 
-checkStone(MidGameState, Row, Col,Content,FinalGameState,Level):-
+checkStone(MidGameState, Row, Col, Content, FinalGameState, Level):-
     choose_stone(MidGameState,FinalGameState,Player,Level).
 
 
-choose_stone(MidGameState, FinalGameState,Player, Level) :-
+choose_stone(MidGameState, FinalGameState,Player, Level, Size) :-
     Level == 'greedy', % colocar stone no move que mais pontos dará ao adversário
     choose_move(MidGameState, Player, Level, Move),
     Move = [InitPos, FinalPos],
     FinalPos = [Row, Col],
     checkValueMatrix(MidGameState, Row, Col, Content),
-    checkStone(MidGameState, Row, Col, Content, FinalGameState,Level).
+    checkStone(MidGameState, Row, Col, Content, FinalGameState, Level).

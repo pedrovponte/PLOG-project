@@ -1,7 +1,7 @@
 /*Score*/
-calculateScore(_GameState,[],Score1,Score1).
+calculateScore(_GameState, [], Score1, Score1).
 
-calculateScore(GameState,[[H,H2]|T],Score, ScorePlus):-
+calculateScore(GameState,[[H,H2]|T], Score, ScorePlus):-
     check(GameState,H,H2,Score,Score1),
     calculateScore(GameState,T,Score1,ScorePlus).
 
@@ -18,27 +18,28 @@ check(GameState, Row, Col, Score, Plus):-
     increment(Content,Score,Plus).
 
 /*VERIFICAÇÂO DE COLOCAR PEDRA*/
-canPutStone(NumStones,MidGameState,Player,FinalGameState,NumStonesFinal, Jump,_):-
+canPutStone(NumStones,MidGameState,Player,FinalGameState,NumStonesFinal, Jump, _, _):-
 	(NumStones =:= 0; Jump =:= 1),
 	NumStonesFinal is NumStones,
-	copyMatrix(MidGameState, FinalGameState).
+	copyMatrix(MidGameState, FinalGameState),
+    write('No stone played\n').
 
-canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,Mode):-
+canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, Mode, Size):-
 	Player == computer,
-	choose_stone(MidGameState,FinalGameState,yellow,Mode),
+	choose_stone(MidGameState, FinalGameState, yellow, Mode, Size),
 	NumStonesFinal is NumStones - 1.
 
-canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,Mode):-
+canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, Mode, Size):-
 	Player == computer1,
-	choose_stone(MidGameState,FinalGameState,red,Mode),
+	choose_stone(MidGameState, FinalGameState, red, Mode, Size),
 	NumStonesFinal is NumStones - 1.
 
-canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,Mode):-
+canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, Mode, Size):-
 	Player == computer2,
-	choose_stone(MidGameState,FinalGameState,yellow,Mode),
+	choose_stone(MidGameState, FinalGameState, yellow, Mode, Size),
 	NumStonesFinal is NumStones - 1.
 
-canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump,_):-
+canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, _, _):-
 	selectSpotStone(MidGameState, Player, FinalGameState),
 	NumStonesFinal is NumStones - 1.
 
@@ -63,31 +64,34 @@ checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump) :-
 
 
 /*9 casos diferentes de posições no board*/
-getAdjacentes(GameState,Row,Col,Adj):-
+getAdjacentes(GameState,Row,Col,Adj, Size):-
     Row==0, Col==0,
     appendList([],[1,0], Adj1),
     appendList(Adj1,[0,1], Adj2),
     appendList(Adj2,[1,1], Adj).
 
-getAdjacentes(GameState,Row,Col,Adj):-
-    Row==6, Col==0, 
+getAdjacentes(GameState,Row,Col,Adj, Size):-
+    Size1 is Size - 1,
+    Row==Size1, Col==0, 
     appendList([],[5,0],Adj1),
     appendList(Adj1,[5,1], Adj2),
     appendList(Adj2,[6,1], Adj).
 
-getAdjacentes(GameState,Row,Col,Adj):-
-    Row==0, Col==6, 
+getAdjacentes(GameState,Row,Col,Adj, Size):-
+    Size1 is Size - 1,
+    Row==0, Col==Size1, 
     appendList([],[0,5], Adj1),
     appendList(Adj1,[1,6], Adj2),
     appendList(Adj2,[1,5], Adj).
 
-getAdjacentes(GameState,Row,Col,Adj):-
-    Row==6, Col==6, 
+getAdjacentes(GameState,Row,Col,Adj, Size):-
+    Size1 is Size - 1,
+    Row==Size1, Col==Size1, 
     appendList([],[5,5], Adj1),
     appendList(Adj1,[6,5], Adj2),
     appendList(Adj2,[5,6], Adj).
 
-getAdjacentes(GameState,Row,Col,Adj):-
+getAdjacentes(GameState,Row,Col,Adj, Size):-
     Row==0,
     Row1 is Row+1,
     Col1 is Col+1,
@@ -98,8 +102,9 @@ getAdjacentes(GameState,Row,Col,Adj):-
     appendList(Adj3,[Row1,Col1], Adj4),
     appendList(Adj4,[Row1,Col2], Adj).
 
-getAdjacentes(GameState,Row,Col,Adj):-
-    Row==6,
+getAdjacentes(GameState,Row,Col,Adj, Size):-
+    Size1 is Size - 1,
+    Row==Size1,
     Row2 is Row-1,
     Col1 is Col+1,
     Col2 is Col-1,
@@ -109,7 +114,7 @@ getAdjacentes(GameState,Row,Col,Adj):-
     appendList(Adj3,[Row2,Col1], Adj4),
     appendList(Adj4,[Row2,Col2], Adj).
 
-getAdjacentes(GameState,Row,Col,Adj):-
+getAdjacentes(GameState,Row,Col,Adj, Size):-
     Col==0,
     Row1 is Row+1,
     Row2 is Row-1,
@@ -120,8 +125,9 @@ getAdjacentes(GameState,Row,Col,Adj):-
     appendList(Adj3,[Row,Col1], Adj4),
     appendList(Adj4,[Row2,Col1], Adj).
 
-getAdjacentes(GameState,Row,Col,Adj):-
-    Col==6,
+getAdjacentes(GameState,Row,Col,Adj, Size):-
+    Size1 is Size - 1,
+    Col==Size1,
     Row1 is Row+1,
     Row2 is Row-1,
     Col2 is Col-1,
@@ -131,7 +137,7 @@ getAdjacentes(GameState,Row,Col,Adj):-
     appendList(Adj3,[Row,Col2], Adj4),
     appendList(Adj4,[Row2,Col2], Adj).
 
-getAdjacentes(GameState,Row,Col,Adj):-
+getAdjacentes(GameState,Row,Col,Adj, Size):-
     Row1 is Row+1,
     Row2 is Row-1,
     Col1 is Col+1,
@@ -147,7 +153,7 @@ getAdjacentes(GameState,Row,Col,Adj):-
 
 /*End Game*/
 checkGameOver(_Player,NextPlayer,Score):-
-	Score==10,
+	Score >= 10,
 	NextPlayer = end.
 
 checkGameOver(Player,NextPlayer,_Score):-
