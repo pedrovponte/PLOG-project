@@ -47,7 +47,10 @@ display_info_2computer(Player, Computer1Score, Computer2Score, Computer1Stones, 
 	format('Computer 1 (Yellow) Score: ~d.\n', Computer1Score),
 	format('Computer 2 (Red) Score: ~d.\n\n', Computer2Score).
 
-% by now, yellow player is the first to play, but in the future we can put it random
+move(GameState, Move, FinalGameState, Player, Jump) :-
+	selectPiece(GameState, Player, FinalGameState, Move, Jump).
+
+
 start_game(GameState, Player, YellowStones, RedStones, YellowScore, RedScore) :-
 	(
 		Player == end,
@@ -68,12 +71,11 @@ turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, FinalGam
 
 	display_game(GameState, Player),
 	display_info(Player, YellowScore, RedScore, YellowStones, RedStones),
-	/*valid_moves(GameState, Player, ListOfMoves),
-	write(ListOfMoves),*/
-	write('\n'),
-	
 
-	selectPiece(GameState, Player, MidGameState, NewRow, NewColumn, Jump),
+	/*selectPiece(GameState, Player, MidGameState, NewRow, NewColumn, Jump),*/
+	move(GameState, Move, MidGameState, Player, Jump),
+	Move = [InitRow, InitColumn, NewRow, NewColumn],
+	write(InitRow), write(InitColumn), nl, write(NewRow), write(NewColumn), nl,
 	display_game(MidGameState, Player),
 	display_info(Player, YellowScore, RedScore, YellowStones, RedStones),
 
@@ -121,7 +123,10 @@ turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScor
 
 	((
 		Player == yellow,
-		selectPiece(GameState, Player, MidGameState, NewRow, NewColumn, Jump),
+		/*selectPiece(GameState, Player, MidGameState, NewRow, NewColumn, Jump),*/
+		move(GameState, Move, MidGameState, Player, Jump),
+		Move = [InitRow, InitColumn, NewRow, NewColumn],
+		write(InitRow), write(InitColumn), nl, write(NewRow), write(NewColumn), nl,
 		display_game(MidGameState, Player),
 		display_info_computer(Player, YellowScore, ComputerScore, YellowStones, ComputerStones),
 		canPutStone(YellowStones, MidGameState, Player, FinalGameState, FinalStones, Jump,Mode),
@@ -230,4 +235,10 @@ turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameStat
 		checkGameOver(computer1, NextPlayer, FinalScore)
 	)).
 
+
+game_over(GameState, Winner, Player, NextPlayer, FinalScore, Score1, Score2) :-
+	checkGameOver(Player, NextPlayer,  FinalScore),
+	NextPlayer == end, 
+	!,
+	Winner == Player.
 

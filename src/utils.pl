@@ -70,27 +70,3 @@ getPlayerPos(GameState, [H|T], Player, Row, ListInt, ListOfPositions) :-
     append(ListInt, List, Res),
     Next is Row + 1,
     getPlayerPos(GameState, T, Player, Next, Res, ListOfPositions).
-
-
-/*
-findValueInMatrix([H|T], Row, Column) :-
-    Row is 0,
-    increment(Row,RowPlus),
-    indices(H,red,Colunas),
-    length(Colunas,l),
-    l==0,
-    nth0(0,Colunas,Column).
-
-findValueInMatrix([H|T], Row, Column) :-
-    Row1 is Row,
-    indices(H,red,Colunas),
-    length(Colunas,l),
-    l\=0,
-    indices(T,red,Colunas).
-
-indices(List, E, Is) :-
-    findall(N, nth0(N, List, E), Is).
-
-
-increment(Row,RowPlus):-
-    RowPlus is Row + 1.*/
