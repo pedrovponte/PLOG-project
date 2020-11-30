@@ -210,7 +210,7 @@ checkJumpRight(_, _, _, _, _, []).
 
 checkJumpTop(GameState, InitRow, InitColumn, StoneRow, StoneColumn, TopList) :-
     StoneColumn =:= InitColumn,
-    StoneRow =:= StoneRow - 1,
+    StoneRow =:= InitRow - 1,
     StoneRow > 0,
     FinalRow is StoneRow - 1,
     checkValueMatrix(GameState, StoneRow - 1, StoneColumn, Content),
@@ -221,7 +221,7 @@ checkJumpTop(_, _, _, _, _, []).
 
 checkJumpDown(GameState, InitRow, InitColumn, StoneRow, StoneColumn, DownList) :-
     StoneColumn =:= InitColumn,
-    StoneRow =:= StoneRow + 1,
+    StoneRow =:= InitRow + 1,
     StoneRow < 6,
     FinalRow is StoneRow + 1,
     checkValueMatrix(GameState, FinalRow, StoneColumn, Content),
