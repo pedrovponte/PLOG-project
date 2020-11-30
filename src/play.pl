@@ -1,14 +1,14 @@
 % Main function, that initializes the game and calls the game loop
 play(Size) :-
 	initial(GameState, Size),
-	Players = [yellow,red],
-	random_member(X,Players),
+	Players = [yellow, red],
+	random_member(X, Players),
 	start_game(GameState, X, 10, 10, 0, 0, Size).
 
 playPVsComputer(Size, Mode) :-
 	initial(GameState, Size),
-	Players = [yellow,computer],
-	random_member(X,Players),
+	Players = [yellow, computer],
+	random_member(X, Players),
 	start_game2(GameState, X, 10, 10, 0, 0, Mode, Size).
 
 playComputerVsComputer(Size, Mode) :-
@@ -59,7 +59,7 @@ display_info_2computer(Player, Computer1Score, Computer2Score, Computer1Stones, 
 start_game(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, Size) :-
 	(
 		Player == end,
-		endGame(YellowScore,RedScore)
+		endGame(YellowScore, RedScore)
 	);
 	(
 		Player == yellow,
@@ -99,8 +99,6 @@ turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, FinalGam
 
 
 % Start Game Player vs Computer
-
-
 start_game2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScore, Mode, Size) :-
 	(
 		Player == end,
@@ -163,7 +161,7 @@ turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScor
 start_game3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, Mode, Size) :-
 	(
 		Player == end,
-		endGame(PC1Score,PC2Score)
+		endGame(PC1Score, PC2Score)
 	);
 	(
 		Player == computer1,
@@ -230,13 +228,13 @@ start_game4(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, Size):-
 	(
 		Player == computer1,
 		write('Computer 1 (Yellow) - Random player.\n'),
-		turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer,'random', Size),
+		turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer, 'random', Size),
 		start_game4(FinalGameState, NextPlayer, FinalStones, PC2Stones, FinalScore, PC2Score, Size)
 	);
 	(
 		Player == computer2,
 		write('Computer 2 (Red) - Greedy player.\n'),
-		turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer,'greedy', Size),
+		turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer, 'greedy', Size),
 		start_game4(FinalGameState, NextPlayer, PC1Stones, FinalStones, PC1Score, FinalScore, Size)
 	).
 

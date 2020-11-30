@@ -189,16 +189,15 @@ All the predicates mentioned in this section can be found in the file [menu.pl](
 
 #### **Board**
 
-In order to have a user-friendly game visualization, we decided to represent the game pieces with some symbols: **RF** for red fishes, **YF** for yellow fishes, **O** for stones, and **' '** for empty spaces. To do it, we use a predicate called ```code(Value, Symbol)```.
+In order to have a user-friendly game visualization, we decided to represent the game pieces with some symbols: **RF** for red fishes, **YF** for yellow fishes, **O** for stones, and **' '** for empty spaces. To do it, we use a predicate called `code(Value, Symbol)`.
 
-In order to create a board with a chosen size, we have implemented ```generateRandomBoard(-GameBoard, +Size)```, that builds the board, row by row, calling the predicates ```buildBoard/4``` and ```buildRow/4```.
+In order to create a board with a chosen size, we have implemented `generateRandomBoard(-GameBoard, +Size)`, that builds the board, row by row, calling the predicates `buildBoard/4` and `buildRow/4`.
 
-To print the board, we only have to call ```display_board/2``` that uses the predicates: 
+To print the board, we only have to call `display_board/2` that uses the predicates: 
 
-* ```printBoard(+GameBoard)``` - calls predicates that will draw the header and the board;
-* ```printHeader/1``` - prints the header that contains the number of the columns and the row separator;
-* ```printBoard/3``` - prints the rest of the boards using predicates ```letter/4``` to get the respective row letter identifier, ```print_line/1``` that prints the respective row passed by argument, ```print_cell/1``` that displays a cell and ```printRowSeparator/2```;
-* ```print_cell(List)``` - calls ```code``` function to get the symbol of the cell and prints that on the screen.
+* `printBoard(+GameBoard)` - calls predicates that will draw the header and the board;
+* `printHeader/1` - prints the header that contains the number of the columns and the row separator;
+* `printBoard/3` - prints the rest of the boards using predicates `letter/4` to get the respective row letter identifier, `print_line/1` that prints the respective row passed by argument, `print_cell/1` that displays a cell and `printRowSeparator/2`.
 
 All the predicates mentioned in this section can be found in the file [display.pl](src/display.pl).
 
@@ -218,12 +217,9 @@ All the predicates mentioned in this section can be found in the file [display.p
 
 ### Valid Moves
 
-The `valid_moves(+GameState, +Player, -ListOfMoves)` returns on ListOfMoves a list of moves in the format `[InitialRow, InitialColumn, [MoveRow1, MoveColumn1], [MoveRow2, MoveColumn2], ...] [Fish2Row,Fish2Column,[MoveRow3,MoveColumn3], [MovRow4-MovColumn4], ...s]]`.
-This predicate first calls `getPlayerPos(+GameState,+Player,-ListOfPositions)` that goes through the board and gets the position of all the player's pieces, the positions are stored in Positions.
+The `valid_moves(+GameState, +Player, -ListOfMoves, +Size)` returns on ListOfMoves a list of moves in the format `[[Fish1Row, Fish2Row, [MoveRow1, MoveColumn1], [MoveRow2, MoveColumn2], ...] [Fish2Row,Fish2Column,[MoveRow3,MoveColumn3], [MovRow4-MovColumn4], ...]]`. This predicate first calls `getPlayerPos(+GameState, +Player, -ListOfPositions, +Size)` that goes through the board and gets the position of all the player's pieces, the positions are stored in Positions.
 
-Then it is called `getAllPossibleMoves(+GameState,+Palyer,+ListOfPositions,-ListOfMoves)` that using `getMoves(+GameState, +InitRow, +InitColumn, -Moves),` sees all the possible moves (with `getAdjacentes(+GameState,+Row,+Col,-Adj)` and `getPossibleJumps(+GameState, +InitRow, +InitColumn, +ListInt, +ListAux, -ListRes)`). This verification consists of checking the existence of an empty cell in any surrounding position including the ones after jumping.
-
-The predicate will fail if the ListOfPossible moves is empty.
+Then it is called `getAllPossibleMoves(+GameState, +Palyer, +ListOfPositions, -ListOfMoves, +Size)` that using `getMoves(+GameState, +InitRow, +InitColumn, -Moves, +Size)`, sees all the possible moves (with `getAdjacentes(+GameState, +Row, +Col, -Adj, +Size)` and `getPossibleJumps(+GameState, +InitRow, +InitColumn, +ListInt, +ListAux, -ListRes)`). This verification consists of checking the existence of an empty cell in any surrounding position including the ones after jumping.
 
 All the predicates mentioned in this section can be found in the file [game_logic.pl](src/game_logic.pl). They are mainly used on the game loop that you can find in [play.pl](src/play.pl)
 
@@ -231,67 +227,73 @@ All the predicates mentioned in this section can be found in the file [game_logi
 
 ### Making moves
 
-The `move(+GameState, +Player, -MidGameState, -NewRow, -NewColumn, -Jump)` asks the player for position inputs that are validated using the predicates `checkRow/2` and `checkColumn/2`. After that, the predicate `validateContent` is called to check if the player is selecting one of their pieces.  If any of these verifications fail, the predicate asks again for the input. If it succeeds the predicate `selectSpot(+GameState, +Player, -MidGameState, +InitRow, +InitColumn, -NewRow, -NewColumn, -Jump)` is called asking the user for inputs and validating if it is an empty cell using the predicate `validateMove`. 
+The `move(GameState, Move, MidGameState, Player, Jump, Size)` asks the player for position inputs that are validated using the predicates `checkRow/3` and `checkColumn/3`. After that, the predicate `validateContent/7` is called to check if the player is selecting one of their pieces.  If any of these verifications fail, the predicate asks again for the input. If it succeeds the predicate `selectSpot(+GameState, +Player, -MidGameState, +InitRow, +InitColumn, -NewRow, -NewColumn, -Jump, +Size)` is called asking the user for inputs and validating if it is an empty cell to put the koi using the predicate `validateMove/10`. 
 
-If all the verifications suceed, then it is called `replaceValueMatrix` that replaces the old player's position for an empty space and the piece at the moving position to the player's piece, obtaining a new GameState - MidGameState.
+If all the verifications succeed, then it is called `replaceValueMatrix/5` that replaces the old koi's position for an empty space and put the koi in the selected position, obtaining a new GameState - MidGameState.
 
-Given that each player may or may not put a stone after a move we included the predicate `canPutStone(+YellowStones, +MidGameState, +Player, -FinalGameState, -FinalStones, +Jump,+Mode)` that checks if the player still has stones left and did not jump. If those conditions are met then the predicate `selectSpotStone(+GameState, -Player, -FinalGameState)` is called asking the user for inputs and validating if it is an empty cell using the predicate `validateStoneSpot`
+Given that each player may or may not put a stone after a move we included the predicate `canPutStone(+NumStones, +MidGameState, +Player, -FinalGameState, -NumStonesFinal, +Jump,+Mode, +Size)` that checks if the player still has stones left and did not jump. If those conditions are met then the predicate `selectSpotStone(+GameState, -Player, -FinalGameState, +Size)` is called asking the user for inputs and validating if it is an empty cell using the predicate `validateStoneSpot/6`.
 
 
-All the predicates mentioned in this section can be found in the file [inputs.pl](src/inputs.pl) except for the `canPutStone` that can be found in [game_logic.pl](src/game_logic.pl).
+All the predicates mentioned in this section can be found in the file [inputs.pl](src/inputs.pl) except for the `canPutStone/8` that can be found in [game_logic.pl](src/game_logic.pl) and `replaceValueMatrix/5` [utils.pl](src/utils.pl).
+
+---
+
+### Board Evaluation
+
+The evaluation of the board is made using the `value(+GameState, +Player, +FinalRow, +FinalCol, -Value, +Size)`. Although this predicate has a different amount of arguments than those requested by the teachers, we implemented the predicate this way to optimize the evaluation. Using the predicates getAdjacentes and calculateScore, we just unified the variable *Value* with the *Score* obtained. This way we can move the kois to the possible place that will add the most score.
+
+All the predicates mentioned in this section can be found in the file [game_logic.pl](src/game_logic.pl).
+
+---
+
+### Computer Move
+ 
+To choose a computer move we use the predicate `choose_move(+GameState, +Player, +Level, -Move, Size)`, where `Level` will be 'random' or 'greedy', the two difficulties we implemented in our game.
+ 
+First, `valid_moves/4` (explained above) is used to get all the possible moves for both kois, and then we will choose a move from `ListOfMoves` according to the level, explained in the sections below.
+
+All the predicates mentioned in this section can be found in the file [ai.pl](src/ai.pl).
+ 
+#### **Level 1 - Random**
+ 
+In level 1, the koi and the respective move chosen will be random using `random_member(-Elem, +List)`.
+ 
+#### **Level 2 - Greedy**
+ 
+In level 2 the move will be greedy, choosing the best move in the current turn. In this case both  `getMovesValuesBot/7` and ` selectBestMove/5` select a move using `findall(+Template, +Generator, -List)`. In the `Generator` the`value/4` predicate, explained above, is used to evaluate the board after a move.  This way these predicates end up returning all possible moves to the current player. 
+The `List` is `Value-InitialPosition-FinalPosition-Index`.
+Finally, the list is sorted, using `sort(+List1, -List2)`, being in ascending order of Values and `reverse(+List, -Last)` is used so we can get the move with the highest value.
+
+#### **Placing Stones**
+
+Given that each player may or may not put a stone after a move we created the predicate `choose_stone(+MidGameState, -FinalGameState, +Player, +Level, +Size)` that is called after checking if the player can actually place a stone on the board. This predicate receives a Level just like the chose_move. If the Level is 'random' then the stone will be placed on an empty cell of the matrix. Otherwise, if the Level is 'greedy', we decided to go for a sabotaging approach. The predicate `choose_move/5` is called passing the oponent Player. This way we are able to put a stone in one of the positions where the opponent would make more points.
+
+In level 1, the koi and the respective move chosen will be random using `random_member(-Elem, +List)`.
 
 ---
 
 ### Game Over
 
 At the end of every turn, two predicates are called:
-- `calculateScore(+FinalGameState, +Adj, +Score, -FinalScore)`  that updates the score of the player who just played analyzing the current Game State with the help of the previously called predicate `getAdjacentes`;
-- `game_over(+Player, -NextPlayer,+Score)` in order to check if the game is over, according to the rules already presented. This predicate evaluates whether the current Player won or not by evaluating his current Score. If the Score is 10, means the game ended and in that case, NextPlayer is unified with the term 'end'. Otherwise, the variable NextPlayer becomes the next player to play.
+- `calculateScore(+FinalGameState, +Adj, +Score, -FinalScore)` that updates the score of the player who just played, analyzing the current GameState with the help of the previously called predicate `getAdjacentes/5`;
+- `checkGameOver(+Player, -NextPlayer, +Score)` in order to check if the game is over, according to the rules already presented. This predicate evaluates whether the current Player won or not by evaluating his current Score. If the Score is 10, means the game ended and in that case, NextPlayer is unified with the term 'end'. Otherwise, the variable NextPlayer becomes the next player to play.
 
 All the predicates mentioned in this section can be found in the file [game_logic.pl](src/game_logic.pl).
 
 ---
 
-### Board Evaluation
-
-The evaluation of the board is made using the `value(+GameState, +Player, +FinalRow, +FinalCol, -Value)`. Although this predicate has a different amount of arguments than those requested by the teachers, we implemented the predicate this way to optimize the evaluation. Using the predicate getAdjacentes and calculateScore we just unified the variavel Value with the Score obtained. This way we can move the kois to the possible place that will add the most score.
-
----
-
-### Computer Move
- 
-To choose a computer move we use the predicate `choose_move(+GameState, +Player, +Level, -Move)`, where `Level` will be 'random' or 'greedy', the two difficulties we implemented in our game.
- 
-First, `valid_moves/3` (explained above) is used to get all the possible moves, and then we will choose a move from `ListOfMoves` according to the level, explained in the sections below.
- 
-#### **Level 1 - Random**
- 
-In level 1 the move chosen will be random using `random_member(-Elem, +List)`.
- 
-#### **Level 2 - Greedy**
- 
-In level 2 the move will be greedy, choosing the best move in the current turn. In this case both  `getMovesValuesBot/6` and ` selectBestMove/5` select a move using `findall(+Template, +Generator, -List)`. In the `Generator` the`value/4` predicate, explained above, is used to evaluate the board after a move.  This way these predicates end up returning the highest value in the current board for the player. 
-The `List` is `Value-InitialPosition-FinalPosition-Index`.
-Finally, the list is sorted, using `sort(+List1, -List2)`, being in ascending order of Values and `reverse(+List, -Last)` is used so we can get the move with the highest value.
-
-
-#### **Placing Stones**
-
-Given that each player may or may not put a stone after a move we created the predicate `choose_stone(+MidGameState, -FinalGameState, +Player, +Level)` that is called after checking if the player can acttualy place a stone on the board. This predicate receives a Level just like the chose_move. If the Level is 'random' then the stone will be placed on an empty cell of the matrix. Otherwise, if the Level is 'greedy', we decided to go for an sabotaging 
-approach. The predicate `choose_move` is called passing the oponent Player. This way we are able to put a stone in the possition where the oponent would make more points.
-
-
----
-
 ## Conclusion
 
- We feel that this project developed our knowledge and understanding of Prolog. Since Prolog was a brand new language to us, we had some difficulties starting the disenrollment of the game, however we quickly became accustomed to the syntax.
+We feel that this project developed our knowledge and understanding of Prolog. Since Prolog was a brand new language to us, we had some difficulties starting the disenrollment of the game, however we quickly became accustomed to the syntax.
 
-We didint encouter any bugs or limitations.
+For our knowledge, we didin't encouter any bugs or limitations.
 
-For possible improvements, ?????????????????????????????
+For possible improvements, we could implement more difficulty modes or made our bot moore intelligent: for example, to choose a place for a stone, the bot could take in account not only the possible moves of the enemy, but also his own situation and possible next moves that would make him score more points in the next turn.
 
 ---
 
 ## Bibliography
 
+* [SICStus Documentation](https://sicstus.sics.se/documentation.html);
+* Moodle slides;
+* StackOverflow to check out some doubts that appeared while we were developing this project.

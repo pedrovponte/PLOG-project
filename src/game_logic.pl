@@ -1,21 +1,21 @@
 % Calculating Score based on the game state
 
-calculateScore(_GameState,[],Score,Score).
+calculateScore(_GameState, [], Score, Score).
 
-calculateScore(GameState,[[H,H2]|T],Score, ScorePlus):-
-    check(GameState,H,H2,Score,Score1),
-    calculateScore(GameState,T,Score1,ScorePlus).
+calculateScore(GameState, [[H,H2]|T], Score, ScorePlus):-
+    check(GameState, H, H2, Score, Score1),
+    calculateScore(GameState, T, Score1, ScorePlus).
 
-increment(Content,Score,ScorePlus):-
+increment(Content, Score, ScorePlus):-
     (Content == empty; Content == stone),
     ScorePlus is Score.
 
-increment(Content,Score,ScorePlus):-
+increment(Content, Score, ScorePlus):-
     ScorePlus is Score + 1.
 
 check(GameState, Row, Col, Score, Plus):-
     checkValueMatrix(GameState, Row, Col, Content),
-    increment(Content,Score,Plus).
+    increment(Content, Score, Plus).
 
 % Obtaining list of adjacent cels to the position Row,Col
 
@@ -25,14 +25,14 @@ getAdjacentes(GameState, Row, Col, Adj, Size):-
     Row2 is Row-1,
     Col1 is Col+1,
     Col2 is Col-1,
-    appendList([],[Row1,Col], List),
-    appendList(List,[Row2,Col], List1),
-    appendList(List1,[Row1,Col1], List2),
-    appendList(List2,[Row2,Col1], List3),
-    appendList(List3,[Row,Col1], List4),
-    appendList(List4,[Row1,Col2], List5),
-    appendList(List5,[Row2,Col2], List6),
-    appendList(List6,[Row,Col2], List7),
+    appendList([], [Row1,Col], List),
+    appendList(List, [Row2,Col], List1),
+    appendList(List1, [Row1,Col1], List2),
+    appendList(List2, [Row2,Col1], List3),
+    appendList(List3, [Row,Col1], List4),
+    appendList(List4, [Row1,Col2], List5),
+    appendList(List5, [Row2,Col2], List6),
+    appendList(List6, [Row,Col2], List7),
     findall([R,C], 
             (
                 member([R,C], List7),
@@ -41,25 +41,25 @@ getAdjacentes(GameState, Row, Col, Adj, Size):-
             ), 
             Adj).
 
-% Checking if the player can add a stone to the bord: has stones left && didn't jump
+% Checking if the player can add a stone to the bord: has stones left && did not jump
 
-canPutStone(NumStones,MidGameState,Player,FinalGameState,NumStonesFinal, Jump, _, _):-
+canPutStone(NumStones, MidGameState, Player, FinalGameState, NumStonesFinal, Jump, _, _):-
 	(NumStones =:= 0; Jump =:= 1),
 	NumStonesFinal is NumStones,
 	copyMatrix(MidGameState, FinalGameState),
     write('No stone played\n').
 
-canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, Mode, Size):-
+canPutStone(NumStones, MidGameState, Player, FinalGameState, NumStonesFinal, Jump, Mode, Size):-
 	Player == computer,
 	choose_stone(MidGameState, FinalGameState, yellow, Mode, Size),
 	NumStonesFinal is NumStones - 1.
 
-canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, Mode, Size):-
+canPutStone(NumStones, MidGameState, Player, FinalGameState, NumStonesFinal, Jump, Mode, Size):-
 	Player == computer1,
 	choose_stone(MidGameState, FinalGameState, red, Mode, Size),
 	NumStonesFinal is NumStones - 1.
 
-canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, Mode, Size):-
+canPutStone(NumStones, MidGameState, Player, FinalGameState, NumStonesFinal, Jump, Mode, Size):-
 	Player == computer2,
 	choose_stone(MidGameState, FinalGameState, yellow, Mode, Size),
 	NumStonesFinal is NumStones - 1.
@@ -70,19 +70,26 @@ canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, 
 
 
 % Checking end of the game
-
 % Evaluation about the end of the game
-game_over(GameState, Winner, Player, NextPlayer, FinalScore, Score1, Score2) :-
-	checkGameOver(Player, NextPlayer,  FinalScore).
+game_over(GameState, Winner, Player, YellowScore, RedScore) :-
+    Player == yellow,
+    YellowScore >= 10,
+    Winner is Player;
+    (
+        Player == red,
+        RedScore >= 10,
+        Winner is Player
+    ).
 
-checkGameOver(_Player,NextPlayer,Score):-
+
+checkGameOver(_Player, NextPlayer, Score):-
 	Score >= 10,
 	NextPlayer = end.
 
-checkGameOver(Player,NextPlayer,_Score):-
+checkGameOver(Player, NextPlayer,_Score):-
 	NextPlayer = Player.
 
-endGame(YellowScore,RedScore):-
+endGame(YellowScore, RedScore):-
 	format('Yellow Score: ~d.\n', YellowScore),
 	format('Red Score: ~d.\n\n', RedScore),
 	write('GAME ENDED\n'),

@@ -1,8 +1,7 @@
-
 % Obtaining possible game moves
 
 valid_moves(GameState, Player, ListOfMoves, Size) :-
-    getPlayerPos(GameState, Player, ListOfPositions,Size),
+    getPlayerPos(GameState, Player, ListOfPositions, Size),
     getAllPossibleMoves(GameState, Player, ListOfPositions, ListOfMoves, Size).
 
 % Random algorithm to chose move
@@ -94,10 +93,10 @@ choose_stone(MidGameState, FinalGameState,Player, Level, Size) :-
 
 % Evaluating stone spot chosen
 
-checkStone(MidGameState, Row, Col, Content,FinalGameState,_Level, Size):-
+checkStone(MidGameState, Row, Col, Content, FinalGameState,_Level, Size):-
     Content == empty,
     replaceValueMatrix(MidGameState, Row, Col, stone, FinalGameState),
     format('\nPut stone in row ~d and column ~d\n', [Row, Col]).
 
 checkStone(MidGameState, Row, Col,Content,FinalGameState,Level, Size):-
-    choose_stone(MidGameState,FinalGameState,Player,Level, Size).
+    choose_stone(MidGameState, FinalGameState,Player, Level, Size).
