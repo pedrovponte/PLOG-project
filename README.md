@@ -37,17 +37,17 @@ The first player to score 10 points wins.
 
 ### Internal representation of the GameState
 
-#### **Board**
+#### Board
 
 To represent the cells of the board, we decided to use lists within a list. Each list inside the main list represents a line and each element of this list is the cell content. The content of a cell can be one out of three characters:
 
 - **RF** - Red player's koi,
 - **YF** - Yellow player's koi,
 -  **' '** - empty cell.
--  
+
 #### Some Possible Situation Representations
 
-##### **Initial Situation:**
+##### Initial Situation:
 
 ```
 initialBoard([
@@ -83,7 +83,7 @@ G |YF |   |   |   |   |   |YF |
   Yellow Score: 0.
   Red Score: 0.
 ```
-##### **Intermediate Situation:**
+##### Intermediate Situation:
 
 ```
 intermediateBoard([
@@ -120,7 +120,7 @@ G |   |   |   | O |   |   |   |
   Red Score: 3.
 ```
 
-##### **Final Situation:**
+##### Final Situation:
 
 ```
 finalBoard([
@@ -159,7 +159,7 @@ G |   |   |   | O |   |   |   |
   GAME ENDED
   Red player wins the game!
 ```
-#### **Atoms**
+#### Atoms
 	
 | Code | Meaning |
 | :--------------:|:---------------:|
@@ -171,7 +171,7 @@ G |   |   |   | O |   |   |   |
 --- 
 ### GameState Visualization
 
-#### **Menu**
+#### Menu
 
 When initiating the game with the predicate `jin_li/0`, the main menu is displayed with options about the board size, the game type, the bot's difficulties and exiting the game. In order to select an option, the user must press the corresponding number, dot and enter. The inputs are validated by the predicate `checkOption/2` and read by the predicate `selectAction(+Option)`.
 After that, depending on the option chosen, one of the following predicates is called: 
@@ -184,10 +184,10 @@ All boards have a variable size that is passed to the game with **Size**.
 
 All the predicates mentioned in this section can be found in the file [menu.pl](src/menu.pl).
 
-![](images/menu.PNG)
+![](images/menu.png)
 
 
-#### **Board**
+#### Board
 
 In order to have a user-friendly game visualization, we decided to represent the game pieces with some symbols: **RF** for red fishes, **YF** for yellow fishes, **O** for stones, and **' '** for empty spaces. To do it, we use a predicate called `code(Value, Symbol)`.
 
@@ -254,17 +254,17 @@ First, `valid_moves/4` (explained above) is used to get all the possible moves f
 
 All the predicates mentioned in this section can be found in the file [ai.pl](src/ai.pl).
  
-#### **Level 1 - Random**
+#### Level 1 - Random
  
 In level 1, the koi and the respective move chosen will be random using `random_member(-Elem, +List)`.
  
-#### **Level 2 - Greedy**
+#### Level 2 - Greedy
  
 In level 2 the move will be greedy, choosing the best move in the current turn. In this case both  `getMovesValuesBot/7` and ` selectBestMove/5` select a move using `findall(+Template, +Generator, -List)`. In the `Generator` the`value/4` predicate, explained above, is used to evaluate the board after a move.  This way these predicates end up returning all possible moves to the current player. 
 The `List` is `Value-InitialPosition-FinalPosition-Index`.
 Finally, the list is sorted, using `sort(+List1, -List2)`, being in ascending order of Values and `reverse(+List, -Last)` is used so we can get the move with the highest value.
 
-#### **Placing Stones**
+#### Placing Stones
 
 Given that each player may or may not put a stone after a move we created the predicate `choose_stone(+MidGameState, -FinalGameState, +Player, +Level, +Size)` that is called after checking if the player can actually place a stone on the board. This predicate receives a Level just like the chose_move. If the Level is 'random' then the stone will be placed on an empty cell of the matrix. Otherwise, if the Level is 'greedy', we decided to go for a sabotaging approach. The predicate `choose_move/5` is called passing the oponent Player. This way we are able to put a stone in one of the positions where the opponent would make more points.
 

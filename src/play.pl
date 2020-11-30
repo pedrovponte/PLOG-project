@@ -21,11 +21,11 @@ playGreedyVsRandom(Size) :-
 
 % Predicate that creates the board
 initial(GameState, Size):-
-	%generateRandomBoard(GameState, Size).
+	generateRandomBoard(GameState, Size).
 	% initialBoard(GameState).
 	% intermediateBoard(GameState).
 	% finalBoard(GameState).
-	 testBoard(GameState).
+	% testBoard(GameState).
 
 % Predicate that displays the board
 display_game(GameState, Player):-
@@ -59,6 +59,8 @@ display_info_2computer(Player, Computer1Score, Computer2Score, Computer1Stones, 
 start_game(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, Size) :-
 	(
 		Player == end,
+		display_game(GameState, Player),
+		display_info(Player, YellowScore, RedScore, YellowStones, RedStones),
 		endGame(YellowScore, RedScore)
 	);
 	(
@@ -102,6 +104,8 @@ turn(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, FinalGam
 start_game2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScore, Mode, Size) :-
 	(
 		Player == end,
+		display_game(GameState, Player),
+		display_info_computer(Player, YellowScore, ComputerScore, YellowStones, ComputerStones),
 		endGame(YellowScore,ComputerScore)
 	);
 	(
@@ -156,11 +160,11 @@ turn2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScor
 
 
 % Start Game Computer vs Computer
-
-
 start_game3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, Mode, Size) :-
 	(
 		Player == end,
+		display_game(GameState, Player),
+		display_info_2computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
 		endGame(PC1Score, PC2Score)
 	);
 	(
@@ -191,7 +195,7 @@ turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameStat
 		replaceValueMatrix(GameState1, FinalRow, FinalColumn, yellow, MidGameState),
 		display_game(MidGameState, Player),
 		display_info_2computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
-	/*	format('\nMoved koi from row ~d and column ~d to row ~d and column ~d\n', [InitRow, InitColumn, FinalRow, FinalColumn]),*/
+		format('\nMoved koi from row ~d and column ~d to row ~d and column ~d\n', [InitRow, InitColumn, FinalRow, FinalColumn]),
 		sleep(3),
 		checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump),
 		canPutStone(PC2Stones, MidGameState, Player, FinalGameState, FinalStones, Jump, Mode, Size),
@@ -210,7 +214,7 @@ turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameStat
 		replaceValueMatrix(GameState1, FinalRow, FinalColumn, red, MidGameState),
 		display_game(MidGameState, Player),
 		display_info_2computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
-	/*	format('\nMoved koi from row ~d and column ~d to row ~d and column ~d\n', [InitRow, InitColumn, FinalRow, FinalColumn]),*/
+		format('\nMoved koi from row ~d and column ~d to row ~d and column ~d\n', [InitRow, InitColumn, FinalRow, FinalColumn]),
 		sleep(3),
 		checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump),
 		canPutStone(PC2Stones, MidGameState, Player, FinalGameState, FinalStones, Jump, Mode, Size),
@@ -223,16 +227,20 @@ turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameStat
 start_game4(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, Size):-
 	(
 		Player == end,
+		display_game(GameState, Player),
+		display_info_2computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
 		endGame(PC1Score,PC2Score)
 	);
 	(
 		Player == computer1,
+		nl,
 		write('Computer 1 (Yellow) - Random player.\n'),
 		turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer, 'random', Size),
 		start_game4(FinalGameState, NextPlayer, FinalStones, PC2Stones, FinalScore, PC2Score, Size)
 	);
 	(
 		Player == computer2,
+		nl,
 		write('Computer 2 (Red) - Greedy player.\n'),
 		turn3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer, 'greedy', Size),
 		start_game4(FinalGameState, NextPlayer, PC1Stones, FinalStones, PC1Score, FinalScore, Size)
