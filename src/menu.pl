@@ -18,6 +18,8 @@ printMenu :-
     write('|       4. Player vs Computer (7x7 - Hard Level - Greedy)      |\n'),
     write('|       5. Computer vs Computer (7x7 - Easy Level - Random)    |\n'),
     write('|       6. Computer vs Computer (7x7 - Hard Level - Greedy)    |\n'),
+    write('|       7. Computer vs Computer (7x7 - Greedy vs Random)       |\n'),
+    write('|       8. Computer vs Computer (9x9 - Greedy vs Random)       |\n'),
     write('|                                                              |\n'),
     write('|       0. Exit                                                |\n'),
     write('|                                                              |\n'),
@@ -39,6 +41,8 @@ checkOption(3, 3).
 checkOption(4, 4).
 checkOption(5, 5).
 checkOption(6, 6).
+checkOption(7, 7).
+checkOption(8, 8).
 
 checkOption(_, NewOption) :-
     write('\nInvalid option\nSelect again\n'),
@@ -73,3 +77,11 @@ selectAction(5) :-
 selectAction(6) :-
     write('\nStarting game Computer vs Computer - Hard Level...\n\n'),
     playComputerVsComputer(7, 'greedy').
+
+selectAction(7) :-
+    write('\nStarting game Computer vs Computer - Greedy vs Random...\n\n'),
+    playGreedyVsRandom(7).
+
+selectAction(8) :-
+    write('\nStarting game Computer vs Computer - Greedy vs Random...\n\n'),
+    playGreedyVsRandom(9).

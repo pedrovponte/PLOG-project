@@ -36,34 +36,34 @@ replaceValueList([H|T], Column, Value, [H|TSub]) :-
 
 % Find the position of a player in the matrix
 
-getPlayerPosRow(GameState, List, Row, Column, Player, ListOfPositions) :-
-    getPlayerPosRow(GameState, List, Row, Column, Player, [], ListOfPositions).
+getPlayerPosRow(GameState, List, Row, Column, Player, ListOfPositions,Size) :-
+    getPlayerPosRow(GameState, List, Row, Column, Player, [], ListOfPositions,Size).
 
-getPlayerPosRow(_, [], _, 7,_, ListOfPositions, ListOfPositions).
+getPlayerPosRow(_, [], _, Size,_, ListOfPositions, ListOfPositions,Size).
 
-getPlayerPosRow(GameState, [_|T], Row, Column, Player, Moves, ListOfPositions) :-
+getPlayerPosRow(GameState, [_|T], Row, Column, Player, Moves, ListOfPositions,Size) :-
     (
         checkValueMatrix(GameState, Row, Column, Content),
         Content == Player,
         appendList(Moves, [Row, Column], Res),
         Next is Column + 1,
-        getPlayerPosRow(GameState, T, Row, Next, Player, Res, ListOfPositions)
+        getPlayerPosRow(GameState, T, Row, Next, Player, Res, ListOfPositions,Size)
     );
     (
         Next is Column + 1,
-        getPlayerPosRow(GameState, T, Row, Next, Player, Moves, ListOfPositions)
+        getPlayerPosRow(GameState, T, Row, Next, Player, Moves, ListOfPositions,Size)
     ).
 
-getPlayerPos(GameState, Player, ListOfPositions) :-
-    getPlayerPos(GameState, GameState, Player, 0, [], ListOfPositions).
+getPlayerPos(GameState, Player, ListOfPositions,Size) :-
+    getPlayerPos(GameState, GameState, Player, 0, [], ListOfPositions,Size).
 
-getPlayerPos(_, [], _, 7, ListOfPositions, ListOfPositions).
+getPlayerPos(_, [], _, Size, ListOfPositions, ListOfPositions,Size).
 
-getPlayerPos(GameState, [H|T], Player, Row, ListInt, ListOfPositions) :-
-    getPlayerPosRow(GameState, H, Row, 0, Player, List),
+getPlayerPos(GameState, [H|T], Player, Row, ListInt, ListOfPositions,Size) :-
+    getPlayerPosRow(GameState, H, Row, 0, Player, List,Size),
     append(ListInt, List, Res),
     Next is Row + 1,
-    getPlayerPos(GameState, T, Player, Next, Res, ListOfPositions).
+    getPlayerPos(GameState, T, Player, Next, Res, ListOfPositions,Size).
 
 copyMatrix(Init, Final) :- accCp(Init,Final).
 accCp([],[]).
