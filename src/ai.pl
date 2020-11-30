@@ -25,16 +25,15 @@ choose_move(GameState, Player, Level, Move, Size) :-
     nth0(1, ListOfMoves, Fish2),
     Fish1 = [InitRow1, InitColumn1 | Moves1],
     Fish2 = [InitRow2, InitColumn2 | Moves2],
-    length(Moves1,Len1),
-    length(Moves2,Len2),
-    print(Len1),print(Len2),
-    Len1>0,Len2>0,
     getMovesValuesBot(GameState, Player, Moves1, [InitRow1, InitColumn1], FinalPos1, Value1, Size), % obtaining value of final position for each fish
     getMovesValuesBot(GameState, Player, Moves2, [InitRow2, InitColumn2], FinalPos2, Value2, Size),
     selectBestMove(Value1, Value2, [[InitRow1, InitColumn1], FinalPos1], [[InitRow2, InitColumn2], FinalPos2], Move).
     
+
     
 getMovesValuesBot(GameState, Player, ListOfValidMoves, InitPos, FinalPos, Value, Size) :-
+    length(ListOfValidMoves,Len),
+    Len\=0,
     findall(
         Value1-InitPos1-FinalPos1-Index1,
         (
@@ -54,10 +53,21 @@ getMovesValuesBot(GameState, Player, ListOfValidMoves, InitPos, FinalPos, Value,
     sort(Results, SortedResults),
     reverse(SortedResults, [Value-InitPos-FinalPos-_ | _]).
 
+getMovesValuesBot(GameState, Player, ListOfValidMoves, InitPos, FinalPos, Value, Size) :-
+    Value = -1,FinalPos = [0,0].
+
 value(GameState, Player, FinalRow, FinalCol, Value, Size) :-
     getAdjacentes(GameState, FinalRow, FinalCol, Adj, Size),
     calculateScore(GameState, Adj, 0, Score),
     Value = Score, !.
+
+selectBestMove(Value1, Value2, Move1, Move2, FinalMove) :-
+    Value1 < 0,
+    FinalMove = Move2.
+
+selectBestMove(Value1, Value2, Move1, Move2, FinalMove) :-
+    Value2 <0,
+    FinalMove = Move1.
 
 selectBestMove(Value1, Value2, Move1, Move2, FinalMove) :-
     Value1 > Value2,
