@@ -7,9 +7,11 @@ play(Size) :-
 
 playPVsComputer(Size, Mode) :-
 	initial(GameState, Size),
-	Players = [yellow, computer],
-	random_member(X, Players),
-	start_game2(GameState, X, 10, 10, 0, 0, Mode, Size).
+	start_game2(GameState, yellow, 10, 10, 0, 0, Mode, Size).
+
+computervsPlayer(Size, Mode) :-
+	initial(GameState, Size),
+	start_game2(GameState, computer, 10, 10, 0, 0, Mode, Size).
 
 playComputerVsComputer(Size, Mode) :-
 	initial(GameState, Size),
@@ -21,8 +23,8 @@ playGreedyVsRandom(Size) :-
 
 % Predicate that creates the board
 initial(GameState, Size):-
-	%generateRandomBoard(GameState, Size).
-	 initialBoard(GameState).
+	generateRandomBoard(GameState, Size).
+	% initialBoard(GameState).
 	% intermediateBoard(GameState).
 	% finalBoard(GameState).
 	% testBoard(GameState).
@@ -57,22 +59,28 @@ display_info_2computer(Player, Computer1Score, Computer2Score, Computer1Stones, 
 % Start Game Player vs Player
 
 start_game(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, Size) :-
-	(Player == end,
+	(
+		Player == end,
 		display_game(GameState, Player),
 		display_info(Player, YellowScore, RedScore, YellowStones, RedStones),
-	endGame(YellowScore,RedScore));
-	(Player == yellow,
+		endGame(YellowScore,RedScore)
+	);
+	(
+		Player == yellow,
 		display_game(GameState, Player),
 		display_info(Player, YellowScore, RedScore, YellowStones, RedStones),
-	turn(GameState, Player, YellowStones, YellowScore,  FinalGameState, FinalStones, FinalScore, NextPlayer, Size),
-	checkGameOver(red, NextPlayer, FinalScore),
-	start_game(FinalGameState, NextPlayer, FinalStones, RedStones, FinalScore, RedScore, Size));
-	(Player == red,
+		turn(GameState, Player, YellowStones, YellowScore,  FinalGameState, FinalStones, FinalScore, NextPlayer, Size),
+		checkGameOver(red, NextPlayer, FinalScore),
+		start_game(FinalGameState, NextPlayer, FinalStones, RedStones, FinalScore, RedScore, Size)
+	);
+	(
+		Player == red,
 		display_game(GameState, Player),
 		display_info(Player, YellowScore, RedScore, YellowStones, RedStones),
-	turn(GameState, Player, RedStones, RedScore, FinalGameState, FinalStones, FinalScore, NextPlayer, Size),
-	checkGameOver(yellow, NextPlayer, FinalScore),
-	start_game(FinalGameState, NextPlayer, YellowStones, FinalStones, YellowScore, FinalScore, Size)).
+		turn(GameState, Player, RedStones, RedScore, FinalGameState, FinalStones, FinalScore, NextPlayer, Size),
+		checkGameOver(yellow, NextPlayer, FinalScore),
+		start_game(FinalGameState, NextPlayer, YellowStones, FinalStones, YellowScore, FinalScore, Size)
+	).
 
 
 turn(GameState,Player,Stones,Score,FinalGameState, FinalStones, FinalScore, NextPlayer, Size):-
@@ -88,22 +96,28 @@ turn(GameState,Player,Stones,Score,FinalGameState, FinalStones, FinalScore, Next
 % Start Game Player vs Computer
 
 start_game2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScore, Mode, Size) :-
-	(Player == end,
+	(
+		Player == end,
 		display_game(GameState, Player),
 		display_info_computer(Player, YellowScore, ComputerScore, YellowStones, ComputerStones),
-	endGame(YellowScore,ComputerScore));
-	(Player == yellow,
+		endGame(YellowScore,ComputerScore)
+	);
+	(
+		Player == yellow,
 		display_game(GameState, Player),
 		display_info_computer(Player, YellowScore, ComputerScore, YellowStones, ComputerStones),
-	turn(GameState, Player, YellowStones, YellowScore, FinalGameState, FinalStones, FinalScore, NextPlayer, Size),
-	checkGameOver(computer, NextPlayer, FinalScore),
-	start_game2(FinalGameState, NextPlayer, FinalStones, ComputerStones, FinalScore, ComputerScore, Mode, Size));
-	(Player == computer,
+		turn(GameState, Player, YellowStones, YellowScore, FinalGameState, FinalStones, FinalScore, NextPlayer, Size),
+		checkGameOver(computer, NextPlayer, FinalScore),
+		start_game2(FinalGameState, NextPlayer, FinalStones, ComputerStones, FinalScore, ComputerScore, Mode, Size)
+	);
+	(
+		Player == computer,
 		display_game(GameState, Player),
 		display_info_computer(Player, YellowScore, ComputerScore, YellowStones, ComputerStones),
-	turn2(GameState, Player, ComputerStones,  ComputerScore, FinalGameState, FinalStones, FinalScore, NextPlayer, Mode, Size),
-	checkGameOver(yellow, NextPlayer, FinalScore),
-	start_game2(FinalGameState, NextPlayer, YellowStones, FinalStones, YellowScore, FinalScore, Mode, Size)).
+		turn2(GameState, Player, ComputerStones,  ComputerScore, FinalGameState, FinalStones, FinalScore, NextPlayer, Mode, Size),
+		checkGameOver(yellow, NextPlayer, FinalScore),
+		start_game2(FinalGameState, NextPlayer, YellowStones, FinalStones, YellowScore, FinalScore, Mode, Size)
+	).
 
 
 evaluate(Player,J):-
@@ -121,6 +135,7 @@ turn2(GameState, Player, ComputerStones, ComputerScore, FinalGameState, FinalSto
 	replaceValueMatrix(GameState, InitRow, InitColumn, empty, GameState1),
 	replaceValueMatrix(GameState1, FinalRow, FinalColumn, J, MidGameState),
 	display_game(MidGameState, Player),
+	format('\nMoved koi from row ~d and column ~d to row ~d and column ~d\n', [InitRow, InitColumn, FinalRow, FinalColumn]),
 	sleep(3),
 	checkJump(InitRow, InitColumn, FinalRow, FinalColumn, Jump),
 	canPutStone(ComputerStones, MidGameState, Player, FinalGameState, FinalStones, Jump, Mode, Size),
@@ -131,43 +146,55 @@ turn2(GameState, Player, ComputerStones, ComputerScore, FinalGameState, FinalSto
 % Start Game Computer vs Computer
 
 start_game3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, Mode, Size) :-
-	(Player == end,
+	(
+		Player == end,
 		display_game(GameState, Player),
 		display_info_2computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
-	endGame(PC1Score,PC2Score));
-	(Player == computer1,
+		endGame(PC1Score,PC2Score)
+	);
+	(
+		Player == computer1,
 		display_game(GameState, Player),
 		display_info_2computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
-	turn2(GameState, Player, PC1Stones, PC1Score, FinalGameState, FinalStones, FinalScore, NextPlayer, Mode, Size),
-	checkGameOver(computer2, NextPlayer, FinalScore),
-	start_game3(FinalGameState, NextPlayer, FinalStones, PC2Stones, FinalScore, PC2Score, Mode, Size));
-	(Player == computer2,
+		turn2(GameState, Player, PC1Stones, PC1Score, FinalGameState, FinalStones, FinalScore, NextPlayer, Mode, Size),
+		checkGameOver(computer2, NextPlayer, FinalScore),
+		start_game3(FinalGameState, NextPlayer, FinalStones, PC2Stones, FinalScore, PC2Score, Mode, Size)
+	);
+	(
+		Player == computer2,
 		display_game(GameState, Player),
 		display_info_2computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
-	turn2(GameState, Player, PC2Stones, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer, Mode, Size),
-	checkGameOver(computer1, NextPlayer, FinalScore),
-	start_game3(FinalGameState, NextPlayer, PC1Stones, FinalStones, PC1Score, FinalScore, Mode, Size)).
+		turn2(GameState, Player, PC2Stones, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer, Mode, Size),
+		checkGameOver(computer1, NextPlayer, FinalScore),
+		start_game3(FinalGameState, NextPlayer, PC1Stones, FinalStones, PC1Score, FinalScore, Mode, Size)
+	).
 
 
 % Start Game Greedy vs Random
 
 start_game4(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, Size):-
-	(Player == end,
+	(
+		Player == end,
 		display_game(GameState, Player),
 		display_info_2computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
-	endGame(PC1Score,PC2Score));
-	(Player == computer1,
+		endGame(PC1Score,PC2Score)
+	);
+	(
+		Player == computer1,
 		display_game(GameState, Player),
 		display_info_2computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
-	write('Computer 1 (Yellow) - Random player.\n'),
-	turn2(GameState, Player, PC1Stones, PC1Score,  FinalGameState, FinalStones, FinalScore, NextPlayer,'random', Size),
-	checkGameOver(computer2, NextPlayer, FinalScore),
-	start_game4(FinalGameState, NextPlayer, FinalStones, PC2Stones, FinalScore, PC2Score, Size));
-	(Player == computer2,
+		write('Computer 1 (Yellow) - Random player.\n'),
+		turn2(GameState, Player, PC1Stones, PC1Score,  FinalGameState, FinalStones, FinalScore, NextPlayer,'random', Size),
+		checkGameOver(computer2, NextPlayer, FinalScore),
+		start_game4(FinalGameState, NextPlayer, FinalStones, PC2Stones, FinalScore, PC2Score, Size)
+	);
+	(
+		Player == computer2,
 		display_game(GameState, Player),
 		display_info_2computer(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
-	write('Computer 2 (Red) - Greedy player.\n'),
-	turn2(GameState, Player, PC2Stones, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer,'greedy', Size),
-	checkGameOver(computer1, NextPlayer, FinalScore),
-	start_game4(FinalGameState, NextPlayer, PC1Stones, FinalStones, PC1Score, FinalScore, Size)).
+		write('Computer 2 (Red) - Greedy player.\n'),
+		turn2(GameState, Player, PC2Stones, PC2Score, FinalGameState, FinalStones, FinalScore, NextPlayer,'greedy', Size),
+		checkGameOver(computer1, NextPlayer, FinalScore),
+		start_game4(FinalGameState, NextPlayer, PC1Stones, FinalStones, PC1Score, FinalScore, Size)
+	).
 

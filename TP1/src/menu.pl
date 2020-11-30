@@ -18,12 +18,16 @@ printMenu :-
     write('|       4. Player vs Computer (9x9 - Easy Level - Random)      |\n'),
     write('|       5. Player vs Computer (7x7 - Hard Level - Greedy)      |\n'),
     write('|       6. Player vs Computer (9x9 - Hard Level - Greedy)      |\n'),
-    write('|       7. Computer vs Computer (7x7 - Easy Level - Random)    |\n'),
-    write('|       8. Computer vs Computer (9x9 - Easy Level - Random)    |\n'),
-    write('|       9. Computer vs Computer (7x7 - Hard Level - Greedy)    |\n'),
-    write('|       10. Computer vs Computer (9x9 - Hard Level - Greedy)   |\n'),
-    write('|       11. Computer vs Computer (7x7 - Greedy vs Random)      |\n'),
-    write('|       12. Computer vs Computer (9x9 - Greedy vs Random)      |\n'),
+    write('|       7. Computer vs Player (7x7 - Easy Level - Random)      |\n'),
+    write('|       8. Computer vs Player (9x9 - Easy Level - Random)      |\n'),
+    write('|       9. Computer vs Player (7x7 - Hard Level - Greedy)      |\n'),
+    write('|       10. Computer vs Player (9x9 - Hard Level - Greedy)     |\n'),
+    write('|       11. Computer vs Computer (7x7 - Easy Level - Random)   |\n'),
+    write('|       12. Computer vs Computer (9x9 - Easy Level - Random)   |\n'),
+    write('|       13. Computer vs Computer (7x7 - Hard Level - Greedy)   |\n'),
+    write('|       14. Computer vs Computer (9x9 - Hard Level - Greedy)   |\n'),
+    write('|       15. Computer vs Computer (7x7 - Greedy vs Random)      |\n'),
+    write('|       16. Computer vs Computer (9x9 - Greedy vs Random)      |\n'),
     write('|                                                              |\n'),
     write('|       0. Exit                                                |\n'),
     write('|                                                              |\n'),
@@ -51,6 +55,10 @@ checkOption(9, 9).
 checkOption(10, 10).
 checkOption(11, 11).
 checkOption(12, 12).
+checkOption(13, 13).
+checkOption(14, 14).
+checkOption(15, 15).
+checkOption(16, 16).
 
 checkOption(_, NewOption) :-
     write('\nInvalid option\nSelect again\n'),
@@ -87,25 +95,41 @@ selectAction(6) :-
     playPVsComputer(7, 'greedy').
 
 selectAction(7) :-
+    write('\nStarting game Computer vs Player - Easy Level (7x7)...\n\n'),
+    computervsPlayer(7, 'random').
+
+selectAction(8) :-
+    write('\nStarting game Computer vs Player - Easy Level (9x9)...\n\n'),
+    computervsPlayer(9, 'random').
+
+selectAction(9) :-
+    write('\nStarting game Computer vs Player - Hard Level (7x7)...\n\n'),
+    computervsPlayer(7, 'greedy').
+
+selectAction(10) :-
+    write('\nStarting game Computer vs Player - Hard Level (9x9)...\n\n'),
+    computervsPlayer(9, 'greedy').
+
+selectAction(11) :-
     write('\nStarting game Computer vs Computer - Easy Level (7x7)...\n\n'),
     playComputerVsComputer(7, 'random').
 
-selectAction(8) :-
+selectAction(12) :-
     write('\nStarting game Computer vs Computer - Easy Level (9x9)...\n\n'),
     playComputerVsComputer(9, 'random').
 
-selectAction(9) :-
+selectAction(13) :-
     write('\nStarting game Computer vs Computer - Hard Level (7x7)...\n\n'),
     playComputerVsComputer(7, 'greedy').
 
-selectAction(10) :-
+selectAction(14) :-
     write('\nStarting game Computer vs Computer - Hard Level (9x9)...\n\n'),
     playComputerVsComputer(9, 'greedy').
 
-selectAction(11) :-
+selectAction(15) :-
     write('\nStarting game Computer vs Computer - Greedy vs Random (7x7)...\n\n'),
     playGreedyVsRandom(7).
 
-selectAction(12) :-
+selectAction(16) :-
     write('\nStarting game Computer vs Computer - Greedy vs Random (9x9)...\n\n'),
     playGreedyVsRandom(9).
