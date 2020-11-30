@@ -73,7 +73,10 @@ canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, 
 
 % Evaluation about the end of the game
 game_over(GameState, Winner, Player, NextPlayer, FinalScore, Score1, Score2) :-
-	checkGameOver(Player, NextPlayer,  FinalScore).
+	checkGameOver(Player, NextPlayer,  FinalScore),
+	NextPlayer == end, 
+	!,
+	Winner == Player.
 
 checkGameOver(_Player,NextPlayer,Score):-
 	Score >= 10,
