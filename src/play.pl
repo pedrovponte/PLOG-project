@@ -21,11 +21,11 @@ playGreedyVsRandom(Size) :-
 
 % Predicate that creates the board
 initial(GameState, Size):-
-	generateRandomBoard(GameState, Size).
+	%generateRandomBoard(GameState, Size).
 	% initialBoard(GameState).
 	% intermediateBoard(GameState).
 	% finalBoard(GameState).
-	% testBoard(GameState).
+	 testBoard(GameState).
 
 % Predicate that displays the board
 display_game(GameState, Player):-
