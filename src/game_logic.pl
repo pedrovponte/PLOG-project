@@ -41,7 +41,7 @@ getAdjacentes(GameState, Row, Col, Adj, Size):-
             ), 
             Adj).
 
-%Checking if the player can add a stone to the bord: has stones left && didn't jump
+% Checking if the player can add a stone to the bord: has stones left && didn't jump
 
 canPutStone(NumStones,MidGameState,Player,FinalGameState,NumStonesFinal, Jump, _, _):-
 	(NumStones =:= 0; Jump =:= 1),

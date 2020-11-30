@@ -31,7 +31,7 @@ initial(GameState, Size):-
 display_game(GameState, Player):-
 	printBoard(GameState).
 
-%Predicate to display Scores and number of Stones of each Player
+% Predicate to display Scores and number of Stones of each Player
 display_info(Player, YellowScore, RedScore, YellowStones, RedStones) :-
 	format('\n ~a turn.\n\n', Player),
 	format('Yellow player has ~d stones to play.\n', YellowStones),

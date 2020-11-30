@@ -26,14 +26,9 @@ empty square. If a player has run out of stones then he does not drop after swim
 - When jumping over a stone the jump must be along a straight line (orthogonally or diagonally).
 
 After his turn, the player scores one point for each other fish adjacent to his fish's new location (the player can score 0, 1, 2, or 3 points on one turn). Keep track of the score using the scoring tracks placed on the top and bottom of the board.
-The first player to score 10 points wins.
+The first player to score 10 points wins. 
 
-Some alternative rules:
-???????????????????????????????????????????????????????????????????????
-- Give each player 6 stones instead of 10
-- After a player drops his last stone, the other player removes one stone from the board and gives it to that player to use ont the next turn. 
-
-[Source](https://boardgamegeek.com/boardgame/68743/jin-li), 
+[Source](https://boardgamegeek.com/boardgame/68743/jin-li)
 [Rules](https://nestorgames.com/rulebooks/JINLI_EN.pdf)
 
 ---
@@ -45,15 +40,14 @@ Some alternative rules:
 #### **Board**
 
 To represent the cells of the board, we decided to use lists within a list. Each list inside the main list represents a line and each element of this list is the cell content. The content of a cell can be one out of three characters:
-- RF - Red player's piece,
-- YF - Yellow player's piece,
--  ' ' - empty cell.
 
-#### **Players Kois**
+- **RF** - Red player's koi,
+- **YF** - Yellow player's koi,
+-  **' '** - empty cell.
+-  
+#### Some Possible Situation Representations
 
-To be completed while writing final report ?? Dont know what to put here
-
-#### **Initial Situation:**
+##### **Initial Situation:**
 
 ```
 initialBoard([
@@ -88,10 +82,8 @@ G |YF |   |   |   |   |   |YF |
   Red player has 10 stones to play.
   Yellow Score: 0.
   Red Score: 0.
-
-
 ```
-#### **Intermediate Situation:**
+##### **Intermediate Situation:**
 
 ```
 intermediateBoard([
@@ -126,10 +118,9 @@ G |   |   |   | O |   |   |   |
   Red player has 4 stones to play.
   Yellow Score: 2.
   Red Score: 3.
-
 ```
 
-#### **Final Situation:**
+##### **Final Situation:**
 
 ```
 finalBoard([
@@ -167,7 +158,6 @@ G |   |   |   | O |   |   |   |
 
   GAME ENDED
   Red player wins the game!
-
 ```
 #### **Atoms**
 	
@@ -183,12 +173,14 @@ G |   |   |   | O |   |   |   |
 
 #### **Menu**
 
-When initiating the game with the predicate `jin_li/0`, it is displayed the main menu with options about the board size, the game type, the bot's difficulties, and exiting the game. In order to select an option, the user must press the corresponding number, dot and enter. The inputs are validated by the predicate `checkOption/2` and read by the predicate `selectAction(+Option)`.
+When initiating the game with the predicate `jin_li/0`, the main menu is displayed with options about the board size, the game type, the bot's difficulties and exiting the game. In order to select an option, the user must press the corresponding number, dot and enter. The inputs are validated by the predicate `checkOption/2` and read by the predicate `selectAction(+Option)`.
 After that, depending on the option chosen, one of the following predicates is called: 
-- `play/0` which initializes the game Player vs Player,
-- `playPVsComputer(+Mode)` which initializes the game Player vs Computer in the Mode 'random' or 'greedy',
-- `playComputerVsComputer(+Mode)` which initializes the game Computer vs Computer in the Mode 'random' or 'greedy'.
-Each one of the predicates above chooses randomly the first player to move their koi. And after that calls the main game loop `start_game(-GameState, -Player, -YellowStones, -RedStones, -YellowScore, -RedScore)`.
+- `play(+Size)` which initializes the game Player vs Player;
+- `playPVsComputer(+Size, +Mode)` which initializes the game Player vs Computer with Mode 'random' or 'greedy';
+- `playComputerVsComputer(+Size, +Mode)` which initializes the game Computer vs Computer with Mode 'random' or 'greedy'.
+Each one of the predicates above chooses randomly the first player to move their koi. And after that calls the main game loop `start_game(-GameState, -Player, -YellowStones; -RedStones, -YellowScore, -RedScore, +Size)`.
+
+All boards have a variable size that is passed to the game with **Size**.
 
 All the predicates mentioned in this section can be found in the file [menu.pl](src/menu.pl).
 
@@ -198,26 +190,35 @@ All the predicates mentioned in this section can be found in the file [menu.pl](
 #### **Board**
 
 In order to have a user-friendly game visualization, we decided to represent the game pieces with some symbols: **RF** for red fishes, **YF** for yellow fishes, **O** for stones, and **' '** for empty spaces. To do it, we use a predicate called ```code(Value, Symbol)```.
-To print the board, we use the predicates: 
 
-* ```print_board(X)``` - prints the superior limit of the table and calls the function ```print_tab```;
-* ```print_tab(List)``` - calls the function ```print_line```, draws a separator between lines and calls itself;
-* ```print_line(List)``` - calls ```print_cell``` and next calls itself;
+In order to create a board with a chosen size, we have implemented ```generateRandomBoard(-GameBoard, +Size)```, that builds the board, row by row, calling the predicates ```buildBoard/4``` and ```buildRow/4```.
+
+To print the board, we only have to call ```display_board/2``` that uses the predicates: 
+
+* ```printBoard(+GameBoard)``` - calls predicates that will draw the header and the board;
+* ```printHeader/1``` - prints the header that contains the number of the columns and the row separator;
+* ```printBoard/3``` - prints the rest of the boards using predicates ```letter/4``` to get the respective row letter identifier, ```print_line/1``` that prints the respective row passed by argument, ```print_cell/1``` that displays a cell and ```printRowSeparator/2```;
 * ```print_cell(List)``` - calls ```code``` function to get the symbol of the cell and prints that on the screen.
 
 All the predicates mentioned in this section can be found in the file [display.pl](src/display.pl).
 
 **Initial game visualization example:**
 
+![](images/initialState.png)
+
 **Intermediate game visualization example:**
 
+![](images/midState.png)
+
 **Final game visualization example:**
+
+![](images/finalState.png)
 
 --- 
 
 ### Valid Moves
 
-The `valid_moves(+GameState,+Player,-ListOfMoves)` returns on ListOfPossibleMoves a list of moves in the format `[ [Fish1Row,Fish1Column,[MoveRow1,MoveColumn1], [MovRow2-MovColumn2], ...] [Fish2Row,Fish2Column,[MoveRow3,MoveColumn3], [MovRow4-MovColumn4], ...s]]`.
+The `valid_moves(+GameState, +Player, -ListOfMoves)` returns on ListOfMoves a list of moves in the format `[InitialRow, InitialColumn, [MoveRow1, MoveColumn1], [MoveRow2, MoveColumn2], ...] [Fish2Row,Fish2Column,[MoveRow3,MoveColumn3], [MovRow4-MovColumn4], ...s]]`.
 This predicate first calls `getPlayerPos(+GameState,+Player,-ListOfPositions)` that goes through the board and gets the position of all the player's pieces, the positions are stored in Positions.
 
 Then it is called `getAllPossibleMoves(+GameState,+Palyer,+ListOfPositions,-ListOfMoves)` that using `getMoves(+GameState, +InitRow, +InitColumn, -Moves),` sees all the possible moves (with `getAdjacentes(+GameState,+Row,+Col,-Adj)` and `getPossibleJumps(+GameState, +InitRow, +InitColumn, +ListInt, +ListAux, -ListRes)`). This verification consists of checking the existence of an empty cell in any surrounding position including the ones after jumping.
