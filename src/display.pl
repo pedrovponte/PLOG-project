@@ -33,10 +33,10 @@ testBoard([
 [empty,stone,empty,empty,empty,empty,empty],
 [empty,stone,stone,stone,empty,empty,empty],
 [empty,red,stone,stone,empty,empty,empty],
-[empty,stone,red,empty,empty,empty,empty],
-[yellow,stone,stone,stone,empty,empty,empty],
-[empty,stone,stone,empty,stone,stone,empty],
-[empty,stone,yellow,stone,empty,empty,empty]
+[empty,empty,yellow,empty,empty,empty,empty],
+[red,stone,stone,stone,empty,empty,empty],
+[yellow,stone,stone,empty,stone,stone,empty],
+[stone,stone,stone,stone,stone,stone,empty]
 ]).
 
 generateRandomBoard(GameBoard, Size) :-
