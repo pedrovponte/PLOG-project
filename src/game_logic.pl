@@ -43,7 +43,6 @@ getAdjacentes(GameState, Row, Col, Adj, Size):-
 
 %Checking if the player can add a stone to the bord: has stones left && didn't jump
 
-% verificaçao para colocaçao de pedra
 canPutStone(NumStones,MidGameState,Player,FinalGameState,NumStonesFinal, Jump, _, _):-
 	(NumStones =:= 0; Jump =:= 1),
 	NumStonesFinal is NumStones,
@@ -65,12 +64,16 @@ canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, 
 	choose_stone(MidGameState, FinalGameState, yellow, Mode, Size),
 	NumStonesFinal is NumStones - 1.
 
-canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, _, _):-
-	selectSpotStone(MidGameState, Player, FinalGameState),
+canPutStone(NumStones,MidGameState,Player,FinalGameState, NumStonesFinal, Jump, _, Size):-
+	selectSpotStone(MidGameState, Player, FinalGameState, Size),
 	NumStonesFinal is NumStones - 1.
 
 
 % Checking end of the game
+
+% Evaluation about the end of the game
+game_over(GameState, Winner, Player, NextPlayer, FinalScore, Score1, Score2) :-
+	checkGameOver(Player, NextPlayer,  FinalScore).
 
 checkGameOver(_Player,NextPlayer,Score):-
 	Score >= 10,
@@ -130,21 +133,21 @@ cleanInvalidMoves(GameState, [H | T], ListInt, ListFinal) :-
     cleanInvalidMoves(GameState, T, ListInt, ListFinal).
 
 
-getAllPossibleMoves(GameState, Player, ListOfPositions, ListOfMoves) :-
-    getAllPossibleMoves(GameState, Player, ListOfPositions, [], ListOfMoves).
+getAllPossibleMoves(GameState, Player, ListOfPositions, ListOfMoves, Size) :-
+    getAllPossibleMoves(GameState, Player, ListOfPositions, [], ListOfMoves, Size).
 
-getAllPossibleMoves(_, _, [], ListOfMoves, ListOfMoves).
+getAllPossibleMoves(_, _, [], ListOfMoves, ListOfMoves, Size).
 
-getAllPossibleMoves(GameState, Player, [H|T], ListInt, ListOfMoves) :-
+getAllPossibleMoves(GameState, Player, [H|T], ListInt, ListOfMoves, Size) :-
     parsePos(H, InitRow, InitColumn),
-    getMoves(GameState, InitRow, InitColumn, Moves),
+    getMoves(GameState, InitRow, InitColumn, Moves, Size),
     cleanInvalidMoves(GameState, Moves, [], FinalMoves),
     appendMoves(H, FinalMoves, ListAux),
     appendList(ListInt, ListAux, ListNew),
-    getAllPossibleMoves(GameState, Player, T, ListNew, ListOfMoves).
+    getAllPossibleMoves(GameState, Player, T, ListNew, ListOfMoves, Size).
 
-getMoves(GameState, InitRow, InitColumn, ListOfMoves) :-
-    getAdjacentes(GameState, InitRow, InitColumn, ListInt),
+getMoves(GameState, InitRow, InitColumn, ListOfMoves, Size) :-
+    getAdjacentes(GameState, InitRow, InitColumn, ListInt, Size),
     getPossibleJumps(GameState, InitRow, InitColumn, ListInt, [], ListRes),
     append(ListInt, ListRes, ListOfMoves).
 
