@@ -1,5 +1,5 @@
-% % Move validation and execution, obtaining the new game state 
-%Asking the player to chose the piece he wants to move
+% Move validation and execution, obtaining the new game state 
+% Asking the player to chose the piece he wants to move
 move(GameState, Move, MidGameState, Player, Jump, Size):-
     write('Choose a piece:\n'),
     readColumn(Column, Size),
@@ -19,7 +19,7 @@ selectSpot(GameState, Player, MidGameState, InitRow, InitColumn, NewRow, NewColu
     checkColumn(Column, NewColumn, Size),
     readRow(Row, Size),
     checkRow(Row, NewRow, Size),
-    validateMove(GameState, NewRow, NewColumn, InitRow, InitColumn,FinalRow,FinalCol ,Player, Jump, Size),
+    validateMove(GameState, NewRow, NewColumn, InitRow, InitColumn, FinalRow, FinalCol, Player, Jump, Size),
     replaceValueMatrix(GameState, FinalRow, FinalCol, Player, MidGameState).
 
 % Asking the player to chose a place for the stone
@@ -49,20 +49,18 @@ readRow(Row, Size) :-
     write('Choose a row (A - I): '),
     read(Row).
 
-
-
 % check if introduced column is valid
-checkColumn(0, 0,_).
-checkColumn(1, 1,_).
-checkColumn(2, 2,_).
-checkColumn(3, 3,_).
-checkColumn(4, 4,_).
-checkColumn(5, 5,_).
-checkColumn(6, 6,_).
-checkColumn(7, 7,_).
-checkColumn(8, 8,_).
-checkColumn(9, 9,_).
-checkColumn(10, 10,_).
+checkColumn(0, 0, _).
+checkColumn(1, 1, _).
+checkColumn(2, 2, _).
+checkColumn(3, 3, _).
+checkColumn(4, 4, _).
+checkColumn(5, 5, _).
+checkColumn(6, 6, _).
+checkColumn(7, 7, _).
+checkColumn(8, 8, _).
+checkColumn(9, 9, _).
+checkColumn(10, 10, _).
 
 % If not, asks for a new column
 checkColumn(_Column, InitColumn, Size):-
@@ -71,26 +69,26 @@ checkColumn(_Column, InitColumn, Size):-
     checkColumn(Column, InitColumn, Size).
 
 % Check if introduced row is valid
-checkRow('A', 0,_).
-checkRow('B', 1,_).
-checkRow('C', 2,_).
-checkRow('D', 3,_).
-checkRow('E', 4,_).
-checkRow('F', 5,_).
-checkRow('G', 6,_).
-checkRow('H', 7,_).
-checkRow('I', 8,_).
-checkRow('J', 9,_).
-checkRow('a', 0,_).
-checkRow('b', 1,_).
-checkRow('c', 2,_).
-checkRow('d', 3,_).
-checkRow('e', 4,_).
-checkRow('f', 5,_).
-checkRow('g', 6,_).
-checkRow('h', 7,_).
-checkRow('i', 8,_).
-checkRow('j', 9,_).
+checkRow('A', 0, _).
+checkRow('B', 1, _).
+checkRow('C', 2, _).
+checkRow('D', 3, _).
+checkRow('E', 4, _).
+checkRow('F', 5, _).
+checkRow('G', 6, _).
+checkRow('H', 7, _).
+checkRow('I', 8, _).
+checkRow('J', 9, _).
+checkRow('a', 0, _).
+checkRow('b', 1, _).
+checkRow('c', 2, _).
+checkRow('d', 3, _).
+checkRow('e', 4, _).
+checkRow('f', 5, _).
+checkRow('g', 6, _).
+checkRow('h', 7, _).
+checkRow('i', 8, _).
+checkRow('j', 9, _).
 
 % If not, asks for a new row
 
@@ -118,7 +116,10 @@ validateContent(Player, GameState, InitRow, InitColumn, FinalRow, FinalCol, Size
 
 validateMove(GameState, SelR, SelC, InitRow, InitCol, FinalRow,FinalCol,Player, Jump, Size) :-
     getMoves(GameState, InitRow, InitCol, ListOfMoves, Size),
-    member([SelR,SelC],ListOfMoves),FinalRow is SelR , FinalCol is SelC,checkJump(InitRow, InitCol, SelR, SelC, Jump);
+    member([SelR,SelC],ListOfMoves), 
+    FinalRow is SelR, 
+    FinalCol is SelC,
+    checkJump(InitRow, InitCol, SelR, SelC, Jump);
     (
         write('Invalid Move! Choose another...\n'),
         readColumn(Column, Size),
@@ -132,7 +133,9 @@ validateMove(GameState, SelR, SelC, InitRow, InitCol, FinalRow,FinalCol,Player, 
 
 validateStoneSpot(GameState, SelRow, SelCol, FinalRow, FinalCol, Size) :-
     checkValueMatrix(GameState, SelRow, SelCol, Content),
-    Content == empty, FinalRow is SelRow, FinalCol is SelCol;
+    Content == empty, 
+    FinalRow is SelRow, 
+    FinalCol is SelCol;
     (
         write('Invalid spot! Choose another.\n'),
         readColumn(Column, Size),

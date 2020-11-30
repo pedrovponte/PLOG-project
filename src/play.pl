@@ -1,14 +1,14 @@
 % Main function, that initializes the game and calls the game loop
 play(Size) :-
 	initial(GameState, Size),
-	Players = [yellow,red],
-	random_member(X,Players),
+	Players = [yellow, red],
+	random_member(X, Players),
 	start_game(GameState, X, 10, 10, 0, 0, Size).
 
 playPVsComputer(Size, Mode) :-
 	initial(GameState, Size),
-	Players = [yellow,computer],
-	random_member(X,Players),
+	Players = [yellow, computer],
+	random_member(X, Players),
 	start_game2(GameState, X, 10, 10, 0, 0, Mode, Size).
 
 playComputerVsComputer(Size, Mode) :-
@@ -58,6 +58,8 @@ display_info_2computer(Player, Computer1Score, Computer2Score, Computer1Stones, 
 
 start_game(GameState, Player, YellowStones, RedStones, YellowScore, RedScore, Size) :-
 	(Player == end,
+		display_game(GameState, Player),
+		display_info(Player, YellowScore, RedScore, YellowStones, RedStones),
 	endGame(YellowScore,RedScore));
 	(Player == yellow,
 	display_game(GameState, Player),
@@ -87,6 +89,8 @@ turn(GameState,Player,Stones,Score,FinalGameState, FinalStones, FinalScore, Next
 
 start_game2(GameState, Player, YellowStones, ComputerStones, YellowScore, ComputerScore, Mode, Size) :-
 	(Player == end,
+	display_game(GameState, Player),
+	display_info(Player, YellowScore, ComputerScore, YellowStones, ComputerStones),
 	endGame(YellowScore,ComputerScore));
 	(Player == yellow,
 	display_game(GameState, Player),
@@ -128,6 +132,8 @@ turn2(GameState, Player, ComputerStones, ComputerScore, FinalGameState, FinalSto
 
 start_game3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, Mode, Size) :-
 	(Player == end,
+		display_game(GameState, Player),
+		display_info(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
 	endGame(PC1Score,PC2Score));
 	(Player == computer1,
 	display_game(GameState, Player),
@@ -148,6 +154,8 @@ start_game3(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, Mode, S
 start_game4(GameState, Player, PC1Stones, PC2Stones, PC1Score, PC2Score, Size):-
 	(
 		Player == end,
+		display_game(GameState, Player),
+		display_info(Player, PC1Score, PC2Score, PC1Stones, PC2Stones),
 	endGame(PC1Score,PC2Score));
 	(
 		Player == computer1,

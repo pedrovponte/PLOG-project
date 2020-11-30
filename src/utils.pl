@@ -31,7 +31,7 @@ replaceValueList([_H|T], 0, Value, [Value|T]).
 replaceValueList([H|T], Column, Value, [H|TSub]) :-
     Column > 0,
     Column1 is Column - 1,
-    replaceValueList(T,Column1,Value, TSub).
+    replaceValueList(T, Column1, Value, TSub).
 
 
 % Find the position of a player in the matrix
@@ -65,9 +65,9 @@ getPlayerPos(GameState, [H|T], Player, Row, ListInt, ListOfPositions,Size) :-
     Next is Row + 1,
     getPlayerPos(GameState, T, Player, Next, Res, ListOfPositions,Size).
 
-copyMatrix(Init, Final) :- accCp(Init,Final).
+copyMatrix(Init, Final) :- accCp(Init, Final).
 accCp([],[]).
-accCp([H|T1],[H|T2]) :- accCp(T1,T2).
+accCp([H|T1],[H|T2]) :- accCp(T1, T2).
 
 appendList(L1, [], L1).
 
