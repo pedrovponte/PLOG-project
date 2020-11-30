@@ -204,15 +204,21 @@ All the predicates mentioned in this section can be found in the file [display.p
 
 **Initial game visualization example:**
 
+![](images/initialState.png)
+
 **Intermediate game visualization example:**
 
+![](images/midState.png)
+
 **Final game visualization example:**
+
+![](images/finalState.png)
 
 --- 
 
 ### Valid Moves
 
-The `valid_moves(+GameState,+Player,-ListOfMoves)` returns on ListOfPossibleMoves a list of moves in the format `[ [Fish1Row,Fish1Column,[MoveRow1,MoveColumn1], [MovRow2-MovColumn2], ...] [Fish2Row,Fish2Column,[MoveRow3,MoveColumn3], [MovRow4-MovColumn4], ...s]]`.
+The `valid_moves(+GameState, +Player, -ListOfMoves)` returns on ListOfMoves a list of moves in the format `[InitialRow, InitialColumn, [MoveRow1, MoveColumn1], [MoveRow2, MoveColumn2], ...] [Fish2Row,Fish2Column,[MoveRow3,MoveColumn3], [MovRow4-MovColumn4], ...s]]`.
 This predicate first calls `getPlayerPos(+GameState,+Player,-ListOfPositions)` that goes through the board and gets the position of all the player's pieces, the positions are stored in Positions.
 
 Then it is called `getAllPossibleMoves(+GameState,+Palyer,+ListOfPositions,-ListOfMoves)` that using `getMoves(+GameState, +InitRow, +InitColumn, -Moves),` sees all the possible moves (with `getAdjacentes(+GameState,+Row,+Col,-Adj)` and `getPossibleJumps(+GameState, +InitRow, +InitColumn, +ListInt, +ListAux, -ListRes)`). This verification consists of checking the existence of an empty cell in any surrounding position including the ones after jumping.
