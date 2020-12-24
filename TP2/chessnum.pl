@@ -43,11 +43,11 @@
 %    genarateBispoMove(X4,Y4,Matrix4)
 %    ...
 
-%    sumMatrixs(2,3,Matrix1,Matrix2,Matrix3,Matrix4,Result1)
+%    sumMatrixs(1,2,Matrix1,Matrix2,Matrix3,Matrix4,Result1)
 %    Result1 #= 4, 
 %    sumMatrixs(3,6,Matrix1,Matrix2,Matrix3,Matrix4,Result2)
 %    Result2 #= 4, 
-%    sumMatrixs(0,5,Matrix1,Matrix2,Matrix3,Matrix4,Result3)
+%    sumMatrixs(5,0,Matrix1,Matrix2,Matrix3,Matrix4,Result3)
 %    Result3 #= 0, 
 %    sumMatrixs(7,2,Matrix1,Matrix2,Matrix3,Matrix4,Result4)
 %    Result4 #= 4, 
@@ -56,7 +56,8 @@
 
 
 chessnum:-
-    puzzle1(Tabuleiro). %(...).
+    puzzle1(Tabuleiro),
+    printBoard(Tabuleiro). %(...).
 
 % Matriz com posiçoes de ataque do Rei
 generateKingMove(Row,Col,Matrix):- 
@@ -79,12 +80,10 @@ generateRookMove(Row,Col,Matrix):-
 validateRookMove(RookR,RookC,Row,Col):-
     RookC =:= Col ; RookR =:= Row.
 
-
-
 /*
 validateQueenMove(QueenR,QueenC,Row,Col):-
-validateRookMove(QueenR,QueenC,Row,Col) ;
-validateBishopMove(QueenR,QueenC,Row,Col).
+    validateRookMove(QueenR,QueenC,Row,Col) ;
+    validateBishopMove(QueenR,QueenC,Row,Col).
 
 
 validateBishopMove(BishopR,BishopC,Row,Col):-
@@ -117,45 +116,45 @@ maxDistanceBishop(MaxDistance,BishopR,BishopC,Row,Col,Board):-
 
 
 maxDistanceBishopDir1(MaxDistance,BishopR,BishopC,Row,Col,Board):-
-BishopR < Row,
-BishopC < Col,
-NBishopC is (BishopC + 1),
-NBishopR is (BishopR + 1),
-getPiece(NBishopC,NBishopR,Board,Piece),
-Piece == 0,
-MaxDistance1 is (MaxDistance + 1),
-maxDistanceBishopDir1(MaxDistance1,NBishopC,NBishopR,Row,Col,Board).
+    BishopR < Row,
+    BishopC < Col,
+    NBishopC is (BishopC + 1),
+    NBishopR is (BishopR + 1),
+    getPiece(NBishopC,NBishopR,Board,Piece),
+    Piece == 0,
+    MaxDistance1 is (MaxDistance + 1),
+    maxDistanceBishopDir1(MaxDistance1,NBishopC,NBishopR,Row,Col,Board).
 
 maxDistanceBishopDir2(MaxDistance,BishopR,BishopC,Row,Col,Board):-
-BishopR > Row,
-BishopC < Col,
-NBishopC is (BishopC + 1),
-NBishopR is (BishopR - 1),
-getPiece(NBishopC,NBishopR,Board,Piece),
-Piece == 0,
-MaxDistance1 is (MaxDistance + 1),
-maxDistanceBishopDir2(MaxDistance1,NBishopC,NBishopR,Row,Col,Board).
+    BishopR > Row,
+    BishopC < Col,
+    NBishopC is (BishopC + 1),
+    NBishopR is (BishopR - 1),
+    getPiece(NBishopC,NBishopR,Board,Piece),
+    Piece == 0,
+    MaxDistance1 is (MaxDistance + 1),
+    maxDistanceBishopDir2(MaxDistance1,NBishopC,NBishopR,Row,Col,Board).
 
 
 maxDistanceBishopDir3(MaxDistance,BishopR,BishopC,Row,Col,Board):-
-BishopR > Row,
-BishopC > Col,
-NBishopC is (BishopC - 1),
-NBishopR is (BishopR - 1),
-getPiece(NBishopC,NBishopR,Board,Piece),
-Piece == 0,
-MaxDistance1 is (MaxDistance + 1),
-maxDistanceBishopDir3(MaxDistance1,NBishopC,NBishopR,Row,Col,Board).
+    BishopR > Row,
+    BishopC > Col,
+    NBishopC is (BishopC - 1),
+    NBishopR is (BishopR - 1),
+    getPiece(NBishopC,NBishopR,Board,Piece),
+    Piece == 0,
+    MaxDistance1 is (MaxDistance + 1),
+    maxDistanceBishopDir3(MaxDistance1,NBishopC,NBishopR,Row,Col,Board).
 
 
 maxDistanceBishopDir4(MaxDistance,BishopR,BishopC,Row,Col,Board):-
-BishopR < Row,
-BishopC > Col,
-NBishopC is (BishopC - 1),
-NBishopR is (BishopR + 1),
-getPiece(NBishopC,NBishopR,Board,Piece),
-Piece == 0,
-MaxDistance1 is (MaxDistance + 1),
-maxDistanceBishopDir4(MaxDistance1,NBishopC,NBishopR,Row,Col,Board).
+    BishopR < Row,
+    BishopC > Col,
+    NBishopC is (BishopC - 1),
+    NBishopR is (BishopR + 1),
+    getPiece(NBishopC,NBishopR,Board,Piece),
+    Piece == 0,
+    MaxDistance1 is (MaxDistance + 1),
+    maxDistanceBishopDir4(MaxDistance1,NBishopC,NBishopR,Row,Col,Board).
 */
 
