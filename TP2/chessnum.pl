@@ -2,6 +2,7 @@
 :-consult('puzzels.pl').
 :-consult('utils.pl').
 
+
 % CHESS_NUM 
 
 % Tabuleiro de problema é um 8x8
@@ -56,20 +57,39 @@
 
 
 chessnum:-
-    puzzle1(Tabuleiro),
-    printBoard(Tabuleiro). %(...).
+   /* puzzle1(Tabuleiro),*/
+    generateKingMove(2,2,Tabuleiro),
+    printBoard(Tabuleiro).
 
 % Matriz com posiçoes de ataque do Rei
 generateKingMove(Row,Col,Matrix):- 
     generate_matrix(8,8,MatrixVazia),
-    validateKingMove(Row,Col,X,Y),
+    length(Xs, 7),
+    domain(Xs, 1, 7),
+    all_distinct(Xs),
+    print(Xs+'\n'),
+    length(Ys, 7),
+    domain(Ys, 1, 7),
+    all_distinct(Ys),
+    print(Ys+'\n'),
+    member(X,Xs),
+    member(Y,Ys),
+    X #=< (Row + 1),
+    X #>= (Row - 1),
+    Y #>= (Col - 1),
+    Y #=< (Col + 1),
+    labeling([],Xs),
+    labeling([],Ys),
     replaceValueMatrix(MatrixVazia,X,Y,1,Matrix),!.
+    
 
-validateKingMove(KingR,KingC,Row,Col):-
-    Row =< (KingR + 1),
-    Row >= (KingR - 1),
-    Col >= (KingC - 1),
-    Col =< (KingC + 1).
+
+
+validateKingMove(KingR,KingC,X,Y):-
+    X #=< (KingR + 1),
+    X #>= (KingR - 1),
+    Y #>= (KingC - 1),
+    Y #=< (KingC + 1).
 
 % Matriz com posiçoes de ataque da Torre
 generateRookMove(Row,Col,Matrix):- 
