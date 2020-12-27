@@ -38,22 +38,29 @@
 %       King na linha 0 coluna 0, 
 %       Queen na linha 3 coluna 2, ...
 
-%    genarateKingMove(X1,Y1,Matrix1) //serao matrizes so com vazios e uns.
-%    genarateQueenMove(X2,Y2,Matrix2)
-%    genarateTorreMove(X3,Y3,Matrix3)
-%    genarateBispoMove(X4,Y4,Matrix4)
+%   restriçao: as peças nao podem ocupar casas numeradas
+%   restriçao: duas peças nao podem ocupar a mesma casa
+
+%   genarateKingMove(X1,Y1,Matrix1) //serao matrizes so com vazios e uns.
+%   genarateQueenMove(X2,Y2,Matrix2)
+%   genarateRookMove(X3,Y3,Matrix3)
+%   genarateBishopMove(X4,Y4,Matrix4)
+%   generateKnightMove(X5,Y5,Matrix5)
+%   generatePawnMove(X6, Y6, Matrix6)
 %    ...
 
-%    sumMatrixs(1,2,Matrix1,Matrix2,Matrix3,Matrix4,Result1)
-%    Result1 #= 4, 
-%    sumMatrixs(3,6,Matrix1,Matrix2,Matrix3,Matrix4,Result2)
-%    Result2 #= 4, 
-%    sumMatrixs(5,0,Matrix1,Matrix2,Matrix3,Matrix4,Result3)
-%    Result3 #= 0, 
-%    sumMatrixs(7,2,Matrix1,Matrix2,Matrix3,Matrix4,Result4)
-%    Result4 #= 4, 
+%   sumMatrixs(1,2,Matrix1,Matrix2,Matrix3,Matrix4,Matrix5,Matrix6,Result1)
+%   Result1 #= 4, 
+%   sumMatrixs(3,6,Matrix1,Matrix2,Matrix3,Matrix4,Matrix5,Matrix6,Result2)
+%   Result2 #= 4, 
+%   sumMatrixs(5,0,Matrix1,Matrix2,Matrix3,Matrix4,Matrix5, Matrix6,Result3)
+%   Result3 #= 0, 
+%   sumMatrixs(7,2,Matrix1,Matrix2,Matrix3,Matrix4,Matrix5,Matrix6,Result4)
+%   Result4 #= 4, 
 %
-%    labeling([],Posicoes).
+%   labeling([],Posicoes).
+
+% ou entao simplesmente somar as matrizes todas e comparar com a matriz inicial, pois o quantidade de numeros na matriz nao e igual em todas
 
 
 chessnum:-
@@ -98,34 +105,56 @@ generateRookMove(Row,Col,Matrix):-
     replaceValueMatrix(MatrixVazia,X,Y,1,Matrix),!.
 
 validateRookMove(RookR,RookC,Row,Col):-
-    RookC =:= Col ; RookR =:= Row.
+    RookC #=:= Col ; RookR #=:= Row. %a mesma coisa que em cima??
 
-/*
+% Matriz com posiçoes de ataque da Rainha
+generateQueenMove(QueenR, QueenC, Matrix) :-
+    generate_matrix(8, 8, MatrixVazia),
+    validateQueenMove(Row, Col, X, Y),
+    replaceValueMatrix(MatrixVazia,X,Y,1,Matrix),!.
+
+
 validateQueenMove(QueenR,QueenC,Row,Col):-
     validateRookMove(QueenR,QueenC,Row,Col) ;
     validateBishopMove(QueenR,QueenC,Row,Col).
 
+% Matriz com posiçoes de ataque do Bispo
+generateBishopMove(BishopR, BishopC, Matrix) :-
+    generate_matrix(8, 8, MatrixVazia),
+    validateBishopMove(BishopR, BishopC, X, Y),
+    replaceValueMatrix(MatrixVazia,X,Y,1,Matrix),!.
+
 
 validateBishopMove(BishopR,BishopC,Row,Col):-
-    %Distance is 0,
-    %maxDistanceBishop(Distance,BishopR,BishopC,Row,Col,Board), %doenst allow to skip pieces (should)
+    % Distance is 0,
+    % maxDistanceBishop(Distance,BishopR,BishopC,Row,Col,Board), %doenst allow to skip pieces (should)
     DifR is abs(BishopR - Row),
     DifC is abs(BishopC - Col),
-    %DifC < Distance, DifR < Distance,
-    BishopC \= Col , BishopR \= Row,
-    DifC == DifR.
+    % DifC < Distance, DifR < Distance,
+    BishopC #\= Col , BishopR #\= Row,
+    DifC #== DifR.
 
 validateKnightMove(KnightR,KnightC,Row,Col):-
-    (Row =:= (KnightR + 2), Col =:= (KnightC - 1));
-    (Row =:= (KnightR + 1), Col =:= (KnightC - 2));
-    (Row =:= (KnightR + 2), Col =:= (KnightC + 1));
-    (Row =:= (KnightR + 1), Col =:= (KnightC + 2));
-    (Row =:= (KnightR - 2), Col =:= (KnightC - 1));
-    (Row =:= (KnightR - 1), Col =:= (KnightC - 2));
-    (Row =:= (KnightR - 2), Col =:= (KnightC + 1));
-    (Row =:= (KnightR - 1), Col =:= (KnightC + 2)).
+    (Row #=:= (KnightR + 2), Col #=:= (KnightC - 1));
+    (Row #=:= (KnightR + 1), Col #=:= (KnightC - 2));
+    (Row #=:= (KnightR + 2), Col #=:= (KnightC + 1));
+    (Row #=:= (KnightR + 1), Col #=:= (KnightC + 2));
+    (Row #:= (KnightR - 2), Col #=:= (KnightC - 1));
+    (Row #=:= (KnightR - 1), Col #=:= (KnightC - 2));
+    (Row #=:= (KnightR - 2), Col #=:= (KnightC + 1));
+    (Row #=:= (KnightR - 1), Col #=:= (KnightC + 2)).
 
+% Matriz com posiçoes de ataque do Peão
+generatePawnMove(PawnR, PawnC, Matrix) :-
+    generate_matrix(8, 8, MatrixVazia),
+    validatePawnMove(PawnR, PawnC, X, Y),
+    replaceValueMatrix(MatrixVazia,X,Y,1,Matrix),!.
 
+validatePawnMove(PawnR, PawnC, Row, Col) :-
+    Col #=:= PawnC,
+    Row #=:= PawnR + 1.
+
+/*
 %max distance allowed to travel calculator for bishop
 maxDistanceBishop(MaxDistance,BishopR,BishopC,Row,Col,Board):-
   DeltaR is (Row - BishopR),
