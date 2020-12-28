@@ -1,4 +1,5 @@
 :- use_module(library(clpfd)).
+:- use_module(library(lists)).
 :-consult('puzzels.pl').
 :-consult('utils.pl').
 
@@ -68,11 +69,12 @@ chessnum:-
     nl,
     % generateKingMove(2,2,Tabuleiro),
     printBoard(Tabuleiro),
-    getAttacksValues(Tabuleiro, 0, ListAttackValues),
+    getAttacksValues(Tabuleiro, 0, ListAttackValues), % ListAttackValues -> AttackValue - Row - Column
     sort(ListAttackValues, AttacksList),
     write(AttacksList),
-    Positions = [KingX, KingY, QueenX, QueenY, RookX, RookY, BishopX, BishopY, KnightX, KnightY, PawnX, PawnY],
-    domain(Positions, 0, 7).
+    Positions = [KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC],
+    domain(Positions, 0, 7),
+    different_positions(Positions).
 
 
 % Matriz com posiçoes de ataque do Rei
@@ -122,8 +124,19 @@ getAttacksValuesLine([H | L], X, Y, AuxLineAttacks, LineAttacks) :-
     getAttacksValuesLine(L, X, Y1, AuxLineAttacks, LineAttacks).
 
 getAttacksValuesLine(_, _, 8, LineAttacks, LineAttacks).
-    
 
+different_positions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC]) :-
+    KingPos #= 10 * KingR + KingC,
+    QueenPos #= 10 * QueenR + QueenC,
+    RookPos #= 10 * RookR + RookC,
+    BishopPos #= 10 * BishopR + BishopC,
+    KnightPos #= 10 * KnightR + KnightC,
+    PawnPos #= 10 * PawnR + PawnC,
+    KingPos #\= QueenPos,
+    QueenPos #\= RookPos,
+    RookPos #\= BishopPos,
+    BishopPos #\= KnightPos,
+    KnightPos #\= PawnPos.
 
 
 validateKingMove(KingR,KingC,X,Y):-

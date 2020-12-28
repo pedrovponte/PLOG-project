@@ -7,10 +7,10 @@ generate_matrix(Cols, Rows, Matrix) :-
     length_list(Rows, Matrix),
     maplist(length_list(Cols), Matrix).
 
-maplist(_, []).
+/*maplist(_, []).
 maplist(C, [X|Xs]) :-
    call(C,X),
-   maplist(C, Xs).
+   maplist(C, Xs).*/
 
 % Obtain content of the cell Row,Column 
 
