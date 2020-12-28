@@ -67,36 +67,23 @@
 chessnum:-
     puzzle1(Tabuleiro),
     nl,
-    % generateKingMove(2,2,Tabuleiro),
     printBoard(Tabuleiro),
-    getAttacksValues(Tabuleiro, 0, ListAttackValues), % ListAttackValues -> AttackValue - Row - Column
+    getAttacksValues(Tabuleiro, 0, ListAttackValues), % ListAttackValues -> [AttackValue - Row - Column,...]
     sort(ListAttackValues, AttacksList),
     write(AttacksList),
+
     Positions = [KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC],
     domain(Positions, 0, 7),
-    different_positions(Positions).
+    different_positions(Positions),
+
+    labeling([],Positions),
+    write(Positions),
+
+    sumAttacks(Positions),
 
 
-% Matriz com posiçoes de ataque do Rei
-generateKingMove(Row,Col,Matrix):- 
-    generate_matrix(8,8,MatrixVazia),
-    length(Xs, 7),
-    domain(Xs, 1, 7),
-    all_distinct(Xs),
-    print(Xs+'\n'),
-    length(Ys, 7),
-    domain(Ys, 1, 7),
-    all_distinct(Ys),
-    print(Ys+'\n'),
-    member(X,Xs),
-    member(Y,Ys),
-    X #=< (Row + 1),
-    X #>= (Row - 1),
-    Y #>= (Col - 1),
-    Y #=< (Col + 1),
-    labeling([],Xs),
-    labeling([],Ys),
-    replaceValueMatrix(MatrixVazia,X,Y,1,Matrix),!.
+sumAttacks(Positions):-
+
 
 getAttacksValues(GameBoard, X, ListAttackValues) :-
     getAttacksValues(GameBoard, X, [], ListAttackValues).
@@ -149,10 +136,12 @@ validateKingMove(KingR,KingC,X,Y):-
 generateRookMove(Row,Col,Matrix):- 
     generate_matrix(8,8,MatrixVazia),
     validateRookMove(Row,Col,X,Y),
-    replaceValueMatrix(MatrixVazia,X,Y,1,Matrix),!.
+    replaceValueMatrix(MatrixVazia,X,Y,1,Matrix).
 
 validateRookMove(RookR,RookC,Row,Col):-
     RookC #= Col ; RookR #= Row. %a mesma coisa que em cima??
+
+
 
 % Matriz com posiçoes de ataque da Rainha
 generateQueenMove(QueenR, QueenC, Matrix) :-
@@ -200,6 +189,28 @@ generatePawnMove(PawnR, PawnC, Matrix) :-
 validatePawnMove(PawnR, PawnC, Row, Col) :-
     Col #= PawnC,
     Row #= PawnR + 1.
+
+
+% Matriz com posiçoes de ataque do Rei
+/*generateKingMove(Row,Col,Matrix):- 
+    generate_matrix(8,8,MatrixVazia),
+    length(Xs, 7),
+    domain(Xs, 1, 7),
+    all_distinct(Xs),
+    print(Xs+'\n'),
+    length(Ys, 7),
+    domain(Ys, 1, 7),
+    all_distinct(Ys),
+    print(Ys+'\n'),
+    member(X,Xs),
+    member(Y,Ys),
+    X #=< (Row + 1),
+    X #>= (Row - 1),
+    Y #>= (Col - 1),
+    Y #=< (Col + 1),
+    labeling([],Xs),
+    labeling([],Ys),
+    replaceValueMatrix(MatrixVazia,X,Y,1,Matrix),!.*/
 
 /*
 %max distance allowed to travel calculator for bishop
