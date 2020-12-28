@@ -15,20 +15,20 @@ printBoard(GameBoard) :-
     printBoard(GameBoard, 0, Size).
 
 printHeader(Size) :-
-    printcode(0, Size),
+    printCode(0, Size),
     nl,
     write('  '),
     printRowSeparator(0, Size),
     nl.
 
-printcode(Size, Size).
+printCode(Size, Size).
 
-printcode(Act, Size) :-
+printCode(Act, Size) :-
     write('  '),
     write(Act),
     write(' '),
     NewAct is Act + 1,
-    printcode(NewAct, Size).
+    printCode(NewAct, Size).
 
 printRowSeparator(Size, Size) :- write('|').
 
@@ -40,9 +40,8 @@ printRowSeparator(Act, Size) :-
 printBoard([], Size, Size).
 
 printBoard([L|T], N, Size):-
-    letter(N,X),
     N1 is N + 1,
-    write(X),
+    write(N),
     write(' '),
     write('|'),
     print_line(L),  
@@ -79,7 +78,6 @@ code(4, ' 4').
 code(5, ' 5').
 code(6, ' 6').
 code(7, ' 7').
-code(8, ' 8').
 
 letter(0, 'A').
 letter(1, 'B').
@@ -89,5 +87,3 @@ letter(4, 'E').
 letter(5, 'F').
 letter(6, 'G').
 letter(7, 'H').
-letter(8, 'I').
-letter(9, 'J').

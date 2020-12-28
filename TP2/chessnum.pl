@@ -64,9 +64,16 @@
 
 
 chessnum:-
-   /* puzzle1(Tabuleiro),*/
-    generateKingMove(2,2,Tabuleiro),
-    printBoard(Tabuleiro).
+    puzzle1(Tabuleiro),
+    nl,
+    % generateKingMove(2,2,Tabuleiro),
+    printBoard(Tabuleiro),
+    getAttacksValues(Tabuleiro, 0, ListAttackValues),
+    sort(ListAttackValues, AttacksList),
+    write(AttacksList),
+    Positions = [KingX, KingY, QueenX, QueenY, RookX, RookY, BishopX, BishopY, KnightX, KnightY, PawnX, PawnY],
+    domain(Positions, 0, 7).
+
 
 % Matriz com posiçoes de ataque do Rei
 generateKingMove(Row,Col,Matrix):- 
@@ -88,6 +95,33 @@ generateKingMove(Row,Col,Matrix):-
     labeling([],Xs),
     labeling([],Ys),
     replaceValueMatrix(MatrixVazia,X,Y,1,Matrix),!.
+
+getAttacksValues(GameBoard, X, ListAttackValues) :-
+    getAttacksValues(GameBoard, X, [], ListAttackValues).
+
+getAttacksValues([H | L], X, AuxListAttackValues, ListAttackValues) :-
+    getAttacksValuesLine(H, X, 0, LineAttacks),
+    appendList(AuxListAttackValues, LineAttacks, Res),
+    X1 is X + 1,
+    getAttacksValues(L, X1, Res, ListAttackValues).
+
+getAttacksValues(_, 8, ListAttackValues, ListAttackValues).
+
+getAttacksValuesLine(Line, X, Y, LineAttacks) :-
+    getAttacksValuesLine(Line, X, Y, [], LineAttacks).
+
+getAttacksValuesLine([H | L], X, Y, AuxLineAttacks, LineAttacks) :-
+    H \= empty,
+    append(AuxLineAttacks, H - X - Y, Res),
+    Y1 is Y + 1,
+    getAttacksValuesLine(L, X, Y1, Res, LineAttacks).
+
+getAttacksValuesLine([H | L], X, Y, AuxLineAttacks, LineAttacks) :- 
+    H == empty,
+    Y1 is Y + 1,
+    getAttacksValuesLine(L, X, Y1, AuxLineAttacks, LineAttacks).
+
+getAttacksValuesLine(_, _, 8, LineAttacks, LineAttacks).
     
 
 
@@ -105,7 +139,7 @@ generateRookMove(Row,Col,Matrix):-
     replaceValueMatrix(MatrixVazia,X,Y,1,Matrix),!.
 
 validateRookMove(RookR,RookC,Row,Col):-
-    RookC #=:= Col ; RookR #=:= Row. %a mesma coisa que em cima??
+    RookC #= Col ; RookR #= Row. %a mesma coisa que em cima??
 
 % Matriz com posiçoes de ataque da Rainha
 generateQueenMove(QueenR, QueenC, Matrix) :-
@@ -132,17 +166,17 @@ validateBishopMove(BishopR,BishopC,Row,Col):-
     DifC is abs(BishopC - Col),
     % DifC < Distance, DifR < Distance,
     BishopC #\= Col , BishopR #\= Row,
-    DifC #== DifR.
+    DifC #= DifR.
 
 validateKnightMove(KnightR,KnightC,Row,Col):-
-    (Row #=:= (KnightR + 2), Col #=:= (KnightC - 1));
-    (Row #=:= (KnightR + 1), Col #=:= (KnightC - 2));
-    (Row #=:= (KnightR + 2), Col #=:= (KnightC + 1));
-    (Row #=:= (KnightR + 1), Col #=:= (KnightC + 2));
-    (Row #:= (KnightR - 2), Col #=:= (KnightC - 1));
-    (Row #=:= (KnightR - 1), Col #=:= (KnightC - 2));
-    (Row #=:= (KnightR - 2), Col #=:= (KnightC + 1));
-    (Row #=:= (KnightR - 1), Col #=:= (KnightC + 2)).
+    (Row #= (KnightR + 2), Col #= (KnightC - 1));
+    (Row #= (KnightR + 1), Col #= (KnightC - 2));
+    (Row #= (KnightR + 2), Col #= (KnightC + 1));
+    (Row #= (KnightR + 1), Col #= (KnightC + 2));
+    (Row #= (KnightR - 2), Col #= (KnightC - 1));
+    (Row #= (KnightR - 1), Col #= (KnightC - 2));
+    (Row #= (KnightR - 2), Col #= (KnightC + 1));
+    (Row #= (KnightR - 1), Col #= (KnightC + 2)).
 
 % Matriz com posiçoes de ataque do Peão
 generatePawnMove(PawnR, PawnC, Matrix) :-
@@ -151,8 +185,8 @@ generatePawnMove(PawnR, PawnC, Matrix) :-
     replaceValueMatrix(MatrixVazia,X,Y,1,Matrix),!.
 
 validatePawnMove(PawnR, PawnC, Row, Col) :-
-    Col #=:= PawnC,
-    Row #=:= PawnR + 1.
+    Col #= PawnC,
+    Row #= PawnR + 1.
 
 /*
 %max distance allowed to travel calculator for bishop
