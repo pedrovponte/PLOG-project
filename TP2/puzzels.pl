@@ -14,7 +14,25 @@ puzzle1([[empty,empty,empty,empty,empty,empty,empty,empty],
     [empty,empty,empty,empty,empty,empty,empty,empty],
     [0,empty,empty,empty,empty,empty,empty,empty],
     [empty,empty,empty,empty,empty,empty,empty,empty],
-    [empty,empty,4,empty,empty,empty,empty,empty]]).
+    [empty,empty,1,empty,empty,empty,empty,empty]]).
+
+puzzle2([[empty,empty,empty,empty,empty,empty,empty,empty],
+        [empty,empty,2,empty,empty,empty,3,empty],
+        [empty,empty,empty,2,empty,empty,empty,empty],
+        [empty,empty,empty,empty,empty,empty,empty,empty],
+        [empty,3,empty,empty,empty,empty,3,empty],
+        [empty,empty,empty,empty,empty,empty,empty,empty],
+        [empty,empty,empty,empty,3,empty,empty,empty],
+        [empty,empty,1,empty,empty,empty,empty,empty]]).
+
+puzzleteste([[empty,empty,empty,empty,empty,empty,empty,empty],
+            [empty,empty,empty,empty,empty,empty,empty,empty],
+            [empty,empty,empty,empty,empty,empty,empty,empty],
+            [empty,empty,empty,empty,empty,empty,empty,empty],
+            [empty,empty,empty,empty,5,empty,empty,empty],
+            [empty,empty,empty,empty,empty,empty,empty,empty],
+            [empty,empty,empty,empty,empty,empty,empty,empty],
+            [empty,empty,empty,empty,empty,empty,empty,empty]]).
 
 printBoard(GameBoard) :-
     length(GameBoard, Size),
