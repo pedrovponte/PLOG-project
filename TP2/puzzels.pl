@@ -1,3 +1,12 @@
+puzzle0([[empty, 1, empty, 6, empty, empty, empty, empty],
+    [empty, empty, empty, empty,empty, empty, empty, empty],
+    [empty, empty, empty, empty, 2, empty, empty, empty],
+    [empty, empty, empty,empty, empty, empty, empty, empty],
+    [empty, empty, empty, 0, empty, empty, empty, empty],
+    [empty, empty, empty, empty, empty, empty, empty, empty],
+    [empty, empty, empty, empty,empty, empty, empty, empty],
+    [empty, empty, empty, empty, empty, empty, empty, empty]]).
+
 puzzle1([[empty,empty,empty,empty,empty,empty,empty,empty],
     [empty,empty,4,empty,empty,empty,empty,empty],
     [empty,empty,empty,empty,empty,empty,empty,empty],
@@ -65,9 +74,9 @@ print_cell(C):-
 code(empty, '..').
 code(king, ' K'). /*rei*/
 code(queen, ' Q'). /*rainha*/
-code(rook, ' T'). /*torre*/
+code(rook, ' R'). /*torre*/
 code(bishop, ' B'). /*bispo*/
-code(knight, ' C'). /*cavaleiro*/
+code(knight, 'Kn'). /*cavaleiro*/
 code(pawn, ' P'). /*peao*/
 
 code(0, ' 0').
