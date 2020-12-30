@@ -16,7 +16,16 @@ puzzle1([[empty,empty,empty,empty,empty,empty,empty,empty],
     [empty,empty,empty,empty,empty,empty,empty,empty],
     [empty,empty,1,empty,empty,empty,empty,empty]]).
 
-puzzle2([[empty,empty,empty,empty,empty,empty,empty,empty],
+puzzle2([[1, 0, empty, empty, empty, 0, empty, 1],
+    [empty, empty, empty, empty, empty, empty, empty, empty],
+    [0, empty, empty, empty, empty, empty, empty, empty],
+    [empty, empty, empty, 0, 0, empty, empty, 0],
+    [empty, empty, empty, empty, empty, empty, 0, 0],
+    [empty, empty, empty, empty, empty, empty, empty, empty],
+    [empty, empty, empty, empty, empty, 0, empty, empty],
+    [empty, empty, empty, empty, empty, 0, empty, 1]]).
+
+puzzle3([[empty,empty,empty,empty,empty,empty,empty,empty],
         [empty,empty,2,empty,empty,empty,3,empty],
         [empty,empty,empty,2,empty,empty,empty,empty],
         [empty,empty,empty,empty,empty,empty,empty,empty],
@@ -24,6 +33,8 @@ puzzle2([[empty,empty,empty,empty,empty,empty,empty,empty],
         [empty,empty,empty,empty,empty,empty,empty,empty],
         [empty,empty,empty,empty,3,empty,empty,empty],
         [empty,empty,1,empty,empty,empty,empty,empty]]).
+
+
 
 puzzleteste([[empty,empty,empty,empty,empty,empty,empty,empty],
             [empty,empty,empty,empty,empty,empty,empty,empty],
