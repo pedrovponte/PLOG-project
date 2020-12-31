@@ -1,4 +1,4 @@
-puzzle0([[empty, 1, empty, 6, empty, empty, empty, empty],
+puzzle(0,[[empty, 1, empty, 6, empty, empty, empty, empty],
     [empty, empty, empty, empty,empty, empty, empty, empty],
     [empty, empty, empty, empty, 2, empty, empty, empty],
     [empty, empty, empty,empty, empty, empty, empty, empty],
@@ -7,7 +7,7 @@ puzzle0([[empty, 1, empty, 6, empty, empty, empty, empty],
     [empty, empty, empty, empty,empty, empty, empty, empty],
     [empty, empty, empty, empty, empty, empty, empty, empty]]).
 
-puzzle1([[empty,empty,empty,empty,empty,empty,empty,empty],
+puzzle(1,[[empty,empty,empty,empty,empty,empty,empty,empty],
     [empty,empty,4,empty,empty,empty,empty,empty],
     [empty,empty,empty,empty,empty,empty,empty,empty],
     [empty,empty,empty,empty,empty,empty,4,empty],
@@ -16,7 +16,7 @@ puzzle1([[empty,empty,empty,empty,empty,empty,empty,empty],
     [empty,empty,empty,empty,empty,empty,empty,empty],
     [empty,empty,1,empty,empty,empty,empty,empty]]).
 
-puzzle2([[1, 0, empty, empty, empty, 0, empty, 1],
+puzzle(2,[[1, 0, empty, empty, empty, 0, empty, 1],
     [empty, empty, empty, empty, empty, empty, empty, empty],
     [0, empty, empty, empty, empty, empty, empty, empty],
     [empty, empty, empty, 0, 0, empty, empty, 0],
@@ -25,7 +25,7 @@ puzzle2([[1, 0, empty, empty, empty, 0, empty, 1],
     [empty, empty, empty, empty, empty, 0, empty, empty],
     [empty, empty, empty, empty, empty, 0, empty, 1]]).
 
-puzzle3([[empty,empty,empty,empty,empty,empty,empty,empty],
+puzzle(3,[[empty,empty,empty,empty,empty,empty,empty,empty],
         [empty,empty,2,empty,empty,empty,3,empty],
         [empty,empty,empty,2,empty,empty,empty,empty],
         [empty,empty,empty,empty,empty,empty,empty,empty],
@@ -40,7 +40,7 @@ puzzleteste([[empty,empty,empty,empty,empty,empty,empty,empty],
             [empty,empty,empty,empty,empty,empty,empty,empty],
             [empty,empty,empty,empty,empty,empty,empty,empty],
             [empty,empty,empty,empty,empty,empty,empty,empty],
-            [empty,empty,empty,empty,5,empty,empty,empty],
+            [empty,empty,empty,empty,6,empty,empty,empty],
             [empty,empty,empty,empty,empty,empty,empty,empty],
             [empty,empty,empty,empty,empty,empty,empty,empty],
             [empty,empty,empty,empty,empty,empty,empty,empty]]).

@@ -1,7 +1,9 @@
 :- use_module(library(clpfd)).
 :- use_module(library(lists)).
+:- use_module(library(random)).
 :-consult('puzzels.pl').
 :-consult('utils.pl').
+:-consult('menu.pl').
 
 
 % CHESS_NUM 
@@ -64,10 +66,20 @@
 
 % ou entao simplesmente somar as matrizes todas e comparar com a matriz inicial, pois o quantidade de numeros na matriz nao e igual em todas
 
+printStatistics(RunTime):-
+    write('Este tabuleiro demorou: '), write(RunTime), nl,
+    start.
 
-chessnum:-
-    puzzle0(Tabuleiro),
+get_tabuleiro(Id):-
+    puzzle(Id,Tabuleiro),
+    chessnum(Tabuleiro,RunTime),
+    printStatistics(RunTime).
+
+chessnum(Tabuleiro,RunTime):-
     nl,
+
+    statistics(runtime,[Start|_]),
+
     % printBoard(Tabuleiro),
     getAttacksValues(Tabuleiro, 0, ListAttackValues), % ListAttackValues -> [AttackValue - Row - Column,...]
     sort(ListAttackValues, AttacksList),
@@ -115,27 +127,29 @@ chessnum:-
     replaceValueMatrix(Tabuleiro3, BishopR, BishopC, bishop, Tabuleiro4),
     replaceValueMatrix(Tabuleiro4, KnightR, KnightC, knight, Tabuleiro5),
     replaceValueMatrix(Tabuleiro5, PawnR, PawnC, pawn, Tabuleiro6),
-    printBoard(Tabuleiro6).
+    printBoard(Tabuleiro6),
 
+    statistics(runtime,[Stop|_]),
+    RunTime is Stop - Start.
 
 sumAttacks([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Attack - Row - Column):-
     KingAttack + QueenAttack + RookAttack + BishopAttack + KnightAttack + PawnAttack #= Attack,
-    % PawnR #\= Row, PawnC #\= Column,
+    (PawnR #\= Row #/\ PawnC #\= Column) #\/ (PawnR #= Row #/\ PawnC #\= Column)#\/ (PawnR #\= Row #/\ PawnC #= Column),
     validatePawnMove(PawnR, PawnC, Row, Column, PawnAttack),
     write('Pawn Attack: '), write(PawnAttack), nl,
-    % RookR #\= Row, RookC #\= Column,
+    (RookR #\= Row #/\ RookC #\= Column) #\/ (RookR #= Row #/\ RookC #\= Column)#\/ (RookR #\= Row #/\ RookC #= Column),
     validateRookMove(RookR, RookC, Row, Column, RookAttack),
     write('Rook Attack: '), write(RookAttack), nl,
-    % KnightR #\= Row, KnightC #\= Column,
+    (KnightR #\= Row #/\ KnightC #\= Column) #\/ (KnightR #= Row #/\ KnightC #\= Column)#\/ (KnightR #\= Row #/\ KnightC #= Column),
     validateKnightMove(KnightR, KnightC, Row, Column, KnightAttack),
     write('Knight Attack: '), write(KnightAttack), nl,
-    % BishopR #\= Row, BishopC #\= Column,
+    (BishopR #\= Row #/\ BishopC #\= Column) #\/ (BishopR #= Row #/\ BishopC #\= Column)#\/ (BishopR #\= Row #/\ BishopC #= Column),
     validateBishopMove(BishopR, BishopC, Row, Column, BishopAttack),
     write('Bishop Attack: '), write(BishopAttack), nl,
-    % KingR #\= Row, KingC #\= Column,
+    (KingR #\= Row #/\ KingC #\= Column) #\/ (KingR #= Row #/\ KingC #\= Column)#\/ (KingR #\= Row #/\ KingC #= Column),
     validateKingMove(KingR, KingC, Row, Column, KingAttack),
     write('King Attack: '), write(KingAttack), nl,
-    % QueenR #\= Row, QueenC #\= Column,
+    (QueenR #\= Row #/\ QueenC #\= Column) #\/ (QueenR #= Row #/\ QueenC #\= Column)#\/ (QueenR #\= Row #/\ QueenC #= Column),
     validateQueenMove(QueenR, QueenC, Row, Column, QueenAttack),
     write('Queen Attack: '), write(QueenAttack), nl,
     % KingAttack + QueenAttack + RookAttack + BishopAttack + KnightAttack + PawnAttack #= Attack,
@@ -296,6 +310,48 @@ validatePawnMove(PawnR, PawnC, Row, Col, Attack) :-
     Row #= PawnR - 1.
 
 validatePawnMove(PawnR, PawnC, Row, Col, 0).*/
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                      Generate puzzles                          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+get_puzzle(Board_Size) :-
+    generate_matrix(Board_Size, Board_Size, Tabuleiro),
+    random(0,Board_Size,Row1),
+    random(0,Board_Size,Col1),
+    random(0,Board_Size,Row2),
+    random(0,Board_Size,Col2),
+    random(0,Board_Size,Row3),
+    random(0,Board_Size,Col3),
+    random(0,Board_Size,Row4),
+    random(0,Board_Size,Col4),
+    random(0,Board_Size,Row5),
+    random(0,Board_Size,Col5),
+    random(0,Board_Size,Row6),
+    random(0,Board_Size,Col6),
+    Cell=[Row1,Col1,Row2,Col2,Row3,Col3,Row4,Col4,Row5,Col5,Row6,Col6],
+    
+    differentPositions(Cell),
+
+    random(0,4,Num1),
+    replaceValueMatrix(Tabuleiro,Row1,Col1,Num1,Tabuleiro1),
+    random(0,4,Num2),
+    replaceValueMatrix(Tabuleiro1,Row2,Col2,Num2,Tabuleiro2),
+    random(0,4,Num3),
+    replaceValueMatrix(Tabuleiro2,Row3,Col3,Num3,Tabuleiro3),
+    random(0,4,Num4),
+    replaceValueMatrix(Tabuleiro3,Row4,Col4,Num4,Tabuleiro4),
+    printBoard(Tabuleiro4),
+
+    chessnum(Tabuleiro4,RunTime),
+    printStatistics(RunTime).
+
+
+
 
 /*
 %max distance allowed to travel calculator for bishop
