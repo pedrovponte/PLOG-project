@@ -1,31 +1,49 @@
 puzzle(0,[[empty, 1, empty, 6, empty, empty, empty, empty],
-    [empty, empty, empty, empty,empty, empty, empty, empty],
-    [empty, empty, empty, empty, 2, empty, empty, empty],
-    [empty, empty, empty,empty, empty, empty, empty, empty],
-    [empty, empty, empty, 0, empty, empty, empty, empty],
-    [empty, empty, empty, empty, empty, empty, empty, empty],
-    [empty, empty, empty, empty,empty, empty, empty, empty],
-    [empty, empty, empty, empty, empty, empty, empty, empty]]).
+        [empty, empty, empty, empty,empty, empty, empty, empty],
+        [empty, empty, empty, empty, 2, empty, empty, empty],
+        [empty, empty, empty,empty, empty, empty, empty, empty],
+        [empty, empty, empty, 0, empty, empty, empty, empty],
+        [empty, empty, empty, empty, empty, empty, empty, empty],
+        [empty, empty, empty, empty,empty, empty, empty, empty],
+        [empty, empty, empty, empty, empty, empty, empty, empty]]).
 
 puzzle(1,[[empty,empty,empty,empty,empty,empty,empty,empty],
-    [empty,empty,4,empty,empty,empty,empty,empty],
-    [empty,empty,empty,empty,empty,empty,empty,empty],
-    [empty,empty,empty,empty,empty,empty,4,empty],
-    [empty,empty,empty,empty,empty,empty,empty,empty],
-    [0,empty,empty,empty,empty,empty,empty,empty],
-    [empty,empty,empty,empty,empty,empty,empty,empty],
-    [empty,empty,1,empty,empty,empty,empty,empty]]).
+        [empty,empty,4,empty,empty,empty,empty,empty],
+        [empty,empty,empty,empty,empty,empty,empty,empty],
+        [empty,empty,empty,empty,empty,empty,4,empty],
+        [empty,empty,empty,empty,empty,empty,empty,empty],
+        [0,empty,empty,empty,empty,empty,empty,empty],
+        [empty,empty,empty,empty,empty,empty,empty,empty],
+        [empty,empty,4,empty,empty,empty,empty,empty]]).
 
 puzzle(2,[[1, 0, empty, empty, empty, 0, empty, 1],
-    [empty, empty, empty, empty, empty, empty, empty, empty],
-    [0, empty, empty, empty, empty, empty, empty, empty],
-    [empty, empty, empty, 0, 0, empty, empty, 0],
-    [empty, empty, empty, empty, empty, empty, 0, 0],
-    [empty, empty, empty, empty, empty, empty, empty, empty],
-    [empty, empty, empty, empty, empty, 0, empty, empty],
-    [empty, empty, empty, empty, empty, 0, empty, 1]]).
+        [empty, empty, empty, empty, empty, empty, empty, empty],
+        [0, empty, empty, empty, empty, empty, empty, empty],
+        [empty, empty, empty, 0, 0, empty, empty, 0],
+        [empty, empty, empty, empty, empty, empty, 0, 0],
+        [empty, empty, empty, empty, empty, empty, empty, empty],
+        [empty, empty, empty, empty, empty, 0, empty, empty],
+        [empty, empty, empty, empty, empty, 0, empty, 1]]).
 
 puzzle(3,[[empty,empty,empty,empty,empty,empty,empty,empty],
+        [empty,empty,3,empty,empty,empty,empty,0],
+        [empty,empty,empty,empty,empty,empty,empty,empty],
+        [empty,empty,empty,empty,empty,empty,empty,empty],
+        [empty,empty,empty,empty,5,empty,empty,empty],
+        [empty,empty,empty,empty,empty,empty,empty,empty],
+        [empty,empty,empty,3,empty,empty,empty,0],
+        [empty,empty,empty,empty,empty,empty,empty,empty]]).
+
+puzzle(4,[[empty,0,0,empty,empty,0,empty,empty],
+        [empty,empty,empty,empty,empty,empty,empty,0],
+        [empty,empty,empty,empty,empty,empty,empty,0],
+        [empty,empty,empty,empty,empty,empty,empty,empty],
+        [0,empty,empty,empty,empty,4,empty,0],
+        [empty,empty,empty,empty,empty,empty,empty,empty],
+        [empty,empty,empty,empty,empty,empty,empty,0],
+        [empty,empty,0,empty,empty,0,0,0]]).
+
+puzzle(5,[[empty,empty,empty,empty,empty,empty,empty,empty],
         [empty,empty,2,empty,empty,empty,3,empty],
         [empty,empty,empty,2,empty,empty,empty,empty],
         [empty,empty,empty,empty,empty,empty,empty,empty],

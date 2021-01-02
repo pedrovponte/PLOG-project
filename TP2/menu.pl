@@ -1,6 +1,6 @@
 choose_board(Id):- 
     get_tabuleiro(Id).
-choose_board(_):- write('Invalid input, board doesnt exists'), nl.
+choose_board(_):- write('Invalid input, board doesn''t exist'), nl.
 
 %Menu                      
 start:-
@@ -15,7 +15,7 @@ start:-
     parseOptions(Option).
 
 parseOptions(1):-
-    write('Choose between board 1,2,3,4'),
+    write('Choose between board 0,1,2,3,4,5'),
     read(Id),
     choose_board(Id).  
 
