@@ -80,7 +80,7 @@ chessnum(Tabuleiro,RunTime):-
 
     statistics(runtime,[Start|_]),
 
-    % printBoard(Tabuleiro),
+    printBoard(Tabuleiro),
     getAttacksValues(Tabuleiro, 0, ListAttackValues), % ListAttackValues -> [AttackValue - Row - Column,...]
     sort(ListAttackValues, AttacksList),
     write('Attacks List: '), write(AttacksList), nl,
@@ -89,38 +89,10 @@ chessnum(Tabuleiro,RunTime):-
     domain(Positions, 0, 7),
     differentPositions(Positions),
 
-    /*findall(A,sumAttacks(Positions,A),Bag),
-    write('Bag: '), write(Bag), nl,
-    nth0(0,Bag,Primeiro),
-    write('Bag 0 : '), write(Primeiro),nl,*/
-
     maplist(sumAttacks(Positions), AttacksList),
-    /*write('Attacks List 2: '), write(AttacksList), nl,*/
-
-    /*nth0(0,AttacksList,Primeiro),
-    write('First : '), write(Primeiro),nl,
-    nth0(1,AttacksList,Segundo),
-    write('Segundo : '), write(Segundo),nl,
-    nth0(2,AttacksList,Terceiro),
-    write('Terceiro : '), write(Terceiro),nl,
-    nth0(3,AttacksList,Quarto),
-    write('Quarto : '), write(Quarto),nl,
-
-    sumAttacks(Positions,Primeiro),
-    sumAttacks(Positions,Segundo),
-    sumAttacks(Positions,Terceiro),
-    sumAttacks(Positions,Quarto),*/
     
     write('Before labeling'), nl,
     labeling([], Positions),
-   
-   /* write('Positions: '), write(Positions),nl,
-    write('King is in '), write(KingR), write(KingC), nl,
-    write('Queen is in '), write(QueenR), write(QueenC), nl,
-    write('Rook is in '), write(RookR), write(RookC), nl,
-    write('Bishop is in '), write(BishopR), write(BishopC), nl,
-    write('Knight is in '), write(KnightR), write(KnightC), nl,
-    write('Pawn is in '), write(PawnR), write(PawnC),*/
 
     replaceValueMatrix(Tabuleiro, KingR, KingC, king, Tabuleiro1),
     replaceValueMatrix(Tabuleiro1, QueenR, QueenC, queen, Tabuleiro2),
@@ -220,19 +192,7 @@ differentPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC
 
 
 /* King Move */
-validateKingMove(KingR, KingC, Row, Col, Attack):-
-    /*(
-        (Row #= (KingR -1) #/\ Col #= (KingC - 1)) #\/
-        (Row #= KingR #/\ Col #= (KingC - 1)) #\/
-        (Row #= (KingR+1) #/\ Col #= (KingC - 1)) #\/
-
-        (Row #= (KingR -1) #/\ Col #= (KingC + 1)) #\/
-        (Row #= KingR #/\ Col #= (KingC + 1)) #\/
-        (Row #= (KingR+1) #/\ Col #= (KingC + 1)) #\/
-
-        (Row #= (KingR -1) #/\ Col #= (KingC)) #\/
-        (Row #= (KingR+1) #/\ Col #= (KingC))
-    ) #<=> Attack.*/
+validateKingMove(KingR, KingC, Row, Col, Attack) :-
     (
         Row #=< (KingR + 1) #/\
         Row #>= (KingR - 1) #/\
@@ -240,10 +200,8 @@ validateKingMove(KingR, KingC, Row, Col, Attack):-
         Col #=< (KingC + 1)
     ) #<=> Attack.
 
-% validateKingMove(KingR, KingC, Row, Col, 0).
-
 /* Rook Move */
-validateRookMove(RookR, RookC, Row, Col, [K1, Q1, B1, Kn1, P1], Attack):-
+validateRookMove(RookR, RookC, Row, Col, [K1, Q1, B1, Kn1, P1], Attack) :-
     (
         (Col #= RookC) #\/ 
         (Row #= RookR)
@@ -251,63 +209,42 @@ validateRookMove(RookR, RookC, Row, Col, [K1, Q1, B1, Kn1, P1], Attack):-
 
     Attack #<=> Attack1 #/\ K1 #/\ Q1 #/\ B1 #/\ Kn1 #/\ P1.
 
-/*validateRookMove(RookR, RookC, Row, Col, 1):-
-    Row #= RookR.
-
-validateRookMove(RookR, RookC, Row, Col, 0).*/
-
 /* Bishop Move */
 validateBishopMove(BishopR, BishopC, Row, Col, [K1, Q1, R1, Kn1, P1], Attack) :-
     (
         DifR #= abs(BishopR - Row) #/\
         DifC #= abs(BishopC - Col) #/\
-        BishopC #\= Col #/\ BishopR #\= Row #/\
         DifC #= DifR
     ) #<=> Attack1,
 
     Attack #<=> Attack1 #/\ K1 #/\ Q1 #/\ R1 #/\ Kn1 #/\ P1.
 
-% validateBishopMove(BishopR, BishopC, Row, Col, 0).
-
 /* Queen Move */
 validateQueenMove(QueenR, QueenC, Row, Col, [K1, R1, B1, Kn1, P1], Attack):-
     (
-        QueenC #= Col #\/
-        QueenR #= Row #\/
+        (QueenC #= Col) #\/
+        (QueenR #= Row) #\/
         (
             DifR #= abs(QueenR - Row) #/\
             DifC #= abs(QueenC - Col) #/\
-            QueenC #\= Col #/\ QueenR #\= Row #/\
             DifC #= DifR
         )
     ) #<=> Attack1,
 
     Attack #<=> Attack1 #/\ K1 #/\ R1 #/\ B1 #/\ Kn1 #/\ P1. 
 
-/*validateQueenMove(QueenR, QueenC, Row, Col, 1):-
-    QueenR #= Row.
-
-validateQueenMove(QueenR, QueenC, Row, Col, 1) :-
-    DifR #= abs(QueenR - Row),
-    DifC #= abs(QueenC - Col),
-    QueenC #\= Col, QueenR #\= Row,
-    DifC #= DifR.
-validateQueenMove(QueenR, QueenC, Row, Col, 0).*/
-
 /* Knight Move */
 validateKnightMove(KnightR, KnightC, Row, Col, Attack) :-
     (
         (Row #= (KnightR + 2) #/\ Col #= (KnightC - 1)) #\/
-        (Row #= (KnightR + 1) #/\ Col #= (KnightC - 2)) #\/
         (Row #= (KnightR + 2) #/\ Col #= (KnightC + 1)) #\/
+        (Row #= (KnightR + 1) #/\ Col #= (KnightC - 2)) #\/
         (Row #= (KnightR + 1) #/\ Col #= (KnightC + 2)) #\/
         (Row #= (KnightR - 2) #/\ Col #= (KnightC - 1)) #\/
-        (Row #= (KnightR - 1) #/\ Col #= (KnightC - 2)) #\/
         (Row #= (KnightR - 2) #/\ Col #= (KnightC + 1)) #\/
+        (Row #= (KnightR - 1) #/\ Col #= (KnightC - 2)) #\/
         (Row #= (KnightR - 1) #/\ Col #= (KnightC + 2))
     ) #<=> Attack.
-
-% validateKnightMove(KnightR, KnightC, Row, Col, 0).
 
 /* Pawn Move */
 validatePawnMove(PawnR, PawnC, Row, Col, Attack) :-
@@ -322,50 +259,44 @@ validatePawnMove(PawnR, PawnC, Row, Col, Attack) :-
         ) 
     ) #<=> Attack.
 
-/*validatePawnMove(PawnR, PawnC, Row, Col, 1) :-
-    Col #= PawnC - 1,
-    Row #= PawnR - 1.
-
-validatePawnMove(PawnR, PawnC, Row, Col, 0).*/
-
 checkRookPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Col, [K1, Q1, B1, Kn1, P1]) :-
     checkPieceRow(Row, Col, KingR, KingC, RookR, RookC, KR),
     checkPieceCol(Row, Col, KingR, KingC, RookR, RookC, KC),
-    K1 #<=> KR #\/ KC,
+    K1 #= KR #\/ KC,
     checkPieceRow(Row, Col, QueenR, QueenC, RookR, RookC, QR),
     checkPieceCol(Row, Col, QueenR, QueenC, RookR, RookC, QC),
-    Q1 #<=> QR #\/ QC,
+    Q1 #= QR #\/ QC,
     checkPieceRow(Row, Col, BishopR, BishopC, RookR, RookC, BR),
     checkPieceCol(Row, Col, BishopR, BishopC, RookR, RookC, BC),
-    B1 #<=> BR #\/ BC,
+    B1 #= BR #\/ BC,
     checkPieceRow(Row, Col, KnightR, KnightC, RookR, RookC, KnR),
     checkPieceCol(Row, Col, KnightR, KnightC, RookR, RookC, KnC),
-    Kn1 #<=> KnR #\/ KnC,
+    Kn1 #= KnR #\/ KnC,
     checkPieceRow(Row, Col, PawnR, PawnC, RookR, RookC, PR),
     checkPieceCol(Row, Col, PawnR, PawnC, RookR, RookC, PC),
-    P1 #<=> PR #\/ PC.
+    P1 #= PR #\/ PC.
 
 checkQueenPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Col, [K1, R1, B1, Kn1, P1]) :-
     checkPieceRow(Row, Col, KingR, KingC, QueenR, QueenC, KR),
     checkPieceCol(Row, Col, KingR, KingC, QueenR, QueenC, KC),
     checkPieceDiagonal(Row, Col, KingR, KingC, QueenR, QueenC, KD),
-    K1 #<=> KR #\/ KC #\/ KD,
+    K1 #= KR #\/ KC #\/ KD,
     checkPieceRow(Row, Col, RookR, RookC, QueenR, QueenC, RR),
     checkPieceCol(Row, Col, RookR, RookC, QueenR, QueenC, RC),
     checkPieceDiagonal(Row, Col, RookR, RookC, QueenR, QueenC, RD),
-    R1 #<=> RR #\/ RC #\/ RD,
+    R1 #= RR #\/ RC #\/ RD,
     checkPieceRow(Row, Col, BishopR, BishopC, QueenR, QueenC, BR),
     checkPieceCol(Row, Col, BishopR, BishopC, QueenR, QueenC, BC),
     checkPieceDiagonal(Row, Col, BishopR, BishopC, QueenR, QueenC, BD),
-    B1 #<=> BR #\/ BC #\/ BD,
+    B1 #= BR #\/ BC #\/ BD,
     checkPieceRow(Row, Col, KnightR, KnightC, QueenR, QueenC, KnR),
     checkPieceCol(Row, Col, KnightR, KnightC, QueenR, QueenC, KnC),
     checkPieceDiagonal(Row, Col, KnightR, KnightC, QueenR, QueenC, KnD),
-    Kn1 #<=> KnR #\/ KnC #\/ KnD,
+    Kn1 #= KnR #\/ KnC #\/ KnD,
     checkPieceRow(Row, Col, PawnR, PawnC, QueenR, QueenC, PR),
     checkPieceCol(Row, Col, PawnR, PawnC, QueenR, QueenC, PC),
     checkPieceDiagonal(Row, Col, PawnR, PawnC, QueenR, QueenC, PD),
-    P1 #<=> PR #\/ PC #\/ PD.
+    P1 #= PR #\/ PC #\/ PD.
 
 checkBishopPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Col, [K1, Q1, R1, Kn1, P1]) :-
     checkPieceDiagonal(Row, Col, KingR, KingC, BishopR, BishopC, K1),
@@ -378,13 +309,20 @@ checkBishopPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, Bisho
 checkPieceRow(CelR, CelC, IntR, IntC, MovedR, MovedC, Val) :- % Moved - rainha/torre Int - outra peça Cel - celula ataque
     (
         (
-            MovedR #= CelR #/\
-            IntR #= MovedR #/\
-            (((IntC #< MovedC) #/\ (MovedC #< CelC)) #\/ ((IntC #> MovedC) #/\ (MovedC #> CelC)))
+            MovedR #= CelR #/\                  % rainha / torre estao na mesma linha da celula atacada
+            IntR #= MovedR #/\                  % peça intermedia esta na mesma linha que a torre / rainha
+            MovedC #< CelC #/\                  % rainha / torre encontra-se a esquerda da celula atacada
+            (IntC #< MovedC #\/ IntC #> CelC)   % peça intermedia encontra-se a esquerda da rainha / torre ou a direita da celula atacada
         ) #\/
         (
-            MovedR #= CelR #/\
-            IntR #\= MovedR
+            MovedR #= CelR #/\                  % rainha / torre estao na mesma linha da celula atacada
+            IntR #= MovedR #/\                  % peça intermedia esta na mesma linha que a torre / rainha
+            MovedC #> CelC #/\                  % rainha / torre encontra-se a direita da celula atacada
+            (IntC #< CelC #\/ IntC #> MovedC)   % peça intermedia encontra-se a esquerda da celula atacada ou a direita da rainha / torre
+        ) #\/
+        (
+            MovedR #= CelR #/\                  % rainha / torre estao na mesma linha da celula atacada
+            IntR #\= MovedR                     % rainha / torre nao estao na mesma linha que a peça intermedia
         )
     ) #<=> Val.
 
@@ -392,13 +330,20 @@ checkPieceRow(CelR, CelC, IntR, IntC, MovedR, MovedC, Val) :- % Moved - rainha/t
 checkPieceCol(CelR, CelC, IntR, IntC, MovedR, MovedC, Val) :- % Moved - rainha/torre Int - outra peça Cel - celula ataque
     (
         (
-            MovedC #= CelC #/\
-            IntC #= MovedC #/\
-            (((IntR #< MovedR) #/\ (MovedR #< CelR)) #\/ ((IntR #> MovedR) #/\ (MovedR #> CelR)))
+            MovedC #= CelC #/\                      % rainha / torre estao na mesma coluna da celula atacada
+            IntC #= MovedC #/\                      % peça intermedia esta na mesma coluna que a torre / rainha
+            MovedR #< CelR #/\                      % rainha / torre encontra-se acima da celula atacada 
+            ((IntR #< MovedR) #\/ (IntR #> CelR))   % peça intermedia esta acima da rainha / torre ou abaixo da celula atacada 
         ) #\/
         (
-            MovedC #= CelC #/\
-            IntC #\= MovedC
+            MovedC #= CelC #/\                      % rainha / torre estao na mesma coluna da celula atacada
+            IntC #= MovedC #/\                      % peça intermedia esta na mesma coluna que a torre / rainha
+            MovedR #> CelR #/\                      % rainha / torre encontra-se abaixo da celula atacada 
+            ((IntR #< CelR) #\/ (IntR #> MovedR))   % peça intermedia esta acima da celula atacada ou abaixo da rainha / torre
+        ) #\/
+        (
+            MovedC #= CelC #/\                      % rainha / torre estao na mesma coluna da celula atacada                  
+            IntC #\= MovedC                         % peça intermedia nao esta na mesma coluna que a peça intermedia
         )
     ) #<=> Val.
 
@@ -413,20 +358,36 @@ checkPieceDiagonal(CelR, CelC, IntR, IntC, MovedR, MovedC, Val) :- % Moved - rai
             DistR #= DistC #/\              % rainha / bispo na diagonal da celula de ataque
             DistRP #= DistCP #/\            % rainha / bispo tem na diagonal uma peça
             (                               % diagonal direita inferior
-                IntR #> MovedR #/\          % linha da peça intermedia é superior a linha da rainha / bispo
-                IntC #> CelC                % coluna da peça intermedia e superior a coluna da celula atacada, permitindo o ataque 
+                MovedR #< CelR #/\          % linha da celula atacada e superior (esta abaixo) a linha da rainha / bispo 
+                MovedC #< CelC #/\          % coluna da celula atacada e superior (esta a direita) a coluna da rainha / bispo
+                (
+                    IntR #< MovedR #\/      % linha da peça intermedia e inferior (esta acima) a linha da rainha / bispo
+                    IntC #> CelC            % coluna da peça intermedia e superior (esta a direita) a coluna da celula atacada
+                )
             ) #/\
             (                               % diagonal esquerda inferior
-                IntR #> MovedR #/\          % linha da peça intermedia e superior a linha da rainha / bispo
-                IntC #< CelC                % coluna da peça intermedia e inferior a coluna da celula atacada, permitindo o ataque
+                MovedR #< CelR #/\          % linha da celula atacada e superior (esta abaixo) a linha da rainha / bispo
+                MovedC #> CelC #/\          % coluna da celula atacada e inferior (esta a esquerda) a coluna da rainha / bispo
+                (
+                    IntR #< MovedR #\/      % linha da peça intermedia e inferior (esta acima) a linha da rainha / bispo
+                    IntC #< CelC            % coluna da peça intermedia e inferior (esta a esquerda) a coluna da celula atacada
+                )
             ) #/\
             (                               % diagonal direita superior
-                IntR #< MovedR #/\          % linha da peça intermedia e inferior a linha da rainha / bispo
-                IntC #> CelC                % coluna da peça intermedia e superior a coluna da celula atacada, permitindo ataque
+                MovedR #> CelR #/\          % linha da celula atacada e inferior (esta acima) a linha da rainha / bispo
+                MovedC #< CelC #/\          % coluna da celula atacada e superior (esta a direita) a coluna da rainha / bispo
+                (
+                    IntR #> MovedR #\/      % linha da peça intermedia é superior (esta abaixo) a linha da rainha / bispo
+                    IntC #> CelC            % coluna da peça intermedia é superior (esta a direita) a coluna da celula atacada
+                )
             ) #/\
             (                               % diagonal esquerda superior
-                IntR #< MovedR #/\          % linha da peça intermedia e inferior a linha da rainha / bispo
-                IntC #< CelC                % coluna da peça intermedia e inferior a coluna da celula atacada, permitindo ataque
+                MovedR #> CelR #/\          % linha da celula atacada é inferior (esta acima) a linha da rainha / bispo
+                MovedC #> CelC #/\          % coluna da celula atacada e inferior (esta a esquerda) a coluna da rainha / bispo
+                (
+                    IntR #> MovedR #\/      % linha da peça intermedia é superior (esta abaixo) a linha da rainha / bispo
+                    IntC #< CelC            % coluna da peça intermedia é inferior (esta a esquerda) a coluna da celula atacada
+                )
             )
         ) #\/
         (                                   
@@ -473,59 +434,4 @@ get_puzzle(Board_Size) :-
     chessnum(Tabuleiro4,RunTime),
     printStatistics(RunTime).
 
-
-
-
-/*
-%max distance allowed to travel calculator for bishop
-maxDistanceBishop(MaxDistance,BishopR,BishopC,Row,Col,Board):-
-  DeltaR is (Row - BishopR),
-  DeltaC is (Col - BishopC),
-  ite(DeltaC > 0,
-          ite(DeltaR > 0, maxDistanceBishopDir1(MaxDistance,BishopR,BishopC,Row,Col,Board), maxDistanceBishopDir2(MaxDistance,BishopR,BishopC,Row,Col,Board)),
-          ite(DeltaR > 0, maxDistanceBishopDir4(MaxDistance,BishopR,BishopC,Row,Col,Board), maxDistanceBishopDir3(MaxDistance,BishopR,BishopC,Row,Col,Board))).
-
-
-maxDistanceBishopDir1(MaxDistance,BishopR,BishopC,Row,Col,Board):-
-    BishopR < Row,
-    BishopC < Col,
-    NBishopC is (BishopC + 1),
-    NBishopR is (BishopR + 1),
-    getPiece(NBishopC,NBishopR,Board,Piece),
-    Piece == 0,
-    MaxDistance1 is (MaxDistance + 1),
-    maxDistanceBishopDir1(MaxDistance1,NBishopC,NBishopR,Row,Col,Board).
-
-maxDistanceBishopDir2(MaxDistance,BishopR,BishopC,Row,Col,Board):-
-    BishopR > Row,
-    BishopC < Col,
-    NBishopC is (BishopC + 1),
-    NBishopR is (BishopR - 1),
-    getPiece(NBishopC,NBishopR,Board,Piece),
-    Piece == 0,
-    MaxDistance1 is (MaxDistance + 1),
-    maxDistanceBishopDir2(MaxDistance1,NBishopC,NBishopR,Row,Col,Board).
-
-
-maxDistanceBishopDir3(MaxDistance,BishopR,BishopC,Row,Col,Board):-
-    BishopR > Row,
-    BishopC > Col,
-    NBishopC is (BishopC - 1),
-    NBishopR is (BishopR - 1),
-    getPiece(NBishopC,NBishopR,Board,Piece),
-    Piece == 0,
-    MaxDistance1 is (MaxDistance + 1),
-    maxDistanceBishopDir3(MaxDistance1,NBishopC,NBishopR,Row,Col,Board).
-
-
-maxDistanceBishopDir4(MaxDistance,BishopR,BishopC,Row,Col,Board):-
-    BishopR < Row,
-    BishopC > Col,
-    NBishopC is (BishopC - 1),
-    NBishopR is (BishopR + 1),
-    getPiece(NBishopC,NBishopR,Board,Piece),
-    Piece == 0,
-    MaxDistance1 is (MaxDistance + 1),
-    maxDistanceBishopDir4(MaxDistance1,NBishopC,NBishopR,Row,Col,Board).
-*/
 

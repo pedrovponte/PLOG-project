@@ -43,7 +43,25 @@ puzzle(4,[[empty,0,0,empty,empty,0,empty,empty],
         [empty,empty,empty,empty,empty,empty,empty,0],
         [empty,empty,0,empty,empty,0,0,0]]).
 
-puzzle(5,[[empty,empty,empty,empty,empty,empty,empty,empty],
+puzzle(5,[[0,empty,empty,empty,empty,empty,empty,0],
+        [empty,empty,empty,empty,empty,empty,empty,empty],
+        [empty,empty,1,1,1,1,empty,empty],
+        [empty,empty,1,1,1,1,empty,empty],
+        [empty,empty,1,1,1,1,empty,empty],
+        [empty,empty,1,1,1,1,empty,empty],
+        [0,empty,empty,empty,empty,empty,empty,empty],
+        [0,empty,empty,empty,empty,empty,0,empty]]).
+
+puzzle(6,[[empty,empty,empty,empty,empty,empty,empty,empty],
+        [1,1,1,1,1,1,1,1],
+        [empty,empty,empty,empty,empty,empty,empty,empty],
+        [empty,empty,empty,empty,empty,empty,empty,empty],
+        [empty,empty,empty,empty,empty,empty,empty,empty],
+        [empty,empty,empty,empty,empty,empty,empty,empty],
+        [1,1,1,2,2,1,1,2],
+        [empty,empty,empty,empty,empty,2,1,empty]]).
+
+puzzle(7,[[empty,empty,empty,empty,empty,empty,empty,empty],
         [empty,empty,2,empty,empty,empty,3,empty],
         [empty,empty,empty,2,empty,empty,empty,empty],
         [empty,empty,empty,empty,empty,empty,empty,empty],
@@ -52,9 +70,7 @@ puzzle(5,[[empty,empty,empty,empty,empty,empty,empty,empty],
         [empty,empty,empty,empty,3,empty,empty,empty],
         [empty,empty,1,empty,empty,empty,empty,empty]]).
 
-
-
-puzzleteste([[empty,empty,empty,empty,empty,empty,empty,empty],
+puzzleteste(8,[[empty,empty,empty,empty,empty,empty,empty,empty],
             [empty,empty,empty,empty,empty,empty,empty,empty],
             [empty,empty,empty,empty,empty,empty,empty,empty],
             [empty,empty,empty,empty,empty,empty,empty,empty],

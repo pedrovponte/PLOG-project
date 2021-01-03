@@ -15,7 +15,7 @@ start:-
     parseOptions(Option).
 
 parseOptions(1):-
-    write('Choose between board 0,1,2,3,4,5'),
+    write('Choose between board 0,1,2,3,4,5,6,7'),
     read(Id),
     choose_board(Id).  
 
