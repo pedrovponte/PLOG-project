@@ -67,26 +67,26 @@
 % ou entao simplesmente somar as matrizes todas e comparar com a matriz inicial, pois o quantidade de numeros na matriz nao e igual em todas
 
 printStatistics(RunTime):-
-    write('Este tabuleiro demorou: '), write(RunTime), nl,
+    nl,
+    write('Solution Time: '), write(RunTime),write('ms'), nl,
     start.
 
 get_tabuleiro(Id):-
     puzzle(Id,Tabuleiro),
-    chessnum(Tabuleiro,RunTime),
+    chessnum(Tabuleiro,RunTime,7),
     printStatistics(RunTime).
 
-chessnum(Tabuleiro,RunTime):-
+chessnum(Tabuleiro,RunTime,Size):-
     nl,
 
-    statistics(runtime,[Start|_]),
-
     % printBoard(Tabuleiro),
+    statistics(runtime,[Start|_]),
     getAttacksValues(Tabuleiro, 0, ListAttackValues), % ListAttackValues -> [AttackValue - Row - Column,...]
     sort(ListAttackValues, AttacksList),
     write('Attacks List: '), write(AttacksList), nl,
 
     Positions = [KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC],
-    domain(Positions, 0, 7),
+    domain(Positions, 0, Size),
     differentPositions(Positions),
 
     /*findall(A,sumAttacks(Positions,A),Bag),
@@ -113,6 +113,7 @@ chessnum(Tabuleiro,RunTime):-
     
     labeling([], Positions),
    
+    statistics(runtime,[Stop|_]),
    /* write('Positions: '), write(Positions),nl,
     write('King is in '), write(KingR), write(KingC), nl,
     write('Queen is in '), write(QueenR), write(QueenC), nl,
@@ -129,7 +130,7 @@ chessnum(Tabuleiro,RunTime):-
     replaceValueMatrix(Tabuleiro5, PawnR, PawnC, pawn, Tabuleiro6),
     printBoard(Tabuleiro6),
 
-    statistics(runtime,[Stop|_]),
+    
     RunTime is Stop - Start.
 
 sumAttacks([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Attack - Row - Column):-
@@ -347,7 +348,7 @@ get_puzzle(Board_Size) :-
     replaceValueMatrix(Tabuleiro3,Row4,Col4,Num4,Tabuleiro4),
     printBoard(Tabuleiro4),
 
-    chessnum(Tabuleiro4,RunTime),
+    chessnum(Tabuleiro4,RunTime, Board_Size),
     printStatistics(RunTime).
 
 
