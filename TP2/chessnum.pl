@@ -44,6 +44,16 @@ get_tabuleiro(Id):-
     % test(Tabuleiro, RunTime,7),
     printStatistics(RunTime).
 
+get_tabuleiro2(Id):-
+    puzzle(Id,Tabuleiro),
+    chessnum(Tabuleiro,RunTime,16),
+    printStatistics(RunTime).
+
+get_tabuleiro3(Id):-
+    puzzle(Id,Tabuleiro),
+    chessnum(Tabuleiro,RunTime,21),
+    printStatistics(RunTime).
+
 % to test puzzles withou waiting. Only have to uncomment line test on get_tabuleiro and comment chessnum line. Then put solutions to puzzle before labeling (all solutions are on the bottom)
 test(Tabuleiro,RunTime,Size) :-
     nl,
@@ -87,7 +97,6 @@ test(Tabuleiro,RunTime,Size) :-
     replaceValueMatrix(Tabuleiro5, PawnR, PawnC, pawn, Tabuleiro6),
     printBoard(Tabuleiro6),
 
-
     RunTime is Stop - Start.
     
 
@@ -95,12 +104,11 @@ test(Tabuleiro,RunTime,Size) :-
 chessnum(Tabuleiro,RunTime,Size):-
     nl,
 
-    statistics(runtime,[Start|_]),
-
     printBoard(Tabuleiro),
+
+    statistics(runtime,[Start|_]),
     getAttacksValues(Tabuleiro, 0, ListAttackValues), % ListAttackValues -> [AttackValue - Row - Column,...]
     sort(ListAttackValues, AttacksList),
-    write('Attacks List: '), write(AttacksList), nl,
 
     Positions = [KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC],
     domain(Positions, 0, Size),
@@ -108,8 +116,10 @@ chessnum(Tabuleiro,RunTime,Size):-
 
     maplist(sumAttacks(Positions), AttacksList),
     
-    write('Before labeling'), nl,
+   
     labeling([ffc], Positions),
+
+    statistics(runtime,[Stop|_]),
 
     replaceValueMatrix(Tabuleiro, KingR, KingC, king, Tabuleiro1),
     replaceValueMatrix(Tabuleiro1, QueenR, QueenC, queen, Tabuleiro2),
@@ -119,8 +129,6 @@ chessnum(Tabuleiro,RunTime,Size):-
     replaceValueMatrix(Tabuleiro5, PawnR, PawnC, pawn, Tabuleiro6),
     printBoard(Tabuleiro6),
 
-    statistics(runtime,[Stop|_]),
-
     RunTime is Stop - Start.
 
 sumAttacks([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Attack - Row - Column):-
@@ -128,34 +136,25 @@ sumAttacks([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, Knight
     
     (PawnR #\= Row #/\ PawnC #\= Column) #\/ (PawnR #= Row #/\ PawnC #\= Column) #\/ (PawnR #\= Row #/\ PawnC #= Column),
     validatePawnMove(PawnR, PawnC, Row, Column, PawnAttack),
-    /*write('Pawn Attack: '), write(PawnAttack), nl,*/
     
     (RookR #\= Row #/\ RookC #\= Column) #\/ (RookR #= Row #/\ RookC #\= Column) #\/ (RookR #\= Row #/\ RookC #= Column),
     checkRookPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Column, [K1, Q1, B1, Kn1, P1]),
     validateRookMove(RookR, RookC, Row, Column, [K1, Q1, B1, Kn1, P1], RookAttack),
-   /* write('Rook Attack: '), write(RookAttack), nl,*/
     
     (KnightR #\= Row #/\ KnightC #\= Column) #\/ (KnightR #= Row #/\ KnightC #\= Column) #\/ (KnightR #\= Row #/\ KnightC #= Column),
     validateKnightMove(KnightR, KnightC, Row, Column, KnightAttack),
-   /* write('Knight Attack: '), write(KnightAttack), nl,*/
     
     (BishopR #\= Row #/\ BishopC #\= Column) #\/ (BishopR #= Row #/\ BishopC #\= Column) #\/ (BishopR #\= Row #/\ BishopC #= Column),
     checkBishopPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Column, [K2, Q2, R2, Kn2, P2]),
     validateBishopMove(BishopR, BishopC, Row, Column, [K2, Q2, R2, Kn2, P2], BishopAttack),
-   /* write('Bishop Attack: '), write(BishopAttack), nl,*/
     
     (KingR #\= Row #/\ KingC #\= Column) #\/ (KingR #= Row #/\ KingC #\= Column)#\/ (KingR #\= Row #/\ KingC #= Column),
     validateKingMove(KingR, KingC, Row, Column, KingAttack),
-   /* write('King Attack: '), write(KingAttack), nl,*/
     
     (QueenR #\= Row #/\ QueenC #\= Column) #\/ (QueenR #= Row #/\ QueenC #\= Column)#\/ (QueenR #\= Row #/\ QueenC #= Column),
     checkQueenPositionsRowCol([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Column, [K3, R3, B3, Kn3, P3]),
     checkQueenPositionsDiagonal([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Column, [KD1, RD1, BD1, KnD1, PD1]),
     validateQueenMove(QueenR, QueenC, Row, Column, [K3, R3, B3, Kn3, P3], [KD1, RD1, BD1, KnD1, PD1],QueenAttack).
-    /*write('Queen Attack: '), write(QueenAttack), nl,*/
-    
-    % KingAttack + QueenAttack + RookAttack + BishopAttack + KnightAttack + PawnAttack #= Attack,
-  /*  write('sumAttack over - '),write(Attack),write(' - '),write(Row),write(' - '),write(Column), nl,nl.*/
 
 
 getAttacksValues(GameBoard, X, ListAttackValues) :-
@@ -167,7 +166,7 @@ getAttacksValues([H | L], X, AuxListAttackValues, ListAttackValues) :-
     X1 is X + 1,
     getAttacksValues(L, X1, Res, ListAttackValues).
 
-getAttacksValues(_, 8, ListAttackValues, ListAttackValues).
+getAttacksValues([], _, ListAttackValues, ListAttackValues).
 
 getAttacksValuesLine(Line, X, Y, LineAttacks) :-
     getAttacksValuesLine(Line, X, Y, [], LineAttacks).
@@ -183,7 +182,7 @@ getAttacksValuesLine([H | L], X, Y, AuxLineAttacks, LineAttacks) :-
     Y1 is Y + 1,
     getAttacksValuesLine(L, X, Y1, AuxLineAttacks, LineAttacks).
 
-getAttacksValuesLine(_, _, 8, LineAttacks, LineAttacks).
+getAttacksValuesLine([], _, _, LineAttacks, LineAttacks). 
 
 differentPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC]) :-
     KingPos #= 10 * KingR + KingC,
@@ -370,16 +369,22 @@ get_puzzle(Board_Size) :-
     generate_matrix(Board_Size, Board_Size, Tabuleiro),
     random(0,Board_Size,Row1),
     random(0,Board_Size,Col1),
+
     random(0,Board_Size,Row2),
     random(0,Board_Size,Col2),
+
     random(0,Board_Size,Row3),
     random(0,Board_Size,Col3),
+
     random(0,Board_Size,Row4),
     random(0,Board_Size,Col4),
+
     random(0,Board_Size,Row5),
     random(0,Board_Size,Col5),
+
     random(0,Board_Size,Row6),
     random(0,Board_Size,Col6),
+
     Cell=[Row1,Col1,Row2,Col2,Row3,Col3,Row4,Col4,Row5,Col5,Row6,Col6],
     
     differentPositions(Cell),
@@ -392,8 +397,7 @@ get_puzzle(Board_Size) :-
     replaceValueMatrix(Tabuleiro2,Row3,Col3,Num3,Tabuleiro3),
     random(0,4,Num4),
     replaceValueMatrix(Tabuleiro3,Row4,Col4,Num4,Tabuleiro4),
-    printBoard(Tabuleiro4),
-
+   
     chessnum(Tabuleiro4,RunTime, Board_Size),
     printStatistics(RunTime).
 
