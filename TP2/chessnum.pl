@@ -77,6 +77,8 @@ test(Tabuleiro,RunTime,Size) :-
     
     labeling([], Positions),
 
+    statistics(runtime,[Stop|_]),
+
     replaceValueMatrix(Tabuleiro, KingR, KingC, king, Tabuleiro1),
     replaceValueMatrix(Tabuleiro1, QueenR, QueenC, queen, Tabuleiro2),
     replaceValueMatrix(Tabuleiro2, RookR, RookC, rook, Tabuleiro3),
@@ -85,7 +87,6 @@ test(Tabuleiro,RunTime,Size) :-
     replaceValueMatrix(Tabuleiro5, PawnR, PawnC, pawn, Tabuleiro6),
     printBoard(Tabuleiro6),
 
-    statistics(runtime,[Stop|_]),
 
     RunTime is Stop - Start.
     
@@ -127,34 +128,34 @@ sumAttacks([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, Knight
     
     (PawnR #\= Row #/\ PawnC #\= Column) #\/ (PawnR #= Row #/\ PawnC #\= Column) #\/ (PawnR #\= Row #/\ PawnC #= Column),
     validatePawnMove(PawnR, PawnC, Row, Column, PawnAttack),
-    write('Pawn Attack: '), write(PawnAttack), nl,
+    /*write('Pawn Attack: '), write(PawnAttack), nl,*/
     
     (RookR #\= Row #/\ RookC #\= Column) #\/ (RookR #= Row #/\ RookC #\= Column) #\/ (RookR #\= Row #/\ RookC #= Column),
     checkRookPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Column, [K1, Q1, B1, Kn1, P1]),
     validateRookMove(RookR, RookC, Row, Column, [K1, Q1, B1, Kn1, P1], RookAttack),
-    write('Rook Attack: '), write(RookAttack), nl,
+   /* write('Rook Attack: '), write(RookAttack), nl,*/
     
     (KnightR #\= Row #/\ KnightC #\= Column) #\/ (KnightR #= Row #/\ KnightC #\= Column) #\/ (KnightR #\= Row #/\ KnightC #= Column),
     validateKnightMove(KnightR, KnightC, Row, Column, KnightAttack),
-    write('Knight Attack: '), write(KnightAttack), nl,
+   /* write('Knight Attack: '), write(KnightAttack), nl,*/
     
     (BishopR #\= Row #/\ BishopC #\= Column) #\/ (BishopR #= Row #/\ BishopC #\= Column) #\/ (BishopR #\= Row #/\ BishopC #= Column),
     checkBishopPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Column, [K2, Q2, R2, Kn2, P2]),
     validateBishopMove(BishopR, BishopC, Row, Column, [K2, Q2, R2, Kn2, P2], BishopAttack),
-    write('Bishop Attack: '), write(BishopAttack), nl,
+   /* write('Bishop Attack: '), write(BishopAttack), nl,*/
     
     (KingR #\= Row #/\ KingC #\= Column) #\/ (KingR #= Row #/\ KingC #\= Column)#\/ (KingR #\= Row #/\ KingC #= Column),
     validateKingMove(KingR, KingC, Row, Column, KingAttack),
-    write('King Attack: '), write(KingAttack), nl,
+   /* write('King Attack: '), write(KingAttack), nl,*/
     
     (QueenR #\= Row #/\ QueenC #\= Column) #\/ (QueenR #= Row #/\ QueenC #\= Column)#\/ (QueenR #\= Row #/\ QueenC #= Column),
     checkQueenPositionsRowCol([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Column, [K3, R3, B3, Kn3, P3]),
     checkQueenPositionsDiagonal([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Column, [KD1, RD1, BD1, KnD1, PD1]),
-    validateQueenMove(QueenR, QueenC, Row, Column, [K3, R3, B3, Kn3, P3], [KD1, RD1, BD1, KnD1, PD1],QueenAttack),
-    write('Queen Attack: '), write(QueenAttack), nl,
+    validateQueenMove(QueenR, QueenC, Row, Column, [K3, R3, B3, Kn3, P3], [KD1, RD1, BD1, KnD1, PD1],QueenAttack).
+    /*write('Queen Attack: '), write(QueenAttack), nl,*/
     
     % KingAttack + QueenAttack + RookAttack + BishopAttack + KnightAttack + PawnAttack #= Attack,
-    write('sumAttack over - '),write(Attack),write(' - '),write(Row),write(' - '),write(Column), nl,nl.
+  /*  write('sumAttack over - '),write(Attack),write(' - '),write(Row),write(' - '),write(Column), nl,nl.*/
 
 
 getAttacksValues(GameBoard, X, ListAttackValues) :-
