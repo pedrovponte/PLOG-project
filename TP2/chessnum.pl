@@ -1,7 +1,7 @@
 :- use_module(library(clpfd)).
 :- use_module(library(lists)).
 :- use_module(library(random)).
-:-consult('puzzels.pl').
+:-consult('puzzles.pl').
 :-consult('utils.pl').
 :-consult('menu.pl').
 
@@ -75,6 +75,25 @@ get_tabuleiro(Id):-
     puzzle(Id,Tabuleiro),
     chessnum(Tabuleiro,RunTime,7),
     printStatistics(RunTime).
+    % testRookBishop.
+
+testRookBishop :-
+    checkRookPositions([1, 3, 0, 6, 0, 2, 1, 2, 1, 1, 1, 4], 0, 1, [K1, Q1, B1, Kn1, P1]),
+    format('K: ~d Q: ~d B: ~d Kn: ~d P: ~d', [K1, Q1, B1, Kn1, P1]), nl,
+    validateRookMove(0, 2, 0, 1, [K1, Q1, B1, Kn1, P1], RookAttack),
+    write('Rook Attack: '), write(RookAttack), nl,
+    % checkBishopPositions([1, 3, 0, 6, 0, 2, 1, 2, 1, 1, 1, 4], 0, 1, [K2, Q2, R2, Kn2, P2]),
+    checkPieceDiagonal(0, 1, 1, 3, 1, 2, K2),
+    checkPieceDiagonal(0, 1, 0, 6, 1, 2, Q2),
+    checkPieceDiagonal(0, 1, 0, 2, 1, 2, R2),
+    checkPieceDiagonal(0, 1, 1, 1, 1, 2, Kn2),
+    checkPieceDiagonal(0, 1, 1, 4, 1, 2, P2),
+    format('K: ~d Q: ~d R: ~d Kn: ~d P: ~d', [K2, Q2, R2, Kn2, P2]), nl,
+    validateBishopMove(1, 2, 0, 1, [K2, Q2, R2, Kn2, P2], BishopAttack),
+    write('Bishop Attack: '), write(BishopAttack), nl.
+
+
+
 
 chessnum(Tabuleiro,RunTime,Size):-
     nl,
@@ -103,27 +122,29 @@ chessnum(Tabuleiro,RunTime,Size):-
     replaceValueMatrix(Tabuleiro5, PawnR, PawnC, pawn, Tabuleiro6),
     printBoard(Tabuleiro6),
 
+    statistics(runtime,[Stop|_]),
+
     RunTime is Stop - Start.
 
 sumAttacks([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Attack - Row - Column):-
     KingAttack + QueenAttack + RookAttack + BishopAttack + KnightAttack + PawnAttack #= Attack,
     
-    (PawnR #\= Row #/\ PawnC #\= Column) #\/ (PawnR #= Row #/\ PawnC #\= Column)#\/ (PawnR #\= Row #/\ PawnC #= Column),
+    (PawnR #\= Row #/\ PawnC #\= Column) #\/ (PawnR #= Row #/\ PawnC #\= Column) #\/ (PawnR #\= Row #/\ PawnC #= Column),
     validatePawnMove(PawnR, PawnC, Row, Column, PawnAttack),
     write('Pawn Attack: '), write(PawnAttack), nl,
     
-    (RookR #\= Row #/\ RookC #\= Column) #\/ (RookR #= Row #/\ RookC #\= Column)#\/ (RookR #\= Row #/\ RookC #= Column),
+    (RookR #\= Row #/\ RookC #\= Column) #\/ (RookR #= Row #/\ RookC #\= Column) #\/ (RookR #\= Row #/\ RookC #= Column),
     checkRookPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Column, [K1, Q1, B1, Kn1, P1]),
     validateRookMove(RookR, RookC, Row, Column, [K1, Q1, B1, Kn1, P1], RookAttack),
     write('Rook Attack: '), write(RookAttack), nl,
     
-    (KnightR #\= Row #/\ KnightC #\= Column) #\/ (KnightR #= Row #/\ KnightC #\= Column)#\/ (KnightR #\= Row #/\ KnightC #= Column),
+    (KnightR #\= Row #/\ KnightC #\= Column) #\/ (KnightR #= Row #/\ KnightC #\= Column) #\/ (KnightR #\= Row #/\ KnightC #= Column),
     validateKnightMove(KnightR, KnightC, Row, Column, KnightAttack),
     write('Knight Attack: '), write(KnightAttack), nl,
     
-    (BishopR #\= Row #/\ BishopC #\= Column) #\/ (BishopR #= Row #/\ BishopC #\= Column)#\/ (BishopR #\= Row #/\ BishopC #= Column),
-    checkBishopPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Column, [K1, Q1, R1, Kn1, P1]),
-    validateBishopMove(BishopR, BishopC, Row, Column, [K1, Q1, R1, Kn1, P1], BishopAttack),
+    (BishopR #\= Row #/\ BishopC #\= Column) #\/ (BishopR #= Row #/\ BishopC #\= Column) #\/ (BishopR #\= Row #/\ BishopC #= Column),
+    checkBishopPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Column, [K2, Q2, R2, Kn2, P2]),
+    validateBishopMove(BishopR, BishopC, Row, Column, [K2, Q2, R2, Kn2, P2], BishopAttack),
     write('Bishop Attack: '), write(BishopAttack), nl,
     
     (KingR #\= Row #/\ KingC #\= Column) #\/ (KingR #= Row #/\ KingC #\= Column)#\/ (KingR #\= Row #/\ KingC #= Column),
@@ -131,8 +152,9 @@ sumAttacks([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, Knight
     write('King Attack: '), write(KingAttack), nl,
     
     (QueenR #\= Row #/\ QueenC #\= Column) #\/ (QueenR #= Row #/\ QueenC #\= Column)#\/ (QueenR #\= Row #/\ QueenC #= Column),
-    checkQueenPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Column, [K1, R1, B1, Kn1, P1]),
-    validateQueenMove(QueenR, QueenC, Row, Column, [K1, R1, B1, Kn1, P1], QueenAttack),
+    checkQueenPositionsRowCol([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Column, [K3, R3, B3, Kn3, P3]),
+    checkQueenPositionsDiagonal([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Column, [KD1, RD1, BD1, KnD1, PD1]),
+    validateQueenMove(QueenR, QueenC, Row, Column, [K3, R3, B3, Kn3, P3], [KD1, RD1, BD1, KnD1, PD1],QueenAttack),
     write('Queen Attack: '), write(QueenAttack), nl,
     
     % KingAttack + QueenAttack + RookAttack + BishopAttack + KnightAttack + PawnAttack #= Attack,
@@ -202,36 +224,18 @@ validateKingMove(KingR, KingC, Row, Col, Attack) :-
 
 /* Rook Move */
 validateRookMove(RookR, RookC, Row, Col, [K1, Q1, B1, Kn1, P1], Attack) :-
-    (
-        (Col #= RookC) #\/ 
-        (Row #= RookR)
-    ) #<=> Attack1,
-
-    Attack #<=> Attack1 #/\ K1 #/\ Q1 #/\ B1 #/\ Kn1 #/\ P1.
+    (((RookR #= Row) #\/ (RookC #= Col)) #/\ K1 #/\ Q1 #/\ B1 #/\ Kn1 #/\ P1) #<=> Attack.
 
 /* Bishop Move */
 validateBishopMove(BishopR, BishopC, Row, Col, [K1, Q1, R1, Kn1, P1], Attack) :-
-    (
-        DifR #= abs(BishopR - Row) #/\
-        DifC #= abs(BishopC - Col) #/\
-        DifC #= DifR
-    ) #<=> Attack1,
 
-    Attack #<=> Attack1 #/\ K1 #/\ Q1 #/\ R1 #/\ Kn1 #/\ P1.
+    ((abs(Row - BishopR) #= abs(Col - BishopC)) #/\ K1 #/\ Q1 #/\ R1 #/\ Kn1 #/\ P1) #<=> Attack.
 
 /* Queen Move */
-validateQueenMove(QueenR, QueenC, Row, Col, [K1, R1, B1, Kn1, P1], Attack):-
-    (
-        (QueenC #= Col) #\/
-        (QueenR #= Row) #\/
-        (
-            DifR #= abs(QueenR - Row) #/\
-            DifC #= abs(QueenC - Col) #/\
-            DifC #= DifR
-        )
-    ) #<=> Attack1,
-
-    Attack #<=> Attack1 #/\ K1 #/\ R1 #/\ B1 #/\ Kn1 #/\ P1. 
+validateQueenMove(QueenR, QueenC, Row, Col, [K1, R1, B1, Kn1, P1], [KD1, RD1, BD1, KnD1, PD1], Attack):-
+    ((((QueenR #= Row) #\/ (QueenC #= Col)) #/\ K1 #/\ R1 #/\ B1 #/\ Kn1 #/\ P1) #\/ (((abs(Row - QueenR) #= abs(Col - QueenC)) #/\ KD1 #/\ RD1 #/\ BD1 #/\ KnD1 #/\ PD1))) #<=> Attack.
+    
+    
 
 /* Knight Move */
 validateKnightMove(KnightR, KnightC, Row, Col, Attack) :-
@@ -262,41 +266,43 @@ validatePawnMove(PawnR, PawnC, Row, Col, Attack) :-
 checkRookPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Col, [K1, Q1, B1, Kn1, P1]) :-
     checkPieceRow(Row, Col, KingR, KingC, RookR, RookC, KR),
     checkPieceCol(Row, Col, KingR, KingC, RookR, RookC, KC),
-    K1 #= KR #\/ KC,
+    K1 #<=> KR #\/ KC,
     checkPieceRow(Row, Col, QueenR, QueenC, RookR, RookC, QR),
     checkPieceCol(Row, Col, QueenR, QueenC, RookR, RookC, QC),
-    Q1 #= QR #\/ QC,
+    Q1 #<=> QR #\/ QC,
     checkPieceRow(Row, Col, BishopR, BishopC, RookR, RookC, BR),
     checkPieceCol(Row, Col, BishopR, BishopC, RookR, RookC, BC),
-    B1 #= BR #\/ BC,
+    B1 #<=> BR #\/ BC,
     checkPieceRow(Row, Col, KnightR, KnightC, RookR, RookC, KnR),
     checkPieceCol(Row, Col, KnightR, KnightC, RookR, RookC, KnC),
-    Kn1 #= KnR #\/ KnC,
+    Kn1 #<=> KnR #\/ KnC,
     checkPieceRow(Row, Col, PawnR, PawnC, RookR, RookC, PR),
     checkPieceCol(Row, Col, PawnR, PawnC, RookR, RookC, PC),
-    P1 #= PR #\/ PC.
+    P1 #<=> PR #\/ PC.
 
-checkQueenPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Col, [K1, R1, B1, Kn1, P1]) :-
+checkQueenPositionsRowCol([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Col, [K1, R1, B1, Kn1, P1]) :-
     checkPieceRow(Row, Col, KingR, KingC, QueenR, QueenC, KR),
     checkPieceCol(Row, Col, KingR, KingC, QueenR, QueenC, KC),
-    checkPieceDiagonal(Row, Col, KingR, KingC, QueenR, QueenC, KD),
-    K1 #= KR #\/ KC #\/ KD,
+    K1 #<=> KR #\/ KC,
     checkPieceRow(Row, Col, RookR, RookC, QueenR, QueenC, RR),
     checkPieceCol(Row, Col, RookR, RookC, QueenR, QueenC, RC),
-    checkPieceDiagonal(Row, Col, RookR, RookC, QueenR, QueenC, RD),
-    R1 #= RR #\/ RC #\/ RD,
+    R1 #<=> RR #\/ RC,
     checkPieceRow(Row, Col, BishopR, BishopC, QueenR, QueenC, BR),
     checkPieceCol(Row, Col, BishopR, BishopC, QueenR, QueenC, BC),
-    checkPieceDiagonal(Row, Col, BishopR, BishopC, QueenR, QueenC, BD),
-    B1 #= BR #\/ BC #\/ BD,
+    B1 #<=> BR #\/ BC,
     checkPieceRow(Row, Col, KnightR, KnightC, QueenR, QueenC, KnR),
     checkPieceCol(Row, Col, KnightR, KnightC, QueenR, QueenC, KnC),
-    checkPieceDiagonal(Row, Col, KnightR, KnightC, QueenR, QueenC, KnD),
-    Kn1 #= KnR #\/ KnC #\/ KnD,
+    Kn1 #<=> KnR #\/ KnC,
     checkPieceRow(Row, Col, PawnR, PawnC, QueenR, QueenC, PR),
     checkPieceCol(Row, Col, PawnR, PawnC, QueenR, QueenC, PC),
-    checkPieceDiagonal(Row, Col, PawnR, PawnC, QueenR, QueenC, PD),
-    P1 #= PR #\/ PC #\/ PD.
+    P1 #<=> PR #\/ PC.
+
+checkQueenPositionsDiagonal([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Col, [KD1, RD1, BD1, KnD1, PD1]) :-
+    checkPieceDiagonal(Row, Col, KingR, KingC, QueenR, QueenC, KD1),
+    checkPieceDiagonal(Row, Col, RookR, RookC, QueenR, QueenC, RD1),
+    checkPieceDiagonal(Row, Col, BishopR, BishopC, QueenR, QueenC, BD1),
+    checkPieceDiagonal(Row, Col, KnightR, KnightC, QueenR, QueenC, KnD1),
+    checkPieceDiagonal(Row, Col, PawnR, PawnC, QueenR, QueenC, PD1).
 
 checkBishopPositions([KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC], Row, Col, [K1, Q1, R1, Kn1, P1]) :-
     checkPieceDiagonal(Row, Col, KingR, KingC, BishopR, BishopC, K1),
