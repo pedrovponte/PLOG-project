@@ -33,39 +33,6 @@
 % [_,_,_,_,_,_,_,_]
 % [_,K,4,_,_,_,Q,_]  4 do Rei,Rainha,Torre,Bispo
 
-%_________________________________________________________________________________________________
-
-% gerar todas as posiçoes possiveis de todas as peças e, para cada uma dessas opções, calcular o ataque na posição Row,Col
-
-%   Posicoes[King,Queen,Torre,Bispo,Cavaleiro,Peao]
-%   Posicoes[00,32,46,33,78,65] significa: 
-%       King na linha 0 coluna 0, 
-%       Queen na linha 3 coluna 2, ...
-
-%   restriçao: as peças nao podem ocupar casas numeradas
-%   restriçao: duas peças nao podem ocupar a mesma casa
-
-%   genarateKingMove(X1,Y1,Matrix1) //serao matrizes so com vazios e uns.
-%   genarateQueenMove(X2,Y2,Matrix2)
-%   genarateRookMove(X3,Y3,Matrix3)
-%   genarateBishopMove(X4,Y4,Matrix4)
-%   generateKnightMove(X5,Y5,Matrix5)
-%   generatePawnMove(X6, Y6, Matrix6)
-%    ...
-
-%   sumMatrixs(1,2,Matrix1,Matrix2,Matrix3,Matrix4,Matrix5,Matrix6,Result1)
-%   Result1 #= 4, 
-%   sumMatrixs(3,6,Matrix1,Matrix2,Matrix3,Matrix4,Matrix5,Matrix6,Result2)
-%   Result2 #= 4, 
-%   sumMatrixs(5,0,Matrix1,Matrix2,Matrix3,Matrix4,Matrix5, Matrix6,Result3)
-%   Result3 #= 0, 
-%   sumMatrixs(7,2,Matrix1,Matrix2,Matrix3,Matrix4,Matrix5,Matrix6,Result4)
-%   Result4 #= 4, 
-%
-%   labeling([],Posicoes).
-
-% ou entao simplesmente somar as matrizes todas e comparar com a matriz inicial, pois o quantidade de numeros na matriz nao e igual em todas
-
 printStatistics(RunTime):-
     nl,
     write('Solution Time: '), write(RunTime),write('ms'), nl,
@@ -74,25 +41,54 @@ printStatistics(RunTime):-
 get_tabuleiro(Id):-
     puzzle(Id,Tabuleiro),
     chessnum(Tabuleiro,RunTime,7),
+    % test(Tabuleiro, RunTime,7),
     printStatistics(RunTime).
-    % testRookBishop.
 
-testRookBishop :-
-    checkRookPositions([1, 3, 0, 6, 0, 2, 1, 2, 1, 1, 1, 4], 0, 1, [K1, Q1, B1, Kn1, P1]),
-    format('K: ~d Q: ~d B: ~d Kn: ~d P: ~d', [K1, Q1, B1, Kn1, P1]), nl,
-    validateRookMove(0, 2, 0, 1, [K1, Q1, B1, Kn1, P1], RookAttack),
-    write('Rook Attack: '), write(RookAttack), nl,
-    % checkBishopPositions([1, 3, 0, 6, 0, 2, 1, 2, 1, 1, 1, 4], 0, 1, [K2, Q2, R2, Kn2, P2]),
-    checkPieceDiagonal(0, 1, 1, 3, 1, 2, K2),
-    checkPieceDiagonal(0, 1, 0, 6, 1, 2, Q2),
-    checkPieceDiagonal(0, 1, 0, 2, 1, 2, R2),
-    checkPieceDiagonal(0, 1, 1, 1, 1, 2, Kn2),
-    checkPieceDiagonal(0, 1, 1, 4, 1, 2, P2),
-    format('K: ~d Q: ~d R: ~d Kn: ~d P: ~d', [K2, Q2, R2, Kn2, P2]), nl,
-    validateBishopMove(1, 2, 0, 1, [K2, Q2, R2, Kn2, P2], BishopAttack),
-    write('Bishop Attack: '), write(BishopAttack), nl.
+% to test puzzles withou waiting. Only have to uncomment line test on get_tabuleiro and comment chessnum line. Then put solutions to puzzle before labeling (all solutions are on the bottom)
+test(Tabuleiro,RunTime,Size) :-
+    nl,
 
+    statistics(runtime,[Start|_]),
 
+    printBoard(Tabuleiro),
+    getAttacksValues(Tabuleiro, 0, ListAttackValues), % ListAttackValues -> [AttackValue - Row - Column,...]
+    sort(ListAttackValues, AttacksList),
+    write('Attacks List: '), write(AttacksList), nl,
+
+    Positions = [KingR, KingC, QueenR, QueenC, RookR, RookC, BishopR, BishopC, KnightR, KnightC, PawnR, PawnC],
+    domain(Positions, 0, Size),
+    differentPositions(Positions),
+
+    maplist(sumAttacks(Positions), AttacksList),
+    
+    % put puzzle solution
+    KingR #= 5, 
+    KingC #= 5, 
+    QueenR #= 4, 
+    QueenC #= 2, 
+    RookR #= 6, 
+    RookC #= 6, 
+    BishopR #= 0, 
+    BishopC #= 5, 
+    KnightR #= 0, 
+    KnightC #= 4, 
+    PawnR #= 5, 
+    PawnC #= 0,
+    
+    labeling([], Positions),
+
+    replaceValueMatrix(Tabuleiro, KingR, KingC, king, Tabuleiro1),
+    replaceValueMatrix(Tabuleiro1, QueenR, QueenC, queen, Tabuleiro2),
+    replaceValueMatrix(Tabuleiro2, RookR, RookC, rook, Tabuleiro3),
+    replaceValueMatrix(Tabuleiro3, BishopR, BishopC, bishop, Tabuleiro4),
+    replaceValueMatrix(Tabuleiro4, KnightR, KnightC, knight, Tabuleiro5),
+    replaceValueMatrix(Tabuleiro5, PawnR, PawnC, pawn, Tabuleiro6),
+    printBoard(Tabuleiro6),
+
+    statistics(runtime,[Stop|_]),
+
+    RunTime is Stop - Start.
+    
 
 
 chessnum(Tabuleiro,RunTime,Size):-
@@ -112,7 +108,7 @@ chessnum(Tabuleiro,RunTime,Size):-
     maplist(sumAttacks(Positions), AttacksList),
     
     write('Before labeling'), nl,
-    labeling([], Positions),
+    labeling([ffc], Positions),
 
     replaceValueMatrix(Tabuleiro, KingR, KingC, king, Tabuleiro1),
     replaceValueMatrix(Tabuleiro1, QueenR, QueenC, queen, Tabuleiro2),
@@ -316,19 +312,19 @@ checkPieceRow(CelR, CelC, IntR, IntC, MovedR, MovedC, Val) :- % Moved - rainha/t
     (
         (
             MovedR #= CelR #/\                  % rainha / torre estao na mesma linha da celula atacada
-            IntR #= MovedR #/\                  % peça intermedia esta na mesma linha que a torre / rainha
-            MovedC #< CelC #/\                  % rainha / torre encontra-se a esquerda da celula atacada
+            IntR #= CelR #/\                    % peça intermedia esta na mesma linha que celula numerada
+            CelC #> MovedC #/\                  % rainha / torre encontra-se a esquerda da celula atacada
             (IntC #< MovedC #\/ IntC #> CelC)   % peça intermedia encontra-se a esquerda da rainha / torre ou a direita da celula atacada
         ) #\/
         (
             MovedR #= CelR #/\                  % rainha / torre estao na mesma linha da celula atacada
-            IntR #= MovedR #/\                  % peça intermedia esta na mesma linha que a torre / rainha
-            MovedC #> CelC #/\                  % rainha / torre encontra-se a direita da celula atacada
+            IntR #= CelR #/\                    % peça intermedia esta na mesma linha que celula numerada
+            CelC #< MovedC #/\                  % rainha / torre encontra-se a direita da celula atacada
             (IntC #< CelC #\/ IntC #> MovedC)   % peça intermedia encontra-se a esquerda da celula atacada ou a direita da rainha / torre
         ) #\/
         (
             MovedR #= CelR #/\                  % rainha / torre estao na mesma linha da celula atacada
-            IntR #\= MovedR                     % rainha / torre nao estao na mesma linha que a peça intermedia
+            IntR #\= CelR                       % celula numerada nao esta na mesma linha que a peça intermedia
         )
     ) #<=> Val.
 
@@ -337,71 +333,31 @@ checkPieceCol(CelR, CelC, IntR, IntC, MovedR, MovedC, Val) :- % Moved - rainha/t
     (
         (
             MovedC #= CelC #/\                      % rainha / torre estao na mesma coluna da celula atacada
-            IntC #= MovedC #/\                      % peça intermedia esta na mesma coluna que a torre / rainha
-            MovedR #< CelR #/\                      % rainha / torre encontra-se acima da celula atacada 
+            IntC #= CelC #/\                      % peça intermedia esta na mesma coluna que a torre / rainha
+            CelR #> MovedR #/\                      % rainha / torre encontra-se acima da celula atacada 
             ((IntR #< MovedR) #\/ (IntR #> CelR))   % peça intermedia esta acima da rainha / torre ou abaixo da celula atacada 
         ) #\/
         (
             MovedC #= CelC #/\                      % rainha / torre estao na mesma coluna da celula atacada
-            IntC #= MovedC #/\                      % peça intermedia esta na mesma coluna que a torre / rainha
-            MovedR #> CelR #/\                      % rainha / torre encontra-se abaixo da celula atacada 
+            IntC #= CelC #/\                      % peça intermedia esta na mesma coluna que a torre / rainha
+            CelR #< MovedR #/\                      % rainha / torre encontra-se abaixo da celula atacada 
             ((IntR #< CelR) #\/ (IntR #> MovedR))   % peça intermedia esta acima da celula atacada ou abaixo da rainha / torre
         ) #\/
         (
             MovedC #= CelC #/\                      % rainha / torre estao na mesma coluna da celula atacada                  
-            IntC #\= MovedC                         % peça intermedia nao esta na mesma coluna que a peça intermedia
+            IntC #\= CelC                           % peça intermedia nao esta na mesma coluna que a celula atacada
         )
     ) #<=> Val.
 
 % se estiverem na mesma diagonal, retorna 0 se tiver a meio da diagonal
 checkPieceDiagonal(CelR, CelC, IntR, IntC, MovedR, MovedC, Val) :- % Moved - rainha/bispo Int - outra peça Cel - celula ataque
-    DistR #= abs(MovedR - CelR) #/\
-    DistC #= abs(MovedC - CelC) #/\
-    DistRP #= abs(MovedR - IntR) #/\
-    DistCP #= abs(MovedC - IntC) #/\
     (
-        (
-            DistR #= DistC #/\              % rainha / bispo na diagonal da celula de ataque
-            DistRP #= DistCP #/\            % rainha / bispo tem na diagonal uma peça
-            (                               % diagonal direita inferior
-                MovedR #< CelR #/\          % linha da celula atacada e superior (esta abaixo) a linha da rainha / bispo 
-                MovedC #< CelC #/\          % coluna da celula atacada e superior (esta a direita) a coluna da rainha / bispo
-                (
-                    IntR #< MovedR #\/      % linha da peça intermedia e inferior (esta acima) a linha da rainha / bispo
-                    IntC #> CelC            % coluna da peça intermedia e superior (esta a direita) a coluna da celula atacada
-                )
-            ) #/\
-            (                               % diagonal esquerda inferior
-                MovedR #< CelR #/\          % linha da celula atacada e superior (esta abaixo) a linha da rainha / bispo
-                MovedC #> CelC #/\          % coluna da celula atacada e inferior (esta a esquerda) a coluna da rainha / bispo
-                (
-                    IntR #< MovedR #\/      % linha da peça intermedia e inferior (esta acima) a linha da rainha / bispo
-                    IntC #< CelC            % coluna da peça intermedia e inferior (esta a esquerda) a coluna da celula atacada
-                )
-            ) #/\
-            (                               % diagonal direita superior
-                MovedR #> CelR #/\          % linha da celula atacada e inferior (esta acima) a linha da rainha / bispo
-                MovedC #< CelC #/\          % coluna da celula atacada e superior (esta a direita) a coluna da rainha / bispo
-                (
-                    IntR #> MovedR #\/      % linha da peça intermedia é superior (esta abaixo) a linha da rainha / bispo
-                    IntC #> CelC            % coluna da peça intermedia é superior (esta a direita) a coluna da celula atacada
-                )
-            ) #/\
-            (                               % diagonal esquerda superior
-                MovedR #> CelR #/\          % linha da celula atacada é inferior (esta acima) a linha da rainha / bispo
-                MovedC #> CelC #/\          % coluna da celula atacada e inferior (esta a esquerda) a coluna da rainha / bispo
-                (
-                    IntR #> MovedR #\/      % linha da peça intermedia é superior (esta abaixo) a linha da rainha / bispo
-                    IntC #< CelC            % coluna da peça intermedia é inferior (esta a esquerda) a coluna da celula atacada
-                )
-            )
-        ) #\/
-        (                                   
-            DistR #= DistC #/\              % caso celula atacada e rainha / bispo estejam na diagona
-            DistRP #\= DistCP               % caso a outra peça não esteja na diagonal da rainha / bispo
-        )
+        ((abs(CelR - MovedR) #= abs(CelC - MovedC)) #/\ (abs(CelR - IntR) #\= abs(CelC - IntC))) #\/
+        ((abs(CelR - MovedR) #= abs(CelC - MovedC)) #/\ ((CelR #< MovedR) #/\ (CelC #> MovedC)) #/\ ((CelR #> IntR) #\/ (CelC #< IntC) #\/ (IntR #> MovedR) #\/ (IntC #< MovedC))) #\/
+        ((abs(CelR - MovedR) #= abs(CelC - MovedC)) #/\ ((CelR #< MovedR) #/\ (CelC #< MovedC)) #/\ ((CelR #> IntR) #\/ (CelC #> IntC) #\/ (IntR #> MovedR) #\/ (IntC #> MovedC))) #\/
+        ((abs(CelR - MovedR) #= abs(CelC - MovedC)) #/\ ((CelR #> MovedR) #/\ (CelC #> MovedC)) #/\ ((CelR #< IntR) #\/ (CelC #< IntC) #\/ (IntR #< MovedR) #\/ (IntC #< MovedC))) #\/
+        ((abs(CelR - MovedR) #= abs(CelC - MovedC)) #/\ ((CelR #> MovedR) #/\ (CelC #< MovedC)) #/\ ((CelR #< IntR) #\/ (CelC #> IntC) #\/ (IntR #< MovedR) #\/ (IntC #> MovedC)))
     ) #<=> Val.
-
 
 
 
@@ -440,4 +396,160 @@ get_puzzle(Board_Size) :-
     chessnum(Tabuleiro4,RunTime, Board_Size),
     printStatistics(RunTime).
 
+% solutions to all puzzles
 
+/*
+% puzzle 0 solution
+    KingR #= 1, 
+    KingC #= 3, 
+    QueenR #= 0, 
+    QueenC #= 6, 
+    RookR #= 0, 
+    RookC #= 2, 
+    BishopR #= 3, 
+    BishopC #= 0, 
+    KnightR #= 1, 
+    KnightC #= 1, 
+    PawnR #= 1, 
+    PawnC #= 4,
+
+    % puzzle 1 solution
+    KingR #= 7, 
+    KingC #= 1, 
+    QueenR #= 7, 
+    QueenC #= 6, 
+    RookR #= 3, 
+    RookC #= 2, 
+    BishopR #= 4, 
+    BishopC #= 5, 
+    KnightR #= 2, 
+    KnightC #= 4, 
+    PawnR #= 2, 
+    PawnC #= 1,
+
+    % puzzle 2 solution
+    KingR #= 6, 
+    KingC #= 7, 
+    QueenR #= 1, 
+    QueenC #= 7, 
+    RookR #= 1, 
+    RookC #= 6, 
+    BishopR #= 2, 
+    BishopC #= 7, 
+    KnightR #= 3, 
+    KnightC #= 6, 
+    PawnR #= 1, 
+    PawnC #= 1,
+
+    % puzzle 3 solution
+    KingR #= 5, 
+    KingC #= 3, 
+    QueenR #= 4, 
+    QueenC #= 5, 
+    RookR #= 4, 
+    RookC #= 2, 
+    BishopR #= 3, 
+    BishopC #= 0, 
+    KnightR #= 5, 
+    KnightC #= 6, 
+    PawnR #= 5, 
+    PawnC #= 5,
+
+    % puzzle 4 solution
+    KingR #= 5, 
+    KingC #= 5, 
+    QueenR #= 3, 
+    QueenC #= 3, 
+    RookR #= 3, 
+    RookC #= 5, 
+    BishopR #= 1, 
+    BishopC #= 5, 
+    KnightR #= 3, 
+    KnightC #= 7, 
+    PawnR #= 5, 
+    PawnC #= 4,
+
+    % puzzle 5 solution
+    KingR #= 1, 
+    KingC #= 3, 
+    QueenR #= 4, 
+    QueenC #= 7, 
+    RookR #= 3, 
+    RookC #= 1, 
+    BishopR #= 3, 
+    BishopC #= 7, 
+    KnightR #= 7, 
+    KnightC #= 3, 
+    PawnR #= 6, 
+    PawnC #= 2,
+
+    % puzzle 6 solution
+    KingR #= 7, 
+    KingC #= 4, 
+    QueenR #= 3, 
+    QueenC #= 3, 
+    RookR #= 7, 
+    RookC #= 7, 
+    BishopR #= 3, 
+    BishopC #= 4, 
+    KnightR #= 0, 
+    KnightC #= 2, 
+    PawnR #= 7, 
+    PawnC #= 3,
+
+    % puzzle 7 solution
+    KingR #= 5, 
+    KingC #= 1, 
+    QueenR #= 7, 
+    QueenC #= 0, 
+    RookR #= 7, 
+    RookC #= 1, 
+    BishopR #= 6, 
+    BishopC #= 0, 
+    KnightR #= 6, 
+    KnightC #= 1, 
+    PawnR #= 7, 
+    PawnC #= 3,
+
+    % puzzle 8 solution
+    KingR #= 3, 
+    KingC #= 3, 
+    QueenR #= 4, 
+    QueenC #= 3, 
+    RookR #= 5, 
+    RookC #= 4, 
+    BishopR #= 3, 
+    BishopC #= 1, 
+    KnightR #= 2, 
+    KnightC #= 0, 
+    PawnR #= 5, 
+    PawnC #= 3,
+
+    % puzzle 9 solution
+    KingR #= 2, 
+    KingC #= 2, 
+    QueenR #= 5, 
+    QueenC #= 2, 
+    RookR #= 7, 
+    RookC #= 2, 
+    BishopR #= 6, 
+    BishopC #= 5, 
+    KnightR #= 3, 
+    KnightC #= 6, 
+    PawnR #= 2, 
+    PawnC #= 5,
+
+    % puzzle 10 solution
+    KingR #= 5, 
+    KingC #= 5, 
+    QueenR #= 4, 
+    QueenC #= 2, 
+    RookR #= 6, 
+    RookC #= 6, 
+    BishopR #= 0, 
+    BishopC #= 5, 
+    KnightR #= 0, 
+    KnightC #= 4, 
+    PawnR #= 5, 
+    PawnC #= 0,
+*/

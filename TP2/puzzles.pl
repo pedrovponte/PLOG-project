@@ -97,15 +97,6 @@ puzzle(10,[[empty,empty,empty,empty,empty,empty,empty,empty],
         [empty,empty,empty,empty,3,empty,empty,empty],
         [empty,empty,1,empty,empty,empty,empty,empty]]).
 
-puzzleteste(11,[[empty,empty,empty,empty,empty,empty,empty,empty],
-            [empty,empty,empty,empty,empty,empty,empty,empty],
-            [empty,empty,empty,empty,empty,empty,empty,empty],
-            [empty,empty,empty,empty,empty,empty,empty,empty],
-            [empty,empty,empty,empty,6,empty,empty,empty],
-            [empty,empty,empty,empty,empty,empty,empty,empty],
-            [empty,empty,empty,empty,empty,empty,empty,empty],
-            [empty,empty,empty,empty,empty,empty,empty,empty]]).
-
 printBoard(GameBoard) :-
     length(GameBoard, Size),
     nl,
